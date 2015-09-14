@@ -1,0 +1,43 @@
+package SpellMoonlightShadow
+import SpellHandler
+import SpellObjectGen
+import Heal
+import UnitData
+import StatHandler
+import DamageHandler
+import TalentList
+import SpellRejuvenation
+import BuffHandler
+
+constant int SPELL_RAW = 'AS10'
+constant string SPELL_ORDER = "starfall"
+
+class SpellMoonlightShadow extends Spell
+	use Timed
+	override function onCast()
+		disableAutodestroy()
+		targetUnit.addEffect("Abilities\\Spells\\Undead\\Darksummoning\\DarkSummonTarget.mdl", "origin").destr()
+		var delay = 1.
+		if caster.xHasTalent(TALENT_DRUID_MOON_DELAY)
+			delay *= 0.33
+		startTimer(delay)
+	
+	override function onTimer()
+		if targetUnit.xIsAlive()
+			targetUnit.addEffect("Abilities\\Spells\\Items\\AIil\\AIilTarget.mdl", "overhead").destr()
+			if targetUnit.getOwner().isAllyOf(caster.getOwner())
+				var healMod = 1.
+				if caster.xHasTalent(TALENT_DRUID_MOON_REJU) and targetUnit.hasBuff(BuffRejuvenation.typeId)
+					healMod = 1.2
+				unitHealTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 2.5 * healMod)
+			else
+				unitDamageTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 2., DamageType.MAGIC)
+		destroy this
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellMoonlightShadow())
+
+@compiletime
+function genObj()
+	genSpell(SPELL_RAW, 6, 10, SPELL_ORDER, "Moonlight Shadow", "E", "Heals a friendly target by " + colorizeStatValue("2.5 x Int") + " or damages an enemy target by " + colorizeStatValue("2 x Int") + " magic damage after a small delay.", "ReplaceableTextures\\CommandButtons\\BTNElunesBlessing.blp")
+		..setTargetUnit(500., TARGETS_ALLOWED_ALLY_SELF_CREEP_BOSS)

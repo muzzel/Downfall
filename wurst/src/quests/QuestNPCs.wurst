@@ -1,0 +1,13 @@
+package QuestNPCs
+import PQuest
+
+constant string MODEL_VILLAGER_MALE = "units\\critters\\VillagerMan\\VillagerMan"
+constant string MODEL_VILLAGER_FEMALE = "units\\critters\\VillagerWoman\\VillagerWoman"
+constant string MODEL_FOOTMAN = "units\\human\\Footman\\Footman"
+
+
+@compiletime function genQuestNPCs()
+	genQuestNPC('npc1', "Captain Bryce", "units\\human\\HeroPaladin\\HeroPaladin", "")
+	genQuestNPC('npc2', "Brom", MODEL_FOOTMAN, "")
+	genQuestNPC('npc3', "Marta", MODEL_VILLAGER_FEMALE, "IM04,i201,i202,i203,i402,I401")
+	genQuestNPC('npc4', "Menag", MODEL_VILLAGER_MALE, "IM01,i104")

@@ -1,0 +1,96 @@
+package UnitData
+import PlayerData
+import public UnitIndex
+import initlater CreepExp
+import UnitTypeGen // Assure UnitBaseStatBuffers are valid before UnitData objects are created.
+import UnitTypeData
+import StatHandler
+import BuffHandler
+import DamageHandler
+import ThreatHandler
+import initlater CreepRespawn
+import initlater HeroRespawn
+import initlater CreepDrop
+import OOCRegen
+import TimerUtils
+
+// Unit API:
+public function unit.xGetUnitData() returns UnitData
+	return this.getIndex() castTo UnitData
+	
+public function unit.xIsHero() returns boolean
+//	return IsUnitType(this, UNIT_TYPE_HERO)
+	return xGetPlayerHero(this.getOwner().getId()) == this
+
+public function unit.xIsAlive() returns boolean
+	return not IsUnitType(this, UNIT_TYPE_DEAD) and GetUnitTypeId(this) != 0
+
+public function unit.xIsBoss() returns boolean
+	return IsUnitType(this, UNIT_TYPE_SAPPER)
+
+/** Returns false for all kinds of dummies, non-combat units, etc. */
+public function unit.xIsCombatUnit() returns boolean
+	return this.xGetUnitData() != null
+	
+public function unit.xGetStat(Stat s) returns int
+	return this.xGetUnitData().unitStatBuffer.get(s)
+
+public function unit.xGetStatReal(Stat s) returns real
+	return this.xGetStat(s) / 100.
+// ----
+
+public function unitDeath(unit u)
+	let unitData = u.xGetUnitData()
+	for b in unitData.unitBuffList.buffs // remove all buffs // TODO: ist beim durchiterieren zerstören erlaubt?
+		destroy b
+	if u.xIsHero() // Unit is a player hero:
+		respawnHero(u)
+		// If hero died, destroy ThreatHandlerPU object???
+	else // Unit is a creep/boss:
+		creepSpreadExp(u)
+		creepDrop(u)
+		if unitData.creepRespawn != null // Respawn if preplaced creep
+			unitData.creepRespawn.respawn()
+		unitData.destroyTimed(3.) // Destroy UnitData instance
+
+public class UnitData extends UnitIndex
+	UnitStatBuffer unitStatBuffer
+	UnitDamageHandler unitDamageHandler
+	BuffList unitBuffList
+	ThreatHandlerPU threatHandlerPu
+	ThreatHandlerTU threatHandlerTu
+	// Creep properties:
+	CreepRespawn creepRespawn
+	
+	construct(unit u)
+		super(u)
+		unitStatBuffer = new UnitStatBuffer(u, u.getTypeId().xGetUnitTypeData().unitBaseStatBuffer)
+		unitDamageHandler = new UnitDamageHandler(u)
+		unitBuffList = new BuffList(u)
+		if u.xIsHero() // Unit is a player hero
+			threatHandlerPu = new ThreatHandlerPU(u)
+			unitEnableOOCRegen(u)
+		else // Unit is a creep/boss
+			threatHandlerTu = new ThreatHandlerTU(u)
+		// CreepRespawn:
+		creepRespawn = null
+	
+	function destroyTimed(real timeout)
+		getTimer()
+			..setData(this castTo int)
+			..start(timeout, () -> begin
+			let t = GetExpiredTimer()
+			destroy t.getData() castTo thistype
+			t.release()
+		end)
+	
+	ondestroy
+		destroy unitStatBuffer
+		destroy unitDamageHandler
+		destroy unitBuffList
+		if threatHandlerPu != null
+			destroy threatHandlerPu
+		if threatHandlerTu != null
+			destroy threatHandlerTu
+		if u.xIsHero()
+			unitDisableOOCRegen(u)

@@ -1,0 +1,69 @@
+package Bag
+import BagObjGen
+import Config
+import PlayerData
+import Player
+import ItemData
+
+constant real BAG_MOVE_TIMEOUT = 0.4
+
+public function playerCreateBag(int playerId)
+	if playerBagUnit[playerId] == null
+		playerBagUnit[playerId] = createUnit(players[playerId], BAG_RAW, xGetPlayerHero(playerId).getPos(), angle(0.))
+
+public function playerRemoveBag(int playerId)
+	let bag = playerBagUnit[playerId]
+	blockEvents = true
+	for int i = 0 to 5
+		let itm = UnitItemInSlot(bag, i)
+		destroy itm.xGetItemData()
+		itm.remove()
+	bag.remove()
+	IssueImmediateOrder(bag, "stop")
+	blockEvents = false
+	playerBagUnit[playerId] = null
+
+public function xGetPlayerBag(int playerId) returns unit
+	return playerBagUnit[playerId]
+	
+function onTimeout()
+	for int pid = 0 to NUM_OF_PLAYERS-1
+		let hero = xGetPlayerHero(pid)
+		if hero != null
+			let bag = playerBagUnit[pid]
+			if GetUnitCurrentOrder(bag) == 852001
+				blockEvents = true
+				IssuePointOrderById(hero, 851971, bag.getX(), bag.getY())
+				blockEvents = false
+			bag.setXY(hero.getPos())
+		
+function orderAction()
+	let pid = GetTriggerPlayer().getId()
+	let hero = xGetPlayerHero(pid)
+	let bag = playerBagUnit[pid]
+	if GetTriggerUnit() == hero
+		if not blockEvents
+			blockEvents = true
+			IssueImmediateOrderById(bag, 851972) // "stop"
+			blockEvents = false
+	else if GetTriggerUnit() == bag
+		if not blockEvents
+			blockEvents = true
+			bag.setXY(hero.getPos())
+			if GetOrderTarget() != null
+				IssuePointOrder(hero, "move", GetOrderTarget().getX(), GetOrderTarget().getY())
+			if GetOrderPointX() != 0 and GetOrderPointY() != 0
+				IssuePointOrder(hero, "move", GetOrderPointX(), GetOrderPointY())
+			blockEvents = false
+
+unit array playerBagUnit
+boolean blockEvents = false
+
+init
+	CreateTimer().startPeriodic(BAG_MOVE_TIMEOUT, function onTimeout)
+	for int pid = 0 to NUM_OF_PLAYERS-1
+		CreateTrigger()
+			..registerPlayerUnitEvent(players[pid], EVENT_PLAYER_UNIT_ISSUED_ORDER, null)
+			..registerPlayerUnitEvent(players[pid], EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, null)
+			..registerPlayerUnitEvent(players[pid], EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER, null)
+			..addAction(function orderAction)

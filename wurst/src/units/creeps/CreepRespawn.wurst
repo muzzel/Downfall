@@ -1,0 +1,31 @@
+package CreepRespawn
+import UnitData
+
+function respawnTime(int raw) returns real
+	return 90.
+
+public class CreepRespawn
+	use Timed
+	int unitRaw
+	vec2 pos
+	angle facing
+	
+	construct(unit u)
+		this.unitRaw = u.getTypeId()
+		this.pos = u.getPos()
+		this.facing = u.getFacingAngle()
+	
+	function respawn()
+		startTimer(respawnTime(unitRaw))
+	
+	private override function onTimer()
+		let u = createUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), unitRaw, pos, facing)
+		new UnitData(u).creepRespawn = this
+
+init
+	let g = CreateGroup()
+	GroupEnumUnitsInRect(g, bj_mapInitialPlayableArea, null)
+	for unit u in g
+		if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE)
+			new UnitData(u).creepRespawn = new CreepRespawn(u)
+	g.close()

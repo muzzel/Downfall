@@ -1,0 +1,36 @@
+package HeroInventoryRestrictions
+import ItemTypeData
+import EquipmentClassList
+import HeroTypeGen
+
+public function validateClass(unit u, item i) returns boolean // TODO
+	boolean allowed = false
+	let ht = u.getHeroType()
+	EquipmentClass cls = GetItemTypeId(i).xGetItemTypeData().equipmentClass
+	switch ht
+		case WARRIOR
+			allowed = (
+				cls == EquipmentClass.SWORD or
+				cls == EquipmentClass.AXE or
+				cls == EquipmentClass.SHIELD or
+				cls == EquipmentClass.CHAIN or
+				cls == EquipmentClass.ACCESSORY)
+		case PRIEST
+			allowed = (
+				cls == EquipmentClass.STAFF or
+				cls == EquipmentClass.ORB or
+				cls == EquipmentClass.CLOTH or
+				cls == EquipmentClass.ACCESSORY)
+		case RANGER
+			allowed = (
+				cls == EquipmentClass.BOW or
+				cls == EquipmentClass.QUIVER or
+				cls == EquipmentClass.LEATHER or
+				cls == EquipmentClass.ACCESSORY)
+		case DRUID
+			allowed = (
+				cls == EquipmentClass.STAFF or
+				cls == EquipmentClass.ORB or
+				cls == EquipmentClass.CLOTH or
+				cls == EquipmentClass.ACCESSORY)
+	return allowed

@@ -1,0 +1,21 @@
+package QuestPreciousPelts
+import PQuest
+import CreepDrop
+
+public PQuest pqPreciousPelts = new PQuest("Precious Pelts", "ReplaceableTextures\\CommandButtons\\BTNEnchantedBears.blp", "The merchant Marta requires wolf pelts.")
+PQuestItem pqPreciousPelts_collect = pqPreciousPelts.addItemKillCollect("Collect some Flawless Pelts", 'IQ00', 5)
+PQuestItem pqPreciousPelts_return = pqPreciousPelts.addItemTalk("Return to Marta", udg_npc_marta, "Thank you, those are perfect. Here is your gold.", null)
+
+init
+	getUnitDroptable('h001')..addQuestDrop(pqPreciousPelts_collect, 40, 'IQ00')
+	getUnitDroptable('h002')..addQuestDrop(pqPreciousPelts_collect, 40, 'IQ00')
+	pqPreciousPelts.setDiscoverTalkData("Hey there, interested in a job? I require more wolf pelts, if you can bring me some I will pay a good price.", null)
+	pqPreciousPelts_collect.setInitDiscovered()
+	pqPreciousPelts_collect.setNext(pqPreciousPelts_return)
+	pqPreciousPelts_return.setCompletesQuest()
+	pqPreciousPelts.setCompleteAction((int playerId) -> begin
+		giveQuestRewards(playerId, 30, 120, 0)
+	end)
+	
+@compiletime function genObjects()
+	genQuestItem('IQ00', "Flawless Pelt", "", "")

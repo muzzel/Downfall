@@ -1,0 +1,22 @@
+package UnitTypeData
+import HashMap
+import StatHandler
+
+// UnitType API:
+public function int.xGetUnitTypeData() returns UnitTypeData
+	return raw2UnitTypeData.get(this)
+// ----
+
+HashMap<int, UnitTypeData> raw2UnitTypeData = new HashMap<int, UnitTypeData>()
+
+public class UnitTypeData
+	int raw
+	UnitBaseStatBuffer unitBaseStatBuffer
+	
+	construct(int raw, UnitBaseStatBuffer unitBaseStatBuffer)
+		raw2UnitTypeData.put(raw, this)
+		this.raw = raw
+		this.unitBaseStatBuffer = unitBaseStatBuffer
+	
+	ondestroy
+		printWarning("Attempt to destroy UnitTypeData object.")

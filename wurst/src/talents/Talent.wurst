@@ -1,0 +1,54 @@
+package Talent
+import HashMap
+import PlayerData
+import SimError
+
+// API:
+public function unit.xHasTalent(Talent talent) returns boolean
+	return getTalentUnit(this).getAbilityLevel(talent.raw) > 1
+	
+public function unit.xGetTalentLevel(Talent talent) returns int
+	return max(0, getTalentUnit(this).getAbilityLevel(talent.raw)-1)
+//
+
+// Adjust this if the hero is not the unit who carries the talent spellbook anymore.
+function getTalentUnit(int playerId) returns unit
+	return xGetPlayerHero(playerId)
+	
+function getTalentUnit(unit u) returns unit
+	return getTalentUnit(u.getOwner().getId())
+
+function raw2talent(int raw) returns Talent
+	return raw2talent.get(raw)
+	
+function learnAction()
+	if raw2talent.has(GetSpellAbilityId())
+		let talent = raw2talent.get(GetSpellAbilityId())
+		let pid = GetTriggerUnit().getOwner().getId()
+		let tu = getTalentUnit(pid)
+		if tu.xGetTalentLevel(talent) < talent.levels
+			if xGetPlayerData(pid).getLearnPointsTalents() >= 10
+				tu.setAbilityLevel(talent.raw, tu.getAbilityLevel(talent.raw)+1)
+				xGetPlayerData(pid).incLearnPointsTalents(-10)
+			else
+				simError(players[pid], "Not enough talent points")
+		else
+			simError(players[pid], "Talent already has maximum level")
+
+HashMap<int, Talent> raw2talent = new HashMap<int, Talent>()
+
+public class Talent
+	int raw
+	int levels
+	string name
+	
+	construct(int raw, int levels, string name)
+		raw2talent.put(raw, this)
+		this.raw = raw
+		this.levels = levels
+		this.name = name
+
+init
+	CreateTrigger()
+		..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CHANNEL)
+		..addAction(function learnAction)

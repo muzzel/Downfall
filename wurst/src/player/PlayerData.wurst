@@ -1,0 +1,83 @@
+package PlayerData
+import public initlater HeroTypeGen
+import initlater UnitData
+import StatHandler
+import initlater Bag
+
+public function xGetPlayerHero(int playerId) returns unit
+	if playerData[playerId] == null
+		return null
+	return playerData[playerId].hero
+
+public function initPlayerData(int playerId, unit hero)
+	if playerData[playerId] != null
+		destroy playerData[playerId]
+	new PlayerData(playerId, hero)
+
+public function xGetPlayerData(int playerId) returns PlayerData
+	return playerData[playerId]
+
+PlayerData array playerData
+
+public class PlayerData
+	int playerId
+	unit hero
+	// learn points:
+	int learnPointsStats
+	int learnPointsTalents
+	// learned stats:
+	StatList learnedStats
+	int learnedStr
+	int learnedAgi
+	int learnedInt
+	
+	construct(int playerId, unit hero)
+		playerData[playerId] = this // must be first, for xIsHero(..) check
+		this.playerId = playerId
+		this.hero = hero
+		new UnitData(hero)
+		playerCreateBag(playerId)
+		// learn points:
+		learnPointsStats = 0
+		learnPointsTalents = 0
+		// learned attributes:
+		learnedStats = new StatList()
+		learnedStr = 0
+		learnedAgi = 0
+		learnedInt = 0
+		hero.xGetUnitData().unitStatBuffer.apply(learnedStats)
+	
+	function getLearnPointsStats() returns int
+		return learnPointsStats
+	
+	function incLearnPointsStats(int add)
+		learnPointsStats += add
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_USED, learnPointsStats)
+		
+	function getLearnPointsTalents() returns int
+		return learnPointsTalents
+	
+	function incLearnPointsTalents(int add)
+		learnPointsTalents += add
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_CAP, learnPointsTalents)
+	
+	function incLearnedAttributes(int str, int agi, int inte)
+		learnedStr += str
+		learnedAgi += agi
+		learnedInt += inte
+		hero.xGetUnitData().unitStatBuffer.remove(learnedStats)
+		destroy learnedStats
+		learnedStats = new StatList()
+		learnedStats.add(Stat.STR, learnedStr)
+		learnedStats.add(Stat.AGI, learnedAgi)
+		learnedStats.add(Stat.INT, learnedInt)
+		learnedStats.add(Stat.STR_WHITE, learnedStr)
+		learnedStats.add(Stat.AGI_WHITE, learnedAgi)
+		learnedStats.add(Stat.INT_WHITE, learnedInt)
+		hero.xGetUnitData().unitStatBuffer.apply(learnedStats)
+		
+	ondestroy
+		destroy learnedStats
+		destroy hero.xGetUnitData()
+		hero.remove()
+		playerData[playerId] = null

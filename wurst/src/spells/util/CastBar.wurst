@@ -1,0 +1,51 @@
+package CastBar
+import ObjEditingNatives
+
+@configurable constant int CASTBAR_DUMMY = 'pbar'
+@configurable constant string BAR_MODEL = "Progressbar.mdl"
+
+public class CastBar
+	unit dummy
+	
+	construct(vec2 pos, real casttime, boolean reversed, playercolor color)
+		dummy = createUnit(players[PLAYER_NEUTRAL_PASSIVE], CASTBAR_DUMMY, pos, angle(0.))
+			..addAbility(HEIGHT_ENABLER)
+			..removeAbility(HEIGHT_ENABLER)
+			..setFlyHeight(100., 0.)
+			..setPathing(false)
+			..setPos(pos)
+			..setColor(color)
+			..pause()
+		if reversed
+			dummy.setAnimation("Spell")
+		else
+			dummy.setAnimation("Birth")
+		dummy.setTimeScale(1./casttime*1.05000000)
+	
+	ondestroy
+		dummy.remove()
+	
+@compiletime function create_w3u_h000()
+	let u = createObjectDefinition("w3u", CASTBAR_DUMMY, 'hfoo')
+	u.setInt("udea", 0)
+	u.setString("urac", "other")
+	u.setInt("usid", 0)
+	u.setString("usnd", "")
+	u.setReal("uble", 0.0)
+	u.setInt("ufle", 0)
+	u.setString("uabi", "Avul,Aloc")
+	u.setString("umdl", BAR_MODEL)
+	u.setUnreal("ucol", 0.0)
+	u.setString("unam", "DummyUnit: Progressbar")
+	u.setInt("uhom", 1)
+	u.setUnreal("udtm", 0.25)
+	u.setInt("uaen", 0)
+	u.setInt("usin", 0)
+	u.setInt("ufoo", 0)
+	u.setReal("umxp", 0.0)
+	u.setUnreal("uacq", 0.0)
+	u.setString("utar", "")
+	u.setString("upgr", "")
+	u.setReal("umxr", 0.0)
+	u.setString("umvt", "hover")
+	u.setString("ushu", "")

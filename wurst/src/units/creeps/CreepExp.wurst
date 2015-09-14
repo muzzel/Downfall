@@ -1,0 +1,22 @@
+package CreepExp
+import initlater CombatText
+import initlater UnitData
+
+constant real CREEP_EXP_RANGE = 1200.
+constant int MAX_LVL_DIFFERENCE = 5
+constant int EXP_LEVEL_FACTOR = 10
+
+public function creepSpreadExp(unit creep)
+	ENUM_GROUP.clear()
+	ENUM_GROUP.enumUnitsInRange(creep.getPos(), CREEP_EXP_RANGE)
+	for unit u from ENUM_GROUP
+		if u.xIsHero()
+			heroAddCreepExpGold(creep, u)
+
+function heroAddCreepExpGold(unit creep, unit hero)
+	let dist = GetUnitLevel(creep)-GetHeroLevel(hero)
+	let exp = R2I((1-dist*dist/(MAX_LVL_DIFFERENCE*MAX_LVL_DIFFERENCE))*GetUnitLevel(creep)*EXP_LEVEL_FACTOR)
+	if exp > 0
+		combatTextExp(hero, exp)
+		AddHeroXP(hero, exp, true)
+		hero.getOwner().addGold(1 + GetUnitLevel(creep) div 2)

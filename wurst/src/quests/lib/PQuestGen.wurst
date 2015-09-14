@@ -1,0 +1,61 @@
+package PQuestGen
+import UnitObjEditing
+import ItemObjEditing
+
+public constant int TALK_DUMMY = 'e000'
+
+/** If model == "", use default villager */
+public function genQuestNPC(int newRaw, string name, string model, string itemsSold) returns BuildingAndHeroDefinition
+	let def = new BuildingAndHeroDefinition(newRaw, 'nvil')
+		..setNormalAbilities("Aneu,Avul,Apit")
+		..setSpeedBase(0)
+		..setItemsSold(itemsSold)
+		..setUnitsSold(idInteger2IdString(TALK_DUMMY))
+		..setName(name)
+		..setNameEditorSuffix("")
+		..setRace(Race.Other)
+		..setScalingValue(1.)
+	if model != ""
+		def.setModelFile(model)
+	return def
+
+/** If model == "", use default villager */
+public function genQuestItem(int newRaw, string name, string descr, string model)
+	var modelUsed = "Objects\\InventoryItems\\ThunderLizardEgg\\ThunderLizardEgg.mdl"
+	if model != ""
+		modelUsed = model
+	new ItemDefinition(newRaw, 'gold')
+		..setName(name)
+		..setTooltipBasic(name)
+		..setDescription("Quest Item\n" + descr)
+		..setTooltipExtended("Quest Item\n" + descr)
+		..setAbilities("")
+		..setModelUsed(modelUsed)
+		
+@compiletime function genObjects()
+	new UnitDefinition(TALK_DUMMY, 'ewsp')
+		..setNormalAbilities("Aloc,Avul")
+		..setButtonPositionX(0)
+		..setButtonPositionY(2)
+		..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNVillagerMan.blp")
+		..setModelFile(" .mdl")
+		..setTargetedAs("")
+		..setMovementType(MovementType.Fly)
+		..setCollisionSize(0.)
+		..setUnitSoundSet("")
+		..setCanFlee(false)
+		..setFoodCost(0)
+		..setGoldCost(0)
+		..setHitPointsMaximumBase(1)
+		..setPointValue(0)
+		..setRace(Race.Other)
+		..setStockMaximum(1)
+		..setStockReplenishInterval(0)
+		..setUnitClassification("")
+		..setStructuresBuilt("")
+		..setUpgradesUsed("")
+		..setHotkey("")
+		..setName("Talk/Interact")
+		..setTooltipBasic("Talk/Interact")
+		..setTooltipExtended("")
+		..setDescription("")

@@ -1,0 +1,20 @@
+package Heal
+import UnitData
+import StatHandler
+import CombatText
+import ThreatHandler
+
+public function unitHealTarget(unit source, unit target, real amount) returns real
+	real healrec = (100+target.xGetUnitData().unitStatBuffer.get(Stat.HEALREC)) / 100.
+	real healed = amount*healrec
+	healed = min(healed, target.getMaxHP() - target.getHP())
+	target.addHP(healed)
+	combatTextHeal(source, target, healed)
+	ENUM_GROUP.clear()
+	ENUM_GROUP.enumUnitsInRange(source.getPos(), 700.)
+	for unit u in ENUM_GROUP
+		if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE)
+			let dist = u.getPos().distToVec(source.getPos())
+			let aggro = (800 - dist) / 800 * healed
+			modifyThreat(source, u, aggro, true)
+	return healed

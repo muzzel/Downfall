@@ -1,0 +1,14 @@
+package BuffHandlerConfig
+import initlater BuffHandler
+import initlater UnitData
+
+public function unit.getBuffList() returns BuffList
+	return this.xGetUnitData().unitBuffList
+
+public module BuffCustomMembers
+	
+	function initCustomMembers()
+		skip
+	
+	function destroyCustomMembers()
+		skip

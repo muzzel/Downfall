@@ -1,0 +1,53 @@
+package Heropick
+import HeropickObjectGen
+import Config
+import PlayerData
+import TalentList
+import QuestProvingYourWorth
+
+constant vec2 heroPickPos = vec2(-10500, -11200)
+constant vec2 heroStartPos = vec2(-10250, 4390)
+unit ship
+
+function startHeropick(player p)
+	createUnit(p, RAW_DUMMY_PICK, heroPickPos, angle(0.))
+//	SetCameraPositionForPlayer(p, heroPickPos.x, heroPickPos.y)
+
+function heroPickedAction()
+	let p = GetBuyingUnit().getOwner()
+	let pid = p.getId()
+	unit hero = null
+	switch GetSoldUnit().getTypeId()
+		case RAW_DUMMY_WARRIOR
+			hero = createUnit(p, 'HE01', heroStartPos, angle(0.))
+				..addAbility('AS02')..addAbility('AS03')..addAbility('AS12')
+				..addAbility(BOOK_TALENT_WARRIOR)
+		case RAW_DUMMY_PRIEST
+			hero = createUnit(p, 'HE02', heroStartPos, angle(0.))
+				..addAbility('AS01')..addAbility('AS04')..addAbility('AS09')
+				..addAbility(BOOK_TALENT_PRIEST)
+		case RAW_DUMMY_RANGER
+			hero = createUnit(p, 'HE03', heroStartPos, angle(0.))
+				..addAbility('AS07')..addAbility('AS08')..addAbility('AS11')
+				..addAbility(BOOK_TALENT_RANGER)
+		case RAW_DUMMY_DRUID
+			hero = createUnit(p, 'HE04', heroStartPos, angle(0.))
+				..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
+				..addAbility(BOOK_TALENT_DRUID)
+	initPlayerData(pid, hero)
+	printTimed(p.getName() + " picked: |cffffcc00" + hero.getName(), 4.)
+	SetCameraPositionForPlayer(p, heroStartPos.x, heroStartPos.y)
+	SelectUnitForPlayerSingle(hero, p)
+	GetSoldUnit().remove()
+	GetBuyingUnit().remove()
+	// Set first quest discoverable
+	pqProveWorth.setDiscoverable(pid, udg_npc_bryce)
+
+init
+	ship = createUnit(Player(PLAYER_NEUTRAL_PASSIVE), RAW_SHIP, heroPickPos, angle(0.))
+	CreateTrigger()
+		..registerUnitEvent(ship, EVENT_UNIT_SELL)
+		..addAction(function heroPickedAction)
+	for int pid = 0 to NUM_OF_PLAYERS-1
+		startHeropick(players[pid])
+	

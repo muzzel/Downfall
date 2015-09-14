@@ -1,0 +1,369 @@
+package PQuest
+import LinkedList
+import HashMap
+import PrintingHelper
+import public PQuestGen
+import Config
+import Player
+import UnitData
+import PlayerData
+import ItemData
+
+@configurable constant real QUEST_EVENT_RANGE = 1500.
+@configurable constant real TALK_DURATION = 4.
+	
+public function giveQuestRewards(int playerId, int gold, int exp, int itemRaw)
+	var rewardMsg = "Reward:\n"
+	if gold > 0
+		players[playerId].addGold(gold)
+		rewardMsg += gold.toString() + " Gold\n"
+	if exp > 0
+		xGetPlayerHero(playerId).addXp(exp, true)
+		rewardMsg += exp.toString() + " Exp\n"
+	if itemRaw != 0
+		let itm = xCreateItemForPlayerHero(playerId, itemRaw)
+		rewardMsg += "Item: " + itm.getName()
+	printTimedToPlayer(rewardMsg, 10., players[playerId])
+
+public function isPlayerWithQuestItemInRange(vec2 pos, PQuestItem questItem) returns boolean
+	ENUM_GROUP.clear()
+	ENUM_GROUP.enumUnitsInRange(pos, QUEST_EVENT_RANGE)
+	boolean found = false
+	for u in ENUM_GROUP
+		if u.xIsHero()
+			let pid = u.getOwner().getId()
+			if questItem.getState(pid) == PQuestState.DISCOVERED
+				found = true
+				break
+	return found
+
+public interface TalkAction
+	function onTalk(int playerId, unit npc)
+		
+function unitSetQuestMarkE(unit npc, int playerId)
+	unitRemoveQuestMarks(npc, playerId)
+	string path = ""
+	if GetLocalPlayer() == players[playerId]
+		path = "Abilities\\Spells\\Other\\TalkToMe\\TalkToMe.mdl"
+	let sfx = npc.addEffect(path, "overhead")
+	npc2QuestMark[playerId].put(npc, sfx)
+
+function unitSetQuestMarkQ(unit npc, int playerId)
+	unitRemoveQuestMarks(npc, playerId)
+	string path = ""
+	if GetLocalPlayer() == players[playerId]
+		path = "TalkToMeQuestionMark2.mdl"
+	let sfx = npc.addEffect(path, "overhead")
+	npc2QuestMark[playerId].put(npc, sfx)
+
+function unitRemoveQuestMarks(unit npc, int playerId)
+	let sfx = npc2QuestMark[playerId].get(npc)
+	if sfx != null
+		sfx.destr()
+		npc2QuestMark[playerId].remove(npc)
+
+function questMsg(int playerId, string msg)
+	printTimedToPlayer(msg, 10., players[playerId])
+	// TODO: play sound
+	if GetLocalPlayer() == players[playerId]
+		FlashQuestDialogButton()
+
+public enum PQuestState
+	UNDISCOVERED
+	DISCOVERED
+	COMPLETED
+	
+public interface CompleteQuestAction
+	function questCompleted(int playerId)
+
+public class PQuest
+	static thistype array allPQuests
+	static int numPQuests = 0
+	LinkedList<PQuestItem> questItems
+	string title
+	string icon
+	string description
+	CompleteQuestAction completeQuestAction
+	HashMap<int, quest> thisQuest
+	HashMap<int, PQuestState> state
+	// for talk-discovered quests:
+	string talkText = ""
+	TalkAction talkAction = null
+	
+	construct(string title, string icon, string description)
+		allPQuests[numPQuests] = this
+		numPQuests++
+		questItems = new LinkedList<PQuestItem>()
+		this.title = title
+		this.icon = icon
+		this.description = description
+		completeQuestAction = null
+		thisQuest = new HashMap<int, quest>()
+		state = new HashMap<int, PQuestState>()
+		for int pid = 0 to NUM_OF_PLAYERS-1
+			let q = CreateQuest()
+			thisQuest.put(pid, q)
+			QuestSetTitle(q, title)
+			QuestSetIconPath(q, icon)
+			QuestSetDescription(q, description)
+			QuestSetEnabled(q, false)
+			state.put(pid, PQuestState.UNDISCOVERED)
+	
+	function addItem(string descr) returns PQuestItem
+		return addItem(descr, 0)
+		
+	function addItem(string descr, int maxCount) returns PQuestItem
+		let qi = new PQuestItem(this, descr, maxCount) 
+		questItems.add(qi)
+		return qi
+		
+	/**
+	 * Adds a PQuestItem that is completed by killinug units/collecting items of the specified type.
+	 * If count is > 1, killing/collecting will update the PQuestItem until the specified amount of targets were killed/collected.
+	 */
+	function addItemKillCollect(string descr, int objectRaw, int count) returns PQuestItem
+		let itm = this.addItem(descr, count)
+		raw2qi.put(objectRaw, itm)
+		return itm
+		
+	/**
+	 * Adds a PQuestItem that is completed by talking to the the specified npc.
+	 * Further a text and TalkAction may be specified which will be printed/executed after the PQuestItem is completed.
+	 */
+	function addItemTalk(string descr, unit npc, string text, TalkAction action) returns PQuestItem
+		let itm = this.addItem(descr)
+		itm.talkNPC = npc
+		itm.talkText = text
+		itm.talkAction = action
+		return itm
+		
+	/**
+	 * Specifies a text and TalkAction that is printed/executed when a player discovers the PQuest by talking to a npc.
+	 */
+	function setDiscoverTalkData(string text, TalkAction action)
+		talkText = text
+		talkAction = action
+	
+	/**
+	 * Enables the quest to be discovered for the specified player by talking to the specified npc.
+	 * Adds a "!" quest mark to the npc.
+	 */
+	function setDiscoverable(int playerId, unit npc)
+		npc2QuestDiscoverOnTalk[playerId].put(npc, this)
+		unitSetQuestMarkE(npc, playerId)
+	
+	function setDiscovered(int playerId)
+		let q = thisQuest.get(playerId)
+		state.put(playerId, PQuestState.DISCOVERED)
+		questMsg(playerId, "New Quest Discovered: " + title)
+		if GetLocalPlayer() == players[playerId]
+			QuestSetEnabled(q, true)
+		for qi in questItems
+			if qi.initDiscovered
+				qi.setDiscovered(playerId)
+				
+	function setCompleted(int playerId)
+		let q = thisQuest.get(playerId)
+		state.put(playerId, PQuestState.COMPLETED)
+		if GetLocalPlayer() == players[playerId]
+			QuestSetEnabled(q, false)
+		if completeQuestAction != null
+			completeQuestAction.questCompleted(playerId)
+	
+	function getState(int playerId) returns PQuestState
+		return state.get(playerId)
+	
+	function setCompleteAction(CompleteQuestAction action)
+		completeQuestAction = action
+			
+	/** Returns true if all questitems are completed. */
+	function allItemsCompleted(int playerId) returns boolean
+		var allCompleted = true
+		for qi in questItems
+			if qi.getState(playerId) == PQuestState.COMPLETED
+				allCompleted = false
+				break
+		return allCompleted
+		
+	function reset(int playerId)
+		var q = thisQuest.get(playerId)
+		DestroyQuest(q)
+		q = CreateQuest()
+		thisQuest.put(playerId, q)
+		QuestSetTitle(q, title)
+		QuestSetIconPath(q, icon)
+		QuestSetDescription(q, description)
+		QuestSetEnabled(q, false)
+		state.put(playerId, PQuestState.UNDISCOVERED)
+	
+	static function resetAllQuests(int playerId)
+		for int i = 0 to numPQuests-1
+			allPQuests[i].reset(playerId)
+	
+	ondestroy
+		printWarning("Attempt to destroy PQuest object.")
+
+public class PQuestItem
+	PQuest  parent
+	string description
+	int maxCount
+	boolean initDiscovered
+	HashMap<int, questitem> thisQuestItem
+	HashMap<int, PQuestState> state
+	HashMap<int, int> count
+	PQuestItem next
+	boolean completesQuest
+	// for talk-quests:
+	unit talkNPC = null
+	string talkText = ""
+	TalkAction talkAction = null
+	
+	private construct(PQuest pQuest, string descr, int maxCount)
+		this.parent = pQuest
+		this.description = descr
+		this.maxCount = maxCount
+		thisQuestItem = new HashMap<int, questitem>()
+		state = new HashMap<int, PQuestState>()
+		count = new HashMap<int, int>()
+		next = null
+		completesQuest = false
+		for int pid = 0 to NUM_OF_PLAYERS-1
+			count.put(pid, 0)
+			state.put(pid, PQuestState.UNDISCOVERED)
+	
+	function setInitDiscovered()
+		this.initDiscovered = true
+	
+	function setDiscovered(int playerId)
+		state.put(playerId, PQuestState.DISCOVERED)
+		let q = parent.thisQuest.get(playerId)
+		let qi = QuestCreateItem(q)
+		thisQuestItem.put(playerId, qi)
+		var desc = description
+		if maxCount > 0
+			desc += " (0/" + maxCount.toString() + ")"
+		QuestItemSetDescription(qi, desc)
+		questMsg(playerId, "Quest Update:\n" + desc)
+		// if talk-questitem:
+		talkNpc2qi.put(talkNPC, this)
+		unitSetQuestMarkQ(talkNPC, playerId)
+	
+	function setCompleted(int playerId)
+		state.put(playerId, PQuestState.COMPLETED)
+		let qi = thisQuestItem.get(playerId)
+		QuestItemSetCompleted(qi, true)
+		if next != null
+			next.setDiscovered(playerId)
+		if completesQuest
+			parent.setCompleted(playerId)
+		
+	/**
+	 * Increases killcounter by 1.
+	 * If max value is reached, setCompleted() is called and true is returned.
+	 */
+	function incCounter(int playerId) returns boolean
+		var completed = false
+		var c = count.get(playerId) + 1
+		count.put(playerId, c)
+		let newDescr = description + " (" + c.toString() + "/" + maxCount.toString() + ")"
+		QuestItemSetDescription(thisQuestItem.get(playerId), newDescr)
+		if c >= maxCount
+			setCompleted(playerId)
+		return completed
+	
+	function getCounter(int playerId) returns int
+		return count.get(playerId)
+	
+	function getCounterMax() returns int
+		return maxCount
+	
+	function getState(int playerId) returns PQuestState
+		return state.get(playerId)
+	
+	function setNext(PQuestItem next)
+		this.next = next
+	
+	function setCompletesQuest()
+		this.completesQuest = true
+			
+	ondestroy
+		printWarning("Attempt to destroy PQuestItem object.")
+
+HashMap<int, PQuestItem> raw2qi = new HashMap<int, PQuestItem>()
+HashMap<unit, PQuestItem> talkNpc2qi = new HashMap<unit, PQuestItem>()
+HashMap<unit, effect> array npc2QuestMark // Quest Marks: (playerId, npc) -> effect
+HashMap<unit, PQuest> array npc2QuestDiscoverOnTalk // PQuest.discoverOnTalk: (playerId, npc) -> PQuest:
+	
+init
+	for int pid = 0 to NUM_OF_PLAYERS-1
+		npc2QuestMark[pid] = new HashMap<unit, effect>()
+		npc2QuestDiscoverOnTalk[pid] = new HashMap<unit, PQuest>()
+	
+	// registerCollectItemEvent:
+	let pickupItemTrigger = CreateTrigger()
+	pickupItemTrigger.registerAnyUnitEvent(EVENT_PLAYER_UNIT_PICKUP_ITEM)
+	pickupItemTrigger.addAction(() -> begin
+		if raw2qi.has(GetItemTypeId(GetManipulatedItem()))
+			let qi = raw2qi.get(GetItemTypeId(GetManipulatedItem()))
+			ENUM_GROUP.clear()
+			ENUM_GROUP.enumUnitsInRange(GetTriggerUnit().getPos(), QUEST_EVENT_RANGE)
+			for u in ENUM_GROUP
+				if u.xIsHero()
+					let pid = u.getOwner().getId()
+					if qi.getState(pid) == PQuestState.DISCOVERED
+						if qi.getCounterMax() > 0
+							qi.incCounter(pid)
+						else
+							qi.setCompleted(pid)
+	end)
+	
+	// registerKillUnitEvent:
+	let killUnitTrigger = CreateTrigger()
+	killUnitTrigger.registerPlayerUnitEvent(Player(PLAYER_NEUTRAL_AGGRESSIVE), EVENT_PLAYER_UNIT_DEATH, null)
+	killUnitTrigger.addAction(() -> begin
+		let creep = GetTriggerUnit()
+		if raw2qi.has(GetUnitTypeId(creep))
+			let qi = raw2qi.get(GetUnitTypeId(creep))
+			ENUM_GROUP.clear()
+			ENUM_GROUP.enumUnitsInRange(creep.getPos(), QUEST_EVENT_RANGE)
+			for u in ENUM_GROUP
+				if u.xIsHero()
+					let pid = u.getOwner().getId()
+					if qi.getState(pid) == PQuestState.DISCOVERED
+						if qi.getCounterMax() > 0
+							qi.incCounter(pid)
+						else
+							qi.setCompleted(pid)
+	end)
+//	// talk events:
+	let talkTrigger = CreateTrigger()
+	talkTrigger.registerPlayerUnitEvent(Player(PLAYER_NEUTRAL_PASSIVE), EVENT_PLAYER_UNIT_SELL, null)
+	talkTrigger.addAction(() -> begin
+		if GetSoldUnit().getTypeId() == TALK_DUMMY
+			UnitApplyTimedLife(GetSoldUnit(), 'BTLF', 1.) // remove after 1 second so other events have time to run
+			let pid = GetBuyingUnit().getOwner().getId()
+			let npc = GetTriggerUnit()
+			// check assigned quests:
+			if npc2QuestDiscoverOnTalk[pid].has(npc)
+				let q = npc2QuestDiscoverOnTalk[pid].get(npc)
+				if q.getState(pid) == PQuestState.UNDISCOVERED
+					// TalkData:
+					if q.talkText != null
+						printTimedToPlayer(q.talkText + "\n\n", TALK_DURATION, players[pid])
+					if q.talkAction != null
+						q.talkAction.onTalk(pid, npc)
+					q.setDiscovered(pid)
+					unitRemoveQuestMarks(npc, pid)
+			// check assigned questitems:
+			if talkNpc2qi.has(npc)
+				let qi = talkNpc2qi.get(npc)
+				if qi.getState(pid) == PQuestState.DISCOVERED
+					// TalkData:
+					if qi.talkText != null
+						printTimedToPlayer(qi.talkText + "\n\n", TALK_DURATION, players[pid])
+					if qi.talkAction != null
+						qi.talkAction.onTalk(pid, npc)
+					unitRemoveQuestMarks(npc, pid)
+					qi.setCompleted(pid)
+					
+	end)

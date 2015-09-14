@@ -1,0 +1,53 @@
+package SpellShieldSlam
+import SpellObjectGen
+import SpellHandler
+import StatusHandler
+import StatHandler
+import UnitData
+import DamageHandler
+import ThreatHandler
+import TalentList
+import BuffHandler
+
+constant int SPELL_RAW = 'AS02'
+constant string SPELL_ORDER = "stomp"
+
+public class BuffShieldSlamTaunt extends Buff
+	unit caster
+
+	override function getName() returns string
+		return "Shield Slam Taunt"
+	
+	construct(unit caster)
+		this.caster = caster
+		
+	override function onApply()
+		modifyThreat(caster, getUnit(), 99999, true)
+		destroyAfter(4.)
+	
+	override function onRemove()
+		if caster.isAlive()
+			modifyThreat(caster, getUnit(), -99999, true)
+
+class SpellShieldSlam extends Spell
+	override function onCast()
+		let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STR)*2.
+		caster.setAnimation("stand defend")
+		let s = CreateSoundFromLabel("MetalHeavyBashFlesh", false, false, false, 0, 0)
+		AttachSoundToUnit(s, caster)
+		StartSound(s)
+		KillSoundWhenDone(s)
+		caster.addEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", "chest").destr()
+		unitDamageTarget(caster, targetUnit, damage, DamageType.PHYSICAL)
+		modifyThreat(caster, targetUnit, 10+damage*2, true)
+		if caster.xHasTalent(TALENT_WARRIOR_SHIELDSLAM_STUN)
+			targetUnit.addStunTimed(1.)
+		if caster.xHasTalent(TALENT_WARRIOR_SHIELDSLAM_TAUNT)
+			new BuffShieldSlamTaunt(caster).apply(targetUnit)
+		
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellShieldSlam())
+
+@compiletime function genObjects()
+	genSpell(SPELL_RAW, 5, 10, SPELL_ORDER, "Shield Slam", "Q", "Instant melee attack that deals " + colorizeStatValue("Str x 2") + " damage. Creates a high amount of threat.", "ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpTwo.blp")
+		..setTargetUnit(80, TARGETS_ALLOWED_CREEP_BOSS)

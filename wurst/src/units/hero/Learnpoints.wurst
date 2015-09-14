@@ -1,0 +1,80 @@
+package Learnpoints
+import ObjEditingNatives
+import PlayerData
+import SimError
+
+function incAttributeAction()
+	let abilRaw = GetSpellAbilityId()
+	let pid = GetTriggerPlayer().getId()
+	switch abilRaw
+		case 'AA02'
+			incAttr(pid, 1, 0, 0)
+		case 'AA03'
+			incAttr(pid, 0, 1, 0)
+		case 'AA04'
+			incAttr(pid, 0, 0, 1)
+		default
+			skip
+
+function incAttr(int pid, int str, int agi, int inte)
+	if xGetPlayerData(pid).getLearnPointsStats() >= 10
+		xGetPlayerData(pid).incLearnedAttributes(str, agi, inte)
+		xGetPlayerData(pid).incLearnPointsStats(-10)
+	else
+		simError(players[pid], "Not enough learning points")
+
+function levelupAction()
+	xGetPlayerData(GetTriggerUnit().getOwner().getId()).incLearnPointsStats(10)
+	if GetHeroLevel(GetTriggerUnit()) mod 2 == 0
+		xGetPlayerData(GetTriggerUnit().getOwner().getId()).incLearnPointsTalents(10)
+
+init
+	CreateTrigger()
+		..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_EFFECT)
+		..addAction(function incAttributeAction)
+	CreateTrigger()
+		..registerAnyUnitEvent(EVENT_PLAYER_HERO_LEVEL)
+		..addAction(function levelupAction)
+
+@compiletime function genObjects()
+	createAttributeButton('AA02', "restorationon", "Strength", "Increase Strength", "UI\\Widgets\\Console\\Human\\infocard-heroattributes-str.blp")
+	createAttributeButton('AA03', "raisedeadon", "Agility", "Increase Agility", "UI\\Widgets\\Console\\Human\\infocard-heroattributes-agi.blp")
+	createAttributeButton('AA04', "curseon", "Intelligence", "Increase Intelligence", "UI\\Widgets\\Console\\Human\\infocard-heroattributes-int.blp")
+	createAttributeBook('AA01', "AA02,AA03,AA04")
+
+function createAttributeBook(int raw, string contents)
+	let u = createObjectDefinition("w3a", raw, 'Aspb')
+	u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNStatUp.blp")
+	u.setLvlDataInt("spb2", 1, 2, 0)
+	u.setLvlDataString("spb1", 1, 1, contents)
+	u.setLvlDataInt("aite", 0, 0, 0)
+	u.setLvlDataString("anam", 0, 0, "book_attributes")
+	u.setLvlDataString("atp1", 1, 0, "Add Stats")
+	u.setLvlDataString("aub1", 1, 0, "Increasing stats by 1 costs 10 statpoints. Your hero gains 10 statpoints on levelup.")
+	u.setLvlDataInt("abpx", 0, 0, 3)
+	u.setLvlDataInt("abpy", 0, 0, 1)
+	u.setLvlDataString("spb5", 1, 5, "webon")
+
+function createAttributeButton(int raw, string order, string name, string tooltip, string icon)
+	let u = createObjectDefinition("w3a", raw, 'ANcl')
+	u.setLvlDataString("anam", 0, 0, name)
+	u.setLvlDataString("ahky", 0, 0, "")
+	u.setLvlDataInt("alev", 0, 0, 1)
+	u.setLvlDataInt("Ncl3", 1, 3, 1)
+	u.setLvlDataUnreal("Ncl1", 1, 1, 0.0)
+	u.setLvlDataInt("Ncl5", 1, 5, 0)
+	u.setLvlDataString("Ncl6", 1, 6, order)
+	u.setLvlDataUnreal("Ncl4", 1, 4, 0.0)
+	u.setLvlDataString("atat", 0, 0, "")
+	u.setLvlDataString("aeat", 0, 0, "")
+	u.setLvlDataString("acat", 0, 0, "")
+	u.setLvlDataString("acap", 0, 0, "")
+	u.setLvlDataString("aani", 0, 0, "")
+	u.setLvlDataInt("abpx", 0, 0, 0)
+	u.setLvlDataString("ata0", 0, 0, "")
+	u.setLvlDataUnreal("aran", 1, 0, 0.0)
+	u.setLvlDataInt("aher", 0, 0, 0)
+	u.setLvlDataString("arac", 0, 0, "other")
+	u.setLvlDataString("atp1", 1, 0, name)
+	u.setLvlDataString("aub1", 1, 0, tooltip)
+	u.setLvlDataString("aart", 0, 0, icon)

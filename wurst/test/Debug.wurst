@@ -1,0 +1,19 @@
+package Debug
+
+import TestUtils
+import UnitData
+//
+//init
+//	// Unit Debug: (-debug unit)
+//	chatEvent("-debug unit", () -> begin
+//		getSelectedUnit(GetTriggerPlayer())
+//	end)
+
+import InventoryIterator
+
+init
+	chatEvent("-iter inventory", () -> begin
+		let iter = new InventoryIterator(getSelectedUnit(GetTriggerPlayer()))
+		for item itm from iter
+			print(itm.getName() + " in slot " + iter.getCurrentSlotId().toString())
+	end)

@@ -1,0 +1,85 @@
+package SpellNaturesWrath
+import SpellHandler
+import SpellObjectGen
+import BuffHandler
+import UnitData
+import StatHandler
+import DamageHandler
+import Fx
+import TalentList
+import StatusHandler
+
+constant int SPELL_RAW = 'AS06'
+constant int BUFF_ABIL_RAW = 'AB06'
+constant int BUFF_RAW = 'BB06'
+constant string SPELL_ORDER = "entangle"
+constant real CHANNEL_DURATION = 1.5
+
+public class BuffNaturesWrath extends Buff
+	StatList stats
+	effect sfx1
+	unit caster
+	boolean entangleEnsnare
+	
+	override function getName() returns string
+		return "Natures Wrath"
+	
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+		
+	override function getPolicy() returns BuffPolicy
+		return BuffPolicy.LAST
+	
+	construct(unit caster)
+		this.caster = caster
+		this.entangleEnsnare = false
+	
+	override function onApply()
+		startTimed(0.3, 10, true)
+		stats = new StatList()..add(Stat.MS, 80)
+		getUnit().xGetUnitData().unitStatBuffer.remove(stats)
+		if caster.xHasTalent(TALENT_DRUID_WRATH_ENTANGLE) and not getUnit().xIsBoss()
+			entangleEnsnare = true
+			getUnit().addEnsnare()
+	
+	override function onTimer()
+		let sfxPos = getUnit().getPos() + randomPosOffset3(20.)
+		Fx fx = new Fx(sfxPos, angle(GetRandomReal(0., 10.)), "Abilities\\Spells\\NightElf\\EntanglingRoots\\EntanglingRootsTarget.mdl")
+			..setScale(GetRandomReal(0.2, 0.5))
+			..recolor(colorA(0, GetRandomInt(80, 255), 255, 255))
+		destroy fx
+	
+	override function onRemove()
+		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
+		if entangleEnsnare
+			getUnit().removeEnsnare()
+		destroy stats
+
+function randomPosOffset3(real dist) returns vec2
+	let x = GetRandomReal(-dist, dist)+GetRandomReal(-dist, dist)+GetRandomReal(-dist, dist)
+	let y = GetRandomReal(-dist, dist)+GetRandomReal(-dist, dist)+GetRandomReal(-dist, dist)
+	return vec2(x,y)
+	
+class SpellNaturesWrath extends Spell
+	override function onCast()
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), false)
+		
+	override function onChannelEnd(boolean success)
+		if success
+			var dmgMod = 1.
+			if caster.xHasTalent(TALENT_DRUID_WRATH_ENTANGLE) and targetUnit.xIsBoss()
+				dmgMod = 1.2
+			unitDamageTarget(caster, targetUnit, caster.xGetStat(Stat.INT) * 3. * dmgMod, DamageType.MAGIC)
+			new BuffNaturesWrath(caster).apply(targetUnit)
+		
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellNaturesWrath())
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Natures Wrath|r", "ReplaceableTextures\\CommandButtons\\BTNEntanglingRoots.blp", "This unit has reduced movespeed.")
+	genSpell(SPELL_RAW, 8, 12, SPELL_ORDER, "Natures Wrath", "W", "Causes roots to burst from the ground, slowing the targets movespeed and dealing " + colorizeStatValue("3 x Int") + " damage.", "ReplaceableTextures\\CommandButtons\\BTNEntanglingRoots.blp")
+		..setChannelling(CHANNEL_DURATION, 3.5, "spell,channel")
+		..setTargetUnit(500, TARGETS_ALLOWED_CREEP_BOSS)

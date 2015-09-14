@@ -1,0 +1,56 @@
+package Maptest
+import UnitData
+import ItemData
+
+init
+	SetTimeOfDay(6.)
+//	// Items:
+	vec2 heroStartPos = vec2(-10250, 4390)
+//	xSpawnItem('IE00', heroStartPos)
+//	xSpawnItem('IE01', heroStartPos)
+//	xSpawnItem('IE02', heroStartPos)
+//	xSpawnItem('IE03', heroStartPos)
+//	xSpawnItem('IE04', heroStartPos)
+//	xSpawnItem('IE05', heroStartPos)
+//	xSpawnItem('IE06', heroStartPos)
+//	xSpawnItem('IE07', heroStartPos)
+//	xSpawnItem('IE08', heroStartPos)
+//	xSpawnItem('IE09', heroStartPos)
+//	xSpawnItem('IE10', heroStartPos)
+//	xSpawnItem('IE11', heroStartPos)
+//	xSpawnItem('IE12', heroStartPos)
+//	// recipes:
+//	xSpawnItem('IR00', heroStartPos)
+//	xSpawnItem('IM00', heroStartPos)
+//	xSpawnItem('IM01', heroStartPos)
+//	xSpawnItem('IM02', heroStartPos)
+//	xSpawnItem('IM03', heroStartPos)
+//	xSpawnItem('IM04', heroStartPos)
+//	xSpawnItem('IM01', heroStartPos)
+//	xSpawnItem('IM02', heroStartPos)
+//	xSpawnItem('IM03', heroStartPos)
+//	xSpawnItem('IM04', heroStartPos)
+//	// testitem:
+//	xSpawnItem('IE99', heroStartPos)
+//	// gold:
+//	createItem('gold', heroStartPos)
+//	createItem('gold', heroStartPos)
+//	createItem('gold', heroStartPos)
+//	createItem('gold', heroStartPos)
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+//	createItem('tkno', heroStartPos + vec2(0., -300.))
+	// friendly test unit:
+//	new UnitData(createUnit(Player(0), 'HE01', heroStartPos, angle(0.)))
+//	new UnitData(createUnit(Player(0), 'HE01', heroStartPos, angle(0.)))
+//	new UnitData(createUnit(Player(0), 'HE01', heroStartPos, angle(0.)))
+//	xSpawnItem('I404', heroStartPos)
+//	xSpawnItem('I204', heroStartPos)
+//	xSpawnItem('I107', heroStartPos)
+//	xSpawnItem('I503', heroStartPos)
+//	xSpawnItem('I504', heroStartPos)
+//	xSpawnItem('I505', heroStartPos)

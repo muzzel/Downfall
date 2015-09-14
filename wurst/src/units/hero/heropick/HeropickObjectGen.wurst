@@ -1,0 +1,89 @@
+package HeropickObjectGen
+import UnitObjEditing
+import ObjectIds
+
+public constant int RAW_SHIP = 'up00'
+public constant int RAW_DUMMY_PICK = 'up01'
+public constant int RAW_DUMMY_WARRIOR = 'up02'
+public constant int RAW_DUMMY_PRIEST = 'up03'
+public constant int RAW_DUMMY_RANGER = 'up04'
+public constant int RAW_DUMMY_DRUID = 'up05'
+
+@compiletime function genObjects()
+	let ids = idInteger2IdString(RAW_DUMMY_WARRIOR) + ","
+		+ idInteger2IdString(RAW_DUMMY_PRIEST) + ","
+		+ idInteger2IdString(RAW_DUMMY_RANGER) + ","
+		+ idInteger2IdString(RAW_DUMMY_DRUID)
+	genPickDummy(RAW_DUMMY_PICK)
+	genShip(RAW_SHIP, ids)
+	genHeroDummy(RAW_DUMMY_WARRIOR, "Warrior", "|cffffcc00Roles:|r\nTank", "ReplaceableTextures\\CommandButtons\\BTNTheCaptain.blp")
+	genHeroDummy(RAW_DUMMY_PRIEST, "Priest", "|cffffcc00Roles:|r\nHealer, Support", "ReplaceableTextures\\CommandButtons\\BTNPriest.blp")
+	genHeroDummy(RAW_DUMMY_RANGER, "Ranger", "|cffffcc00Roles:|r\nDamage Dealer", "ReplaceableTextures\\CommandButtons\\BTNSylvanusWindrunner.blp")
+	genHeroDummy(RAW_DUMMY_DRUID, "Druid", "|cffffcc00Roles:|r\nHealer, Damage Dealer", "ReplaceableTextures\\CommandButtons\\BTNFurion.blp")
+
+function genPickDummy(int newRaw)
+	new UnitDefinition(newRaw, 'ewsp')
+		..setName("dummy")
+		..setModelFile(" .mdl")
+		..setMovementType(MovementType.Fly)
+		..setNormalAbilities("Avul")
+		..setTargetedAs("")
+		..setCollisionSize(0.)
+		..setUnitSoundSet("")
+		..setCanFlee(false)
+		..setFoodCost(0)
+		..setGoldCost(0)
+		..setHitPointsMaximumBase(1)
+		..setPointValue(0)
+		..setRace(Race.Other)
+		..setStockMaximum(1)
+		..setStockReplenishInterval(0)
+		..setUnitClassification("")
+		..setStructuresBuilt("")
+		..setUpgradesUsed("")
+		..setHotkey("")
+		..setNameEditorSuffix("_heropick")
+		..setSelectionScale(0.01)
+
+function genHeroDummy(int newRaw, string name, string descr, string icon)
+	new UnitDefinition(newRaw, 'ewsp')
+		..setNormalAbilities("Aloc,Avul")
+		..setButtonPositionX(0)
+		..setButtonPositionY(0)
+		..setIconGameInterface(icon)
+		..setModelFile(" .mdl")
+		..setTargetedAs("")
+		..setMovementType(MovementType.Fly)
+		..setCollisionSize(0.)
+		..setUnitSoundSet("")
+		..setCanFlee(false)
+		..setFoodCost(0)
+		..setGoldCost(0)
+		..setHitPointsMaximumBase(1)
+		..setPointValue(0)
+		..setRace(Race.Other)
+		..setStockMaximum(1)
+		..setStockReplenishInterval(0)
+		..setUnitClassification("")
+		..setStructuresBuilt("")
+		..setUpgradesUsed("")
+		..setHotkey("")
+		..setName(name)
+		..setTooltipBasic(name)
+		..setTooltipExtended(descr)
+		..setNameEditorSuffix("_heropick")
+
+function genShip(int newRaw, string unitsSold)
+	new BuildingDefinition(newRaw, 'nmer')
+		..setUnitsSold(unitsSold)
+		..setGroundTexture("")
+		..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNVillagerMan.blp")
+		..setModelFile("Doodads\\Northrend\\Water\\Battleship\\Battleship.mdl")
+		..setMovementType(MovementType.Float)
+		..setRace(Race.Other)
+		..setName("Ship")
+		..setName("Ship")
+		..setShadowTextureBuilding("")
+		..setTeamColor(12)
+		..setNameEditorSuffix("_heropick")
+		..setSelectionScale(0.01)

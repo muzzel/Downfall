@@ -1,0 +1,22 @@
+package AbilityHotkey
+
+public tuple ButtonPos(int x, int y)
+
+public function hotkey2ButtonPos(string hotkey) returns ButtonPos
+	var pos = ButtonPos(0, 0)
+	switch hotkey
+		case "Q"
+			pos = ButtonPos(0, 2)
+		case "W"
+			pos = ButtonPos(1, 2)
+		case "E"
+			pos = ButtonPos(2, 2)
+		case "R"
+			pos = ButtonPos(3, 2)
+		case "D"
+			pos = ButtonPos(1, 1)
+		case "F"
+			pos = ButtonPos(2, 1)
+		case "G"
+			pos = ButtonPos(3, 1)
+	return pos

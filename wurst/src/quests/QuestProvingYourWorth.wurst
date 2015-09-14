@@ -1,0 +1,35 @@
+package QuestProvingYourWorth
+import public QuestPreciousPelts
+import PQuest
+import PlayerData
+import ItemData
+import CreepDrop
+
+public PQuest pqProveWorth = new PQuest("Proving your worth", "ReplaceableTextures\\CommandButtons\\BTNArthas.blp", "Captain Bryce wants you to help out the local guards to prove your worth.")
+PQuestItem pqProveWorth_talk = pqProveWorth.addItemTalk("Talk to Brom, the gate guard", udg_npc_brom, "Bryce sent you? The boars became very agressive lately and we dont have enough men to keep their numbers down. \nTake this weapon, may it help you.",
+	(int playerId, unit npc) -> giveItem(playerId))
+PQuestItem pqProveWorth_kill = pqProveWorth.addItemKillCollect("Kill 8 boars", 'h000', 8)
+PQuestItem pqProveWorth_return = pqProveWorth.addItemTalk("Return to Brom", udg_npc_brom, "Good job, here is some gold for your troubles.", null)
+
+init
+	pqProveWorth.setDiscoverTalkData("Hello stranger, I am glad you came to aid us in these difficult times. Please dont get me wrong, but before I fill you in with our plans I need to make sure I can trust you.\nYou should talk to Brom, I am sure he has some work to do.", null)
+	pqProveWorth_talk.setInitDiscovered()
+	pqProveWorth_talk.setNext(pqProveWorth_kill)
+	pqProveWorth_kill.setNext(pqProveWorth_return)
+	pqProveWorth_return.setCompletesQuest()
+	pqProveWorth.setCompleteAction((int playerId) -> begin
+		giveQuestRewards(playerId, 15, 80, 0)
+		pqPreciousPelts.setDiscoverable(playerId, udg_npc_marta)
+	end)
+
+function giveItem(int playerId)
+	let ht = xGetPlayerHero(playerId).getHeroType()
+	switch ht
+		case HeroType.WARRIOR
+			xCreateItemForPlayerHero(playerId, 'I101')
+		case HeroType.PRIEST
+			xCreateItemForPlayerHero(playerId, 'I102')
+		case HeroType.RANGER
+			xCreateItemForPlayerHero(playerId, 'I103')
+		case HeroType.DRUID
+			xCreateItemForPlayerHero(playerId, 'I102')

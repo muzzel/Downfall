@@ -1,0 +1,44 @@
+package SpellIgnoreThePain
+import SpellObjectGen
+import SpellHandler
+import StatHandler
+import UnitData
+import BuffHandler
+
+constant int SPELL_RAW = 'AS03'
+constant int BUFF_ABIL_RAW = 'AB03'
+constant int BUFF_RAW = 'BB03'
+constant string SPELL_ORDER = "divineshield"
+
+public class BuffIgnoreThePain extends Buff
+	StatList stats
+	override function getName() returns string
+		return "Ignore the Pain"
+	
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+	
+	override function onApply()
+		stats = new StatList()..add(Stat.MS, -100)
+		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
+		AddUnitAnimationProperties(getUnit(), "defend", true)
+		destroyAfter(4.)
+	
+	override function onRemove()
+		getUnit().xGetUnitData().unitStatBuffer.remove(stats)
+		AddUnitAnimationProperties(getUnit(), "defend", false)
+		destroy stats
+
+class SpellIgnoreThePain extends Spell
+	override function onCast()
+		new BuffIgnoreThePain().apply(caster)
+		
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellIgnoreThePain())
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Ignore the Pain|r", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp", "This unit ignores all incoming damage")
+	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Ignore the Pain", "W", "Ignores damage from all sources for the next 4 seconds. Movespeed is reduced during this time.", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp")

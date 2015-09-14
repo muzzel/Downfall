@@ -1,0 +1,69 @@
+package SpellSplitshot
+import SpellHandler
+import SpellObjectGen
+import BuffHandler
+import UnitData
+import StatHandler
+import DamageHandler
+import Missile
+import TalentList
+import SpellFirearrow
+import Fx
+
+constant int SPELL_RAW = 'AS08'
+constant string SPELL_ORDER = "coldarrows"
+constant real ARROW_RANGE = 600.
+constant real MAX_SPREAD_ANGLE = 40 * DEGTORAD
+
+class MissileSplitshot extends Missile
+	unit casterUnit
+	int targetsLeft
+	boolean isBurning
+	
+	override function collisionFilter(unit u) returns boolean
+		return u.getOwner().isEnemyOf(casterUnit.getOwner())
+	
+	override function onCollision(unit u)
+		let dmg = casterUnit.xGetUnitData().unitStatBuffer.get(Stat.DAMAGE) * .8
+		unitDamageTarget(casterUnit, u, dmg, DamageType.PHYSICAL)
+		if isBurning
+			unitDamageTarget(casterUnit, u, dmg * 0.3, DamageType.FIRE)
+		targetsLeft--
+		if targetsLeft <= 0
+			destroy this
+		else
+			if not isBurning and casterUnit.xHasTalent(TALENT_RANGER_SPLITSHOT_BURN) and u.hasBuff(BuffFirearrow.typeId)
+				getFx().setFx("Abilities\\Weapons\\SearingArrow\\SearingArrowMissile.mdl")
+				isBurning = true
+	
+	construct(unit caster, vec2 target, int numTargets)
+		super(caster.getPos3(), 1200., 0.05, "Abilities\\Weapons\\Arrow\\ArrowMissile.mdl", target.toVec3())
+		setCollision(40.)
+		casterUnit = caster
+		targetsLeft = numTargets
+		isBurning = false
+		
+class SpellSplitshot extends Spell
+	
+	override function onCast()
+		int numArrows = 3 + R2I(caster.xGetUnitData().unitStatBuffer.get(Stat.AGI) * 0.1)
+		int numTargets = 2 // targets per arrow
+		if caster.xHasTalent(TALENT_RANGER_SPLITSHOT_PIERCE)
+			numTargets++
+		vec2 del = targetPoint - caster.getPos()
+		real castAngle = Atan2(del.y, del.x)
+		real spread = Atan(50./del.length())
+		spread = min(spread, MAX_SPREAD_ANGLE)
+		real arrowAngle = castAngle - spread
+		real angleBetweenArrows = spread * 2. / (numArrows - 1)
+		new MissileSplitshot(caster, caster.getPos().polarOffset(angle(arrowAngle), ARROW_RANGE), numTargets)
+		for int n = 1 to numArrows-1
+			arrowAngle += angleBetweenArrows
+			new MissileSplitshot(caster, caster.getPos().polarOffset(angle(arrowAngle), ARROW_RANGE), numTargets)
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellSplitshot())
+	
+@compiletime function genObjects()
+	genSpell(SPELL_RAW, 12, 18, SPELL_ORDER, "Splitshot", "W", "Shoots " + colorizeStatValue("3 + 0.1 x Agi") + " arrows at the target point. Each arrow can pierce up to 2 targets dealing " + colorizeStatValue("0.8 x Attackpower") + " physical damage.", "ReplaceableTextures\\CommandButtons\\BTNFanOfKnives.blp")
+		..setTargetPoint(ARROW_RANGE, 0.)

@@ -1,0 +1,208 @@
+package HeroTypeGen
+import StatHandler
+import UnitObjEditing
+import UnitTypeData
+import AbilityObjEditing
+
+/* New hero:
+ * 1. add here
+ * 2. add to Heropick
+ * 3. add to HeroInventoryRestrictions
+ */
+ 
+public function unit.getHeroType() returns HeroType
+	HeroType ht = WARRIOR
+	switch this.getTypeId()
+		case 'HE01'
+			ht = WARRIOR
+		case 'HE02'
+			ht = PRIEST
+		case 'HE03'
+			ht = RANGER
+		case 'HE04'
+			ht = DRUID
+	return ht
+
+public enum HeroType
+	WARRIOR
+	PRIEST
+	RANGER
+	DRUID
+
+function initHeroTypeList()
+	// Hero: Warrior
+	int raw = 'HE01'
+	int life = 80
+	int mana = 50
+	int dmg = 6
+	int armor = 0
+	int aspd = 200
+	int ms = 300
+	int str = 5
+	int agi = 3
+	int inte = 2
+	if compiletimeMode
+		genHeroData(raw, 'Hpal', "Warrior", life, mana, dmg, armor, aspd, ms, str, agi, inte)
+			..setModelFile("units\\other\\BloodElfLieutenant\\BloodElfLieutenant")
+			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNTheCaptain.blp")
+			..setUnitSoundSet("HeroPaladin")
+			..setScalingValue(1.1)
+			..addGlow()
+	else
+		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
+	// Hero: Priest
+	raw = 'HE02'
+	life = 60
+	mana = 80
+	dmg = 7
+	armor = 0
+	aspd = 300
+	ms = 300
+	str = 2
+	agi = 2
+	inte = 6
+	if compiletimeMode
+		genHeroData(raw, 'Hamg', "Priest", life, mana, dmg, armor, aspd, ms, str, agi, inte)
+			..setModelFile("units\\human\\Priest\\Priest")
+			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNPriest.blp")
+			..setUnitSoundSet("Priest")
+			..setScalingValue(1.)
+			..setAttack1Range(500)
+			..setSelectionScale(1.2)
+			..addGlow()
+	else
+		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
+	// Hero: Ranger
+	raw = 'HE03'
+	life = 60
+	mana = 60
+	dmg = 6
+	armor = 0
+	aspd = 200
+	ms = 300
+	str = 2
+	agi = 5
+	inte = 3
+	if compiletimeMode
+		genHeroData(raw, 'Hamg', "Ranger", life, mana, dmg, armor, aspd, ms, str, agi, inte)
+			..setModelFile("units\\creeps\\SylvanusWindrunner\\SylvanusWindrunner")
+			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNSylvanusWindrunner.blp")
+			..setUnitSoundSet("Sylvanas")
+			..setScalingValue(.9)
+			..setAttack1Range(600)
+			..setAttack1ProjectileArt("Abilities\\Weapons\\Arrow\\ArrowMissile.mdl")
+			..setSelectionScale(1.3)
+	else
+		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
+	// Hero: Druid
+	raw = 'HE04'
+	life = 70
+	mana = 70
+	dmg = 7
+	armor = 0
+	aspd = 300
+	ms = 300
+	str = 2
+	agi = 3
+	inte = 5
+	if compiletimeMode
+		genHeroData(raw, 'Hamg', "Druid", life, mana, dmg, armor, aspd, ms, str, agi, inte)
+			..setModelFile("units\\nightelf\\MalFurion\\MalFurionNoStag")
+			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNFurion.blp")
+			..setUnitSoundSet("Furion")
+			..setScalingValue(.8)
+			..setAttack1Range(500)
+			..setAttack1ProjectileArt("Abilities\\Weapons\\KeeperGroveMissile\\KeeperGroveMissile.mdl")
+			..setSelectionScale(1.3)
+	else
+		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
+	
+
+
+// -----------------
+public function registerHeroData(int raw, int life, int mana, int damage, int armor, int attackspeed, int movespeed, int str, int agi, int inte)
+	let baseStats = new UnitBaseStatBuffer(raw)
+		..set(Stat.LIFE, life)
+		..set(Stat.MANA, mana)
+		..set(Stat.DAMAGE, damage)
+		..set(Stat.ARMOR, armor)
+//		..set(Stat.ASPD, attackspeed)
+		..set(Stat.MS, movespeed)
+		..set(Stat.STR_WHITE, str)
+		..set(Stat.AGI_WHITE, agi)
+		..set(Stat.INT_WHITE, inte)
+		..set(Stat.STR, str)
+		..set(Stat.AGI, agi)
+		..set(Stat.INT, inte)
+	new UnitTypeData(raw, baseStats)
+
+function genHeroData(int raw, int baseRaw, string name, int life, int mana, int damage, int armor, int attackspeed, int movespeed, int str, int agi, int inte) returns HeroDefinition
+	let def = new HeroDefinition(raw, baseRaw)
+		..setName(name)
+		..setLevel(1)
+		..setHitPointsMaximumBase(life)
+		..setManaMaximum(mana)
+		..setHitPointsRegenerationRate(0)
+		..setManaRegeneration(0)
+		..setAttack1DamageBase(damage-1)
+		..setAttack1DamageNumberofDice(1)
+		..setAttack1DamageSidesperDie(1)
+		..setAttacksEnabled(1)
+		..setDefenseBase(armor)
+		..setAttack1CooldownTime(attackspeed*0.01)
+		..setSpeedBase(movespeed)
+		..setStartingStrength(str)
+		..setStartingAgility(agi)
+		..setStartingIntelligence(inte)
+		..setStrengthPerLevel(0.)
+		..setAgilityPerLevel(0.)
+		..setPrimaryAttribute("STR")
+		..setIntelligencePerLevel(0.)
+		..setHeroAbilities("")
+		..setDefaultActiveAbility("")
+		..setDependencyEquivalents("")
+		..setDefenseUpgradeBonus(0)
+		..setRequirements("")
+		..setRequirementsLevels("")
+		..setDescription("")
+		..setNameEditorSuffix("")
+		..setHotkey("")
+		..setTooltipBasic("")
+		..setTooltipExtended("")
+		..setUnitClassification("")
+		..setFoodCost(0)
+		..setGoldBountyAwardedBase(0)
+		..setGoldBountyAwardedNumberofDice(0)
+		..setPointValue(0)
+		..setSleeps(false)
+		..setSightRadiusNight(700)
+		..setSightRadiusDay(700)
+		..setRace(Race.Human)
+		..setNormalAbilities("AInv,AA01")
+	return def
+
+function HeroDefinition.addGlow()
+	this.setNormalAbilities("AInv,AA01,AXgl")
+
+@compiletime function genHeroGlows()
+	new AbilityDefinitionAuraSlow('AXgl')
+		..setArtTarget("GeneralHeroGlow.mdx")
+		..setTargetAttachmentPoint("origin")
+		..setMovementSpeedFactor(1, 0.)
+		..setAreaofEffect(1, 0.)
+		..setTargetsAllowed(1, "self")
+		..setEditorSuffix("")
+		..setName("DummyAbility - HeroGlow")
+		..setBuffs(1, "")
+		..setRace(Race.Other)
+		..setTargetsAllowed(1, "notself")
+
+boolean compiletimeMode
+
+@compiletime function genObjects()
+	compiletimeMode = true
+	initHeroTypeList()
+			
+init
+	compiletimeMode = false
+	initHeroTypeList()

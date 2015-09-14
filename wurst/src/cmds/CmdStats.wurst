@@ -1,0 +1,33 @@
+package CmdStats
+import PlayerData
+import StatHandler
+import UnitData
+import TestUtils
+
+function printStat(player p, string statName, string prefix, int val, string suffix)
+	printTimedToPlayer("|cffffcc00" + statName + ":|r " + prefix + "" + val.toString() + " " + suffix, 10., p)
+
+init
+	chatEvent("-stats", () -> begin
+		let p = GetTriggerPlayer()
+		if xGetPlayerHero(p.getId()) != null
+			let sbuf = xGetPlayerHero(p.getId()).xGetUnitData().unitStatBuffer
+			printStat(p, "Life", "", sbuf.get(Stat.LIFE), "")
+			printStat(p, "Mana", "", sbuf.get(Stat.MANA), "")
+			printStat(p, "Strength", "", sbuf.get(Stat.STR), "")
+			printStat(p, "Agility", "", sbuf.get(Stat.AGI), "")
+			printStat(p, "Intelligence", "", sbuf.get(Stat.INT), "")
+			printStat(p, "Attack Power", "", sbuf.get(Stat.DAMAGE), "(total)")
+			printStat(p, "Attack Power", "", sbuf.get(Stat.DAMAGE_PERC), "% (relativ bonus)")
+			printStat(p, "Armor", "", sbuf.get(Stat.ARMOR), "")
+			printStat(p, "Attackspeed", "", sbuf.get(Stat.ASPD), "%")
+			printStat(p, "Movespeed", "", sbuf.get(Stat.MS), "")
+			printStat(p, "Evasion Chance", "", sbuf.get(Stat.EVA), "%")
+			printStat(p, "Crit Chance", "", sbuf.get(Stat.CC), "%")
+			printStat(p, "Crit Multiplier", "", sbuf.get(Stat.CM), "% (of attackpower)")
+			printStat(p, "Crit Bonusdamage", "", sbuf.get(Stat.CB), "(applied after multiplier)")
+			printStat(p, "Heal Received", "", sbuf.get(Stat.HEALREC), "%")
+			printStat(p, "Attack Threat", "", sbuf.get(Stat.ATTACKTHREAT), "% (increased threat from normal attacks)")
+			printStat(p, "Casttime", "-", sbuf.get(Stat.CASTSPEED), "%")
+			printStat(p, "Learn points (attributes)", "", xGetPlayerData(p.getId()).getLearnPointsStats(), "")
+	end)

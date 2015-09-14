@@ -1,0 +1,47 @@
+package OOCRegen
+import ThreatHandler
+import LinkedList
+import GameTimer
+import initlater UnitData
+
+@configurable constant real INTERVAL = 1.
+@configurable constant real DELAY = 5.
+
+@configurable function regen(unit u)
+	u.addHP(u.getMaxHP() * 0.05)
+	u.addMana(u.getState(UNIT_STATE_MAX_MANA) * 0.1)
+
+public function unitEnableOOCRegen(unit u)
+	let obj = new OOCRUnit(u, -1)
+	// TODO: it not already added
+	oocrUnits.add(obj)
+
+public function unitDisableOOCRegen(unit u)
+	for obj in oocrUnits
+		if obj.u == u
+			oocrUnits.remove(obj)
+			break
+
+function callback()
+	for obj in oocrUnits
+		if obj.u.xIsAlive()
+			if getCombatState(obj.u)
+				obj.t = -1
+			else
+				if obj.t < 0 // just went out of combat
+					obj.t = getElapsedGameTime()
+				else
+					if obj.t + DELAY <= getElapsedGameTime()
+						regen(obj.u)
+	
+class OOCRUnit
+	unit u
+	real t
+	construct(unit u, real t)
+		this.u = u
+		this.t = t
+
+LinkedList<OOCRUnit> oocrUnits
+init
+	oocrUnits = new LinkedList<OOCRUnit>()
+	CreateTimer().startPeriodic(INTERVAL, function callback)

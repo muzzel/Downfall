@@ -1,0 +1,101 @@
+package ItemTypeList
+import initlater ItemTypeGen
+import initlater EquipmentSlotList
+import initlater EquipmentClassList
+import initlater EquipmentQualityList
+import initlater StatHandler
+
+// Item Raw conventions:
+// 'I1--' = Equipment (Mainhand)
+// 'I2--' = Equipment (Offhand)
+// 'I3--' = Equipment (Chest)
+// 'I4--' = Equipment (Helmet)
+// 'I5--' = Equipment (Accessory)
+// 'I6--' = Equipment (Misc)
+// 'IM--' = Materials
+// 'i---' = Recipes
+
+public function initItemTypeLists()
+	// ##### EQUIPMENT #####
+	// Mainhand:
+	itemgenNewEquipment('I101', EquipmentQuality.NORMAL, EquipmentSlot.MAINHAND, EquipmentClass.SWORD, 10, "Old Sword", "", "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 1))
+	itemgenNewEquipment('I102', EquipmentQuality.NORMAL, EquipmentSlot.MAINHAND, EquipmentClass.STAFF, 10, "Old Staff", "", "ReplaceableTextures\\CommandButtons\\BTNWand.blp")
+	itemgenSetStats(stats()..add(Stat.INT, 1))
+	itemgenNewEquipment('I103', EquipmentQuality.NORMAL, EquipmentSlot.MAINHAND, EquipmentClass.BOW, 10, "Old Bow", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedBows.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 1))
+	itemgenNewEquipment('I104', EquipmentQuality.NORMAL, EquipmentSlot.MAINHAND, EquipmentClass.AXE, 20, "Woodcutters Axe", "", "ReplaceableTextures\\CommandButtons\\BTNOrcMeleeUpOne.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 2)..add(Stat.STR, 1)..add(Stat.ATTACKTHREAT, 20))
+	itemgenNewEquipment('I105', EquipmentQuality.RARE, EquipmentSlot.MAINHAND, EquipmentClass.BOW, 50, "Horn Bow", "", "ReplaceableTextures\\CommandButtons\\BTNQuillSprayOff.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 3)..add(Stat.AGI, 1)..add(Stat.ASPD, 15))
+	itemgenNewEquipment('I106', EquipmentQuality.NORMAL, EquipmentSlot.MAINHAND, EquipmentClass.STAFF, 20, "Enchanted Staff", "", "ReplaceableTextures\\CommandButtons\\BTNStarWand.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 1)..add(Stat.INT, 2))
+	itemgenNewEquipment('I107', EquipmentQuality.RARE, EquipmentSlot.MAINHAND, EquipmentClass.STAFF, 50, "Sylvan Staff", "", "ReplaceableTextures\\CommandButtons\\BTNStaffOfPreservation.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 2)..add(Stat.INT, 3)..add(Stat.MANA, 20)..add(Stat.CASTSPEED, 8))
+	
+	// Offhand:
+	itemgenNewEquipment('I201', EquipmentQuality.NORMAL, EquipmentSlot.OFFHAND, EquipmentClass.SHIELD, 30, "Wooden Buckler", "", "ReplaceableTextures\\CommandButtons\\BTNSteelArmor.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 2)..add(Stat.LIFE, 5))
+	itemgenNewEquipment('I202', EquipmentQuality.NORMAL, EquipmentSlot.OFFHAND, EquipmentClass.ORB, 30, "Energy Orb", "", "ReplaceableTextures\\CommandButtons\\BTNUsedSoulGem.blp")
+	itemgenSetStats(stats()..add(Stat.INT, 1)..add(Stat.MANA, 5))
+	itemgenNewEquipment('I203', EquipmentQuality.NORMAL, EquipmentSlot.OFFHAND, EquipmentClass.QUIVER, 30, "Sharp Arows", "", "ReplaceableTextures\\CommandButtons\\BTNImpalingBolt.blp")
+	itemgenSetStats(stats()..add(Stat.DAMAGE, 1)..add(Stat.AGI, 1))
+	itemgenNewEquipment('I204', EquipmentQuality.RARE, EquipmentSlot.OFFHAND, EquipmentClass.SHIELD, 50, "Mithril Plate", "", "ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 4)..add(Stat.LIFE, 12)..add(Stat.EVA, 6))
+	
+	// Chest:
+	itemgenNewEquipment('I301', EquipmentQuality.NORMAL, EquipmentSlot.CHEST, EquipmentClass.CHAIN, 20, "Wooden Mail", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedMoonArmor.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10))
+	itemgenNewEquipment('I302', EquipmentQuality.NORMAL, EquipmentSlot.CHEST, EquipmentClass.LEATHER, 20, "Fur Coat", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedReinforcedHides.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10))
+	itemgenNewEquipment('I303', EquipmentQuality.NORMAL, EquipmentSlot.CHEST, EquipmentClass.CLOTH, 20, "Tattered Robe", "", "ReplaceableTextures\\CommandButtons\\BTNCloak.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.MANA, 5))
+	itemgenNewEquipment('I304', EquipmentQuality.RARE, EquipmentSlot.CHEST, EquipmentClass.CHAIN, 50, "Shining Chestguard", "", "ReplaceableTextures\\CommandButtons\\BTNArmorGolem.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 2)..add(Stat.LIFE, 10)..add(Stat.EVA, 3)..add(Stat.HEALREC, 5))
+	
+	// Helmet:
+	itemgenNewEquipment('I401', EquipmentQuality.NORMAL, EquipmentSlot.HELMET, EquipmentClass.CHAIN, 16, "Light Helmet", "", "ReplaceableTextures\\CommandButtons\\BTNFootman.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1))
+	itemgenNewEquipment('I402', EquipmentQuality.NORMAL, EquipmentSlot.HELMET, EquipmentClass.LEATHER, 20, "Leather Mask", "", "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 5))
+	itemgenNewEquipment('I403', EquipmentQuality.RARE, EquipmentSlot.HELMET, EquipmentClass.CLOTH, 50, "Shamans Hood", "", "ReplaceableTextures\\CommandButtons\\BTNCloak.blp")
+	itemgenSetStats(stats()..add(Stat.INT, 2)..add(Stat.LIFE, 10)..add(Stat.MANA, 5)..add(Stat.CASTSPEED, 4))
+	itemgenNewEquipment('I404', EquipmentQuality.RARE, EquipmentSlot.HELMET, EquipmentClass.LEATHER, 50, "Pointy Hat", "", "ReplaceableTextures\\CommandButtons\\BTNHoodOfCunning.blp")
+	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10)..add(Stat.AGI, 3)..add(Stat.CC, 5)..add(Stat.CB, 6))
+	
+	// Accessory:
+	itemgenNewEquipment('I501', EquipmentQuality.NORMAL, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 10, "Fairy Ring", "", "ReplaceableTextures\\CommandButtons\\BTNRingPurple.blp")
+	itemgenSetStats(stats()..add(Stat.MANA, 8))
+	itemgenNewEquipment('I502', EquipmentQuality.NORMAL, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 10, "Ring of Vitality", "", "ReplaceableTextures\\CommandButtons\\BTNGoldRing.blp")
+	itemgenSetStats(stats()..add(Stat.LIFE, 10))
+	itemgenNewEquipment('I503', EquipmentQuality.RARE, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 60, "Crystal Necklace of the Astute", "", "ReplaceableTextures\\CommandButtons\\BTNSoulGem.blp")
+	itemgenSetStats(stats()..add(Stat.INT, 2)..add(Stat.CASTSPEED, 4)..add(Stat.MANA, 8))
+	itemgenNewEquipment('I504', EquipmentQuality.RARE, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 60, "Crystal Necklace of Vigor", "", "ReplaceableTextures\\CommandButtons\\BTNUsedSoulGem.blp")
+	itemgenSetStats(stats()..add(Stat.STR, 2)..add(Stat.EVA, 3)..add(Stat.HEALREC, 12))
+	itemgenNewEquipment('I505', EquipmentQuality.RARE, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 60, "Crystal Necklace of the Eagle", "", "ReplaceableTextures\\CommandButtons\\BTNOrbOfDarkness.blp")
+	itemgenSetStats(stats()..add(Stat.AGI, 2)..add(Stat.CC, 3)..add(Stat.CM, 10)..add(Stat.MANA, 5))
+	
+	// Misc:
+	
+	// Testitems:
+	itemgenNewEquipment('I6ZZ', EquipmentQuality.RARE, EquipmentSlot.ACCESSORY, EquipmentClass.ACCESSORY, 100, "Testitem", "", "ReplaceableTextures\\CommandButtons\\BTNPenguin.blp")
+	itemgenSetStats(stats()..add(Stat.LIFE, 100)..add(Stat.STR, 20)..add(Stat.AGI, 20)..add(Stat.INT, 20)..add(Stat.DAMAGE, 20)..add(Stat.ARMOR, 4)..add(Stat.MS, 100))
+
+	// ##### MATERIALS #####
+	itemgenNewMaterial('IM00', 8, "Boar Tusk", "", "ReplaceableTextures\\CommandButtons\\BTNRazorback.blp")
+	itemgenNewMaterial('IM01', 6, "Wood Stem", "", "ReplaceableTextures\\CommandButtons\\BTNBundleOfLumber.blp")
+	itemgenNewMaterial('IM02', 8, "Wolf Pelt", "", "ReplaceableTextures\\CommandButtons\\BTNReinforcedHides.blp")
+	itemgenNewMaterial('IM03', 12, "Scale", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedCreatureCarapace.blp")
+	itemgenNewMaterial('IM04', 10, "Aquamarine", "", "ReplaceableTextures\\CommandButtons\\BTNWispSplode.blp")
+
+	// ##### RECIPES ##### (Run this after Equipment and Materials)
+	itemgenNewRecipe('i201', 15, 'I201', "") // Wooden Buckler
+	itemgenSetRecipeReq('IM01', 'IM03', 0, 0, 0, 0, 0, 0)
+	itemgenNewRecipe('i202', 15, 'I202', "") // Energy Orb
+	itemgenSetRecipeReq('IM02', 'IM04', 0, 0, 0, 0, 0, 0)
+	itemgenNewRecipe('i203', 15, 'I203', "") // Sharp Arrows
+	itemgenSetRecipeReq('IM00', 'IM01', 0, 0, 0, 0, 0, 0)
+	itemgenNewRecipe('i402', 10, 'I402', "") // Leather Mask
+	itemgenSetRecipeReq('IM02', 0, 0, 0, 0, 0, 0, 0)
+	itemgenNewRecipe('i104', 12, 'I104', "") // Woodcutters Axe
+	itemgenSetRecipeReq('IM00', 'IM01', 0, 0, 0, 0, 0, 0)

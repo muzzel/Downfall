@@ -1,0 +1,38 @@
+package SpellHeal
+import SpellHandler
+import SpellObjectGen
+import Heal
+import UnitData
+import StatHandler
+import TalentList
+import BuffHandler
+import initlater SpellShield
+
+constant int SPELL_RAW = 'AS01'
+constant string SPELL_ORDER = "heal"
+constant real CHANNEL_DURATION = 2.5
+	
+class SpellHeal extends Spell
+	override function onCast()
+		var casttimeMod = 1.
+		if caster.xHasTalent(TALENT_PRIEST_HEAL_HASTE) and targetUnit.hasBuff(BuffShield.typeId)
+			casttimeMod = 0.85
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)) * casttimeMod, false)
+		
+	override function onChannelEnd(boolean success)
+		if success
+			let heal = caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 4.
+			let healed = unitHealTarget(caster, targetUnit, heal)
+			AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl", targetUnit, "overhead").destr()
+			if caster.xHasTalent(TALENT_PRIEST_HEAL_OVERHEAL)
+				var manaRestored = ((1. - healed/heal) / 0.25).toInt()
+				manaRestored = max(0, manaRestored)
+				caster.addMana(manaRestored.toReal())
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellHeal())
+
+@compiletime
+function genObj()
+	genSpell(SPELL_RAW, 8, 2, SPELL_ORDER, "Heal", "Q", "Heals the target by " + colorizeStatValue("4 x Int") + ".", "ReplaceableTextures\\CommandButtons\\BTNHeal.blp")
+		..setChannelling(CHANNEL_DURATION, 4., "spell,channel")
+		..setTargetUnit(350., TARGETS_ALLOWED_ALLY_SELF)

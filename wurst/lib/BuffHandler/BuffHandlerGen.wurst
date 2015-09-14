@@ -1,0 +1,19 @@
+package BuffHandlerGen
+
+import AbilityObjEditing
+import BuffObjEditing
+
+public function genBuffObjectData(int abilRaw, int buffRaw, string name, string icon, string description)
+	new BuffDefinition(buffRaw, 'Basl')
+		..setIconNormal(1, icon)
+		..setTarget(1, "")
+		..setName(1, "BuffHandlerDummy")
+		..setTooltipNormal(1, name)
+		..setTooltipNormalExtended(1, description)
+	new AbilityDefinitionAuraSlow(abilRaw)
+		..setMovementSpeedFactor(1, 0.)
+		..setAreaofEffect(1, 0.)
+		..setTargetsAllowed(1, "self")
+		..setEditorSuffix("")
+		..setName("BuffHandlerDummy")
+		..setBuffs(1, idInteger2IdString(buffRaw))

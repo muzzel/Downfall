@@ -1,0 +1,68 @@
+package SpellHolyBolt
+import SpellHandler
+import SpellObjectGen
+import Missile
+import Heal
+import UnitData
+import StatHandler
+import TalentList
+
+constant int SPELL_RAW = 'AS09'
+constant string SPELL_ORDER = "holylight"
+constant real CHANNEL_DURATION = 3.
+	
+class MissileHolyBolt extends Missile
+	unit casterUnit
+	unit targetUnit
+	real mult
+	
+	override function onHit()
+		if targetUnit.xIsAlive()
+			unitHealTarget(casterUnit, targetUnit, casterUnit.xGetUnitData().unitStatBuffer.get(Stat.INT) * mult)
+			AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl", targetUnit, "overhead").destr()
+			
+	construct(unit caster, unit missileStart, unit target, real mult)
+		super(missileStart.getPos3(), 1300., 0.1, "Abilities\\Weapons\\FaerieDragonMissile\\FaerieDragonMissile.mdl", target, 0.)
+		casterUnit = caster
+		targetUnit = target
+		this.mult = mult
+
+class SpellHolyBolt extends Spell
+	unit currentTarget
+	
+	override function onCast()
+		int jumps = 1
+		currentTarget = targetUnit
+		new MissileHolyBolt(caster, caster, currentTarget, 2.5)
+		if caster.xHasTalent(TALENT_PRIEST_HOLYBOLT_JUMP)
+			jumps++
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), true, jumps)
+	
+	override function onChannel(int n, int nmax)
+		unit minU = null
+		real minHp = 2 // 200% hp
+		ENUM_GROUP.clear()
+		ENUM_GROUP.enumUnitsInRange(targetUnit.getPos(), 600)
+		for unit u in ENUM_GROUP
+			if u.xIsAlive() and u.getOwner().isAllyOf(caster.getOwner()) and u != currentTarget
+				let thisHp = u.getHP() / u.getMaxHP()
+				if thisHp < minHp
+					minU = u
+					minHp = thisHp
+		if minU != null
+			let oldTarget = currentTarget
+			currentTarget = minU
+			new MissileHolyBolt(caster, oldTarget, currentTarget, 1)
+		
+	override function onChannelEnd(boolean success)
+		if success
+			// find friendly unit with lowest % hp in range
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellHolyBolt())
+
+@compiletime
+function genObj()
+	genSpell(SPELL_RAW, 10, 9, SPELL_ORDER, "Holy Bolt", "E", "Sends out a holy bolt that heals the target by " + colorizeStatValue("2.5 x Int") + ". If the healer keeps channeling, the bolt will heal an additional target for " + colorizeStatValue("1 x Int") + ".", "ReplaceableTextures\\CommandButtons\\BTNHolyBolt.blp")
+		..setChannelling(CHANNEL_DURATION, 1., "spell,channel")
+		..setTargetUnit(500., TARGETS_ALLOWED_ALLY)

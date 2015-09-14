@@ -1,0 +1,117 @@
+package SpellHandler
+import TimerUtils
+import HashMap
+import CastBar
+
+HashMap<unit, ChannelData> channelDataMap = new HashMap<unit, ChannelData>()
+
+class ChannelData
+	Spell parent
+	unit caster
+	trigger interruptTrigger
+	timer channelTimer
+	CastBar bar
+	int stepMax
+	int stepCurrent
+	
+	construct(Spell parent, unit caster, real channelTime, boolean reversedBar, int steps)
+		this.parent = parent
+		this.caster = caster
+		this.interruptTrigger = CreateTrigger()
+			..registerUnitEvent(caster, EVENT_UNIT_ISSUED_ORDER)
+			..registerUnitEvent(caster, EVENT_UNIT_ISSUED_POINT_ORDER)
+			..registerUnitEvent(caster, EVENT_UNIT_ISSUED_TARGET_ORDER)
+			..addCondition(Filter(function invokeInterrupt))
+		channelDataMap.put(caster, this)
+		channelTimer = getTimer()
+			..setData(this castTo int)
+		if steps >= 1
+			stepMax = steps
+			stepCurrent = 0
+			channelTimer.startPeriodic(channelTime / steps, function callback)
+		else
+			this.stepMax = 0
+			channelTimer.start(channelTime, function callback)
+		bar = new CastBar(caster.getPos(), channelTime, reversedBar, caster.getOwner().getColor())
+		
+	function finishChannel(boolean success)
+		channelDataMap.remove(caster)
+		interruptTrigger.destr()
+		channelTimer.release()
+		destroy bar
+		IssueImmediateOrder(caster, "stop")
+		parent.autoDestroy = true
+		parent.onChannelEnd(success)
+		if parent.autoDestroy
+			destroy parent
+		destroy this
+		
+//	/** Call this from "finishChannel()" if you DONT want the spell to automatically be destroyed after channeling finished. */
+//	function disableAutodestroy()
+//		parent.autoDestroy = false
+		
+	static function callback()
+		let obj = GetExpiredTimer().getData() castTo thistype
+		if obj.stepMax == 0
+			obj.finishChannel(true)
+		else
+			obj.stepCurrent++
+			obj.parent.onChannel(obj.stepCurrent, obj.stepMax)
+			if obj.stepCurrent >= obj.stepMax
+				obj.finishChannel(true)
+	
+	static function invokeInterrupt() returns boolean
+		channelDataMap.get(GetTriggerUnit()).finishChannel(false)
+		return false
+
+public class Spell
+	unit caster
+	unit targetUnit
+	vec2 targetPoint
+	// for channeling spells:
+	ChannelData channelData
+	boolean autoDestroy
+	
+	function onCast()
+	function onChannel(int current, int max)
+	function onChannelEnd(boolean success)
+	
+	construct()
+		caster = GetTriggerUnit()
+		targetUnit = GetSpellTargetUnit()
+		targetPoint = vec2(GetSpellTargetX(), GetSpellTargetY())
+		autoDestroy = true
+		onCast()
+		if autoDestroy
+			destroy this
+	
+	/** Call this from "onCast()" if spell should be channeling. */
+	function channel(real channelTime, boolean reversedBar)
+		channel(channelTime, reversedBar, 0)
+		
+	/** Call this from "onCast()" if spell should be channeling. Calls onChannel(...) step times during channeling. */
+	function channel(real channelTime, boolean reversedBar, int steps)
+		channelData = new ChannelData(this, caster, channelTime, reversedBar, steps)
+		autoDestroy = false
+	
+	/** Call this from "onCast()" if the spell is NOT channeling but you also dont want it to get destroyed after "onCast()" */
+	function disableAutodestroy()
+		autoDestroy = false
+
+public function registerSpellcast(int raw, SpellCastRegistry action)
+	castEvents.put(raw, action)
+
+public interface SpellCastRegistry
+	protected abstract function run()
+	
+function spellEffect()
+	let raw = GetSpellAbilityId()
+	if castEvents.has(raw)
+		castEvents.get(raw).run()
+	
+HashMap<int, SpellCastRegistry> castEvents = new HashMap<int, SpellCastRegistry>()
+
+init
+	CreateTrigger()
+		..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_EFFECT)
+		..addAction(function spellEffect)

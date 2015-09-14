@@ -1,0 +1,116 @@
+package SpellTrap
+import SpellHandler
+import SpellObjectGen
+import BuffHandler
+import UnitData
+import StatHandler
+import DamageHandler
+import StatusHandler
+import AbilityObjEditing
+import TalentList
+
+constant int SPELL_RAW = 'AS11'
+constant int BUFF_ABIL_RAW = 'AB11'
+constant int BUFF_RAW = 'BB11'
+constant string SPELL_ORDER = "ensnare"
+constant real CHANNEL_DURATION = 2
+constant real TRAP_DURATION = 25.
+constant real ENSNARE_DURATION = 8.
+constant real AOE = 200.
+
+public class BuffTrapOwner extends Buff
+	vec2 pos
+	effect sfx1
+	
+	override function getName() returns string
+		return "Trap_Owner"
+	
+	construct(vec2 pos)
+		this.pos = pos
+	
+	override function onApply()
+		sfx1 = addEffect("units\\creeps\\GoblinLandMine\\GoblinLandMine.mdl", pos)
+		destroyAfter(TRAP_DURATION)
+	
+	override function onRemove()
+		sfx1.destr()
+		
+public class BuffTrapTarget extends Buff
+	unit caster
+	effect sfxNet
+	
+	override function getName() returns string
+		return "Trap"
+		
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+		
+	construct(unit caster)
+		this.caster = caster
+	
+	override function onApply()
+		destroyAfter(ENSNARE_DURATION)
+		getUnit().addEnsnare()
+		sfxNet = getUnit().addEffect("Abilities\\Spells\\Orc\\Ensnare\\ensnareTarget.mdl", "origin")
+		if caster.xHasTalent(TALENT_RANGER_TRAP_POISON)
+			getUnit().addEffect("Abilities\\Spells\\Other\\Cleave\\CleaveDamageTarget.mdl", "overhead").destr()
+			unitDamageTarget(caster, getUnit(), caster.xGetUnitData().unitStatBuffer.get(Stat.AGI) * 2., DamageType.POISON)
+
+		
+	override function onRemove()
+		getUnit().removeEnsnare()
+		sfxNet.destr()
+
+class SpellTrap extends Spell
+	override function onCast()
+		let lvl = caster.getAbilityLevel(SPELL_RAW)
+		if lvl == 1
+			channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), false)
+		else
+			caster.setAbilityLevel(SPELL_RAW, 1)
+			let b = caster.getBuffList().getFirstBuffOfType(BuffTrapOwner.typeId) castTo BuffTrapOwner
+			if b != null
+				unit minU = null
+				real minDist = 9999999.
+				ENUM_GROUP.clear()
+				ENUM_GROUP.enumUnitsInRange(b.pos, AOE)
+				for unit u in ENUM_GROUP
+					if u.xIsAlive() and u.getOwner().isEnemyOf(caster.getOwner()) and not u.xIsBoss()
+						let dist = caster.getPos().distToVecSquared(u.getPos())
+						if dist < minDist
+							minU = u
+							minDist = dist
+				if minU != null
+					new BuffTrapTarget(caster).apply(minU)
+			destroy b
+					
+	override function onChannelEnd(boolean success)
+		if success
+			new BuffTrapOwner(targetPoint).apply(caster)
+			caster.removeAbility(SPELL_RAW)
+			caster.addAbility(SPELL_RAW)
+			caster.setAbilityLevel(SPELL_RAW, 2)
+	
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellTrap())
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cffff0000Trap|r", "ReplaceableTextures\\CommandButtons\\BTNEnsnare.blp", "This unit is trapped and cannot move.")
+	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Trap", "E", "Places a trap at the target location. When the ability is used again, the trap is triggered and ensnares the closest enemy in range for 8 seconds. The trap lasts for 25 seconds.", "ReplaceableTextures\\CommandButtons\\BTNEnsnare.blp")
+		..setTargetPoint(600., AOE)
+		..setChannelling(CHANNEL_DURATION, CHANNEL_DURATION, "spell")
+		..setLevels(2)
+		..setTooltipNormalExtended(2, "Trigger the Trap")
+		..setManaCost(2, 0)
+		..setCooldown(2, 30)
+		..setOptions(2, 1)
+		..setTargetType(2, 0)
+		..setTargetsAllowed(2, "")
+		..setBaseOrderID(2, SPELL_ORDER)
+		..setTooltipNormal(2, "(|cffffcc00E|r) Trap")
+		..setDisableOtherAbilities(2, false)
+		..setFollowThroughTime(2, 0.)
+		..setArtDuration(2, 0.)

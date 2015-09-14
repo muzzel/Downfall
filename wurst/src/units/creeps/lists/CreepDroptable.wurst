@@ -1,0 +1,20 @@
+package CreepDroptable
+import CreepDrop
+
+init
+	new Droptable('h000') // boar lvl 1
+		..add(5, 'I501')..add(5, 'I502')
+		..add(10, 'IM00')
+	new Droptable('h001') // wolf lvl 2
+		..add(5, 'I301')..add(5, 'I302')..add(5, 'I303')
+		..add(10, 'IM02')
+	new Droptable('h002') // wolf lvl 3
+		..add(6, 'I301')..add(6, 'I302')..add(6, 'I303')
+		..add(10, 'IM02')
+	new Droptable('h003') // turtle lvl 4
+		..add(5, 'I106')
+		..add(10, 'IM03')
+	new Droptable('h004') // Bear lvl 5
+		..add(30, 'I105')..add(30, 'I304')..add(30, 'I403')
+	new Droptable('h005') // The Packleader lvl 6
+		..add(17, 'I404')..add(17, 'I204')..add(17, 'I107')..add(17, 'I503')..add(16, 'I504')..add(16, 'I505')

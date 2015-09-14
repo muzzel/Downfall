@@ -1,0 +1,60 @@
+package Recipe
+import ItemTypeData
+import ItemData
+import Bag
+import SimError
+
+boolean array slotsUsed
+
+function searchItem(int itemRaw, unit hero, unit bag) returns boolean
+	for int i = 0 to 5
+		if not slotsUsed[i] and GetItemTypeId(UnitItemInSlot(hero, i)) == itemRaw
+			slotsUsed[i] = true
+			return true
+	for int i = 0 to 5
+		if not slotsUsed[6+i] and GetItemTypeId(UnitItemInSlot(bag, i)) == itemRaw
+			slotsUsed[6+i] = true
+			return true
+	return false
+
+function useItemAction()
+	let itm = GetManipulatedItem()
+	let data = GetItemTypeId(itm).xGetItemTypeData()
+	if data != null and data.itemClass == ItemClass.RECIPE
+		let hero = GetTriggerUnit()
+		let pid = hero.getOwner().getId()
+		let bag = xGetPlayerBag(pid)
+		for int i = 0 to 11
+			slotsUsed[i] = false
+		boolean hasAllReq = true
+		hasAllReq = hasAllReq and data.recipeReq1 == 0 or searchItem(data.recipeReq1, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq2 == 0 or searchItem(data.recipeReq2, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq3 == 0 or searchItem(data.recipeReq3, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq4 == 0 or searchItem(data.recipeReq4, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq5 == 0 or searchItem(data.recipeReq5, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq6 == 0 or searchItem(data.recipeReq6, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq7 == 0 or searchItem(data.recipeReq7, hero, bag)
+		hasAllReq = hasAllReq and data.recipeReq8 == 0 or searchItem(data.recipeReq8, hero, bag)
+		if hasAllReq
+			for int i = 0 to 5
+				if slotsUsed[i]
+					let x = UnitItemInSlot(hero, i)
+					destroy x.xGetItemData()
+					x.remove()
+			for int i = 0 to 5
+				if slotsUsed[6+i]
+					let x = UnitItemInSlot(bag, i)
+					destroy x.xGetItemData()
+					x.remove()
+			// create new item and bind it:
+			xCreateItemForHero(hero, data.recipeTarget).xGetItemData().bind(pid)
+			// destroy recipe:
+			destroy itm.xGetItemData()
+			itm.remove()
+		else
+			simError(hero.getOwner(), "Materials missing")
+
+init
+	CreateTrigger()
+		..registerAnyUnitEvent(EVENT_PLAYER_UNIT_USE_ITEM)
+		..addAction(function useItemAction)

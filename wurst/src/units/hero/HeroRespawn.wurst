@@ -1,0 +1,35 @@
+package HeroRespawn
+import UnitData
+import initlater ThreatHandler
+
+constant real HERO_RESPAWN_TIME = 20.
+constant vec2 HERO_RESPAWN_POS = vec2(-10250, 4390)
+
+public function respawnHero(unit u)
+	new HeroRespawn(u).respawn()
+
+class HeroRespawn
+	use Timed
+	unit hero
+	
+	construct(unit hero)
+		this.hero = hero
+	
+	function respawn()
+		destroy hero.xGetUnitData().threatHandlerPu
+		startTimer(HERO_RESPAWN_TIME)
+		printTimedToPlayer("Your hero has died and will respawn in " + R2I(HERO_RESPAWN_TIME).toString() + " seconds.", 5, hero.getOwner())
+	
+	private override function onTimer()
+		let owner = hero.getOwner()
+		if GetLocalPlayer() == owner
+			PanCameraToTimed(HERO_RESPAWN_POS.x, HERO_RESPAWN_POS.y, 0.)
+		hero.revive(HERO_RESPAWN_POS, true)
+		// Create new ThreatHandlerPU
+		hero.xGetUnitData().threatHandlerPu = new ThreatHandlerPU(hero)
+		// Remove some gold/exp:
+		let goldLost = owner.getGold() div 5
+		owner.subGold(goldLost)
+		printTimedToPlayer("You lost " + goldLost.toString() + " gold.", 5, owner)
+		
+		

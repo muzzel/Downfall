@@ -1,0 +1,175 @@
+package Missile
+import Fx
+import Terrain
+import LinkedList
+
+constant real TIMER_TIMEOUT = 0.025
+
+function unitValid(unit u) returns boolean
+		return not IsUnitType(u, UNIT_TYPE_DEAD) and (GetUnitTypeId(u) != DUMMY_UNIT_ID)
+
+/** Targeted projectile with parabolic trajectory and individual graphics.
+ *  Target can be a point or unit (homing). Can detect collisions with units.
+ *  To use custom events for collision etc. simply extend this class.
+ */
+public class Missile
+	use Periodic
+	private Fx fx
+	private real time
+	private vec3 missilePos
+	private vec3 missileVel
+	private real missileVelXY = 1.
+	private real missileAccZ
+	private vec3 targetPos = vec3(0., 0., 0.)
+	private unit targetUnit = null
+	private real targetUnitZOffset = 0.
+	private real collisionSize = 0.
+	private LinkedList<int> seenUnits
+	private boolean alive
+	
+	/** Called every 0.025 seconds during the flight.
+	 *  Override to add custom behaviour.
+	 */
+	function loopControl()
+	
+	/** Called when the missile hits its target point or unit.
+	 *  Override to add custom behaviour.
+	 */
+	function onHit()
+		
+	/** Called when the missile collides with a unit u.
+	 *  Only active when a collision size > 0 is set.
+	 *  Override to add custom behaviour.
+	 */
+	function onCollision(unit u)
+	
+	/** Filters valid targets for collision.
+	 *  Override this function and make it return true for 
+	 *  target units u that the missile should collide with.
+	 */
+	function collisionFilter(unit u) returns boolean
+		return true
+	
+	/** Create and launch a missile at a point target.
+	 *  vec3 startPos: Position the missile is launched from
+	 *  real speed: Projectile speed (values > 0.0)
+	 *  real arc: Projectle arc (values between 0.0 and 1.0)
+	 *  string model: Path to projectile model
+	 *  vec3 targetPos: Position of the point target.
+	 */
+	construct(vec3 startPos, real speed, real arc, string model, vec3 targetPos)
+		this.targetUnit = null
+		launch(startPos, targetPos, speed, arc, model)
+	
+	/** Create and launch a homing missile at a unit target.
+	 *  vec3 startPos: Position the missile is launched from
+	 *  real speed: Projectile speed (values > 0.0)
+	 *  real arc: Projectle arc (values between 0.0 and 1.0)
+	 *  string model: Path to projectile model
+	 *  unit targetUnit: Target unit
+	 *  real targetZOffset: Shifts impact point vartically (use 0.0 if unsure)
+	 */
+	construct(vec3 startPos, real speed, real arc, string model, unit targetUnit, real targetZOffset)
+		this.targetUnit = targetUnit
+		this.targetUnitZOffset = targetZOffset
+		launch(startPos, targetUnit.getPos3(targetZOffset), speed, arc, model)
+	
+	/** Enables or disables collision with other units.
+	 *  real collisionSize: Maximum distance of other units at which they get hit.
+	 *  A collisionSize of 0.0 disables collision (default).
+	 */
+	function setCollision(real collisionSize)
+		this.collisionSize = collisionSize
+		if collisionSize == 0. and seenUnits != null
+			destroy seenUnits
+			seenUnits = null
+		if collisionSize != 0 and seenUnits == null
+			seenUnits = new LinkedList<int>()
+	
+	/** Returns the Fx object.
+	 *  You can use it to alter the projectiles visuals.
+	 */
+	function getFx() returns Fx
+		return fx
+	
+	/** Returns the target unit.
+	 *  Returns null if point target.
+	 */
+	function getTargetUnit() returns unit
+		return targetUnit
+	
+	/** Returns the target point.
+	 *  Returns the target units current position if unit target.
+	 */
+	function getTargetPoint() returns vec3
+		return targetPos
+	
+	/** Returns the missiles current position. */
+	function getMissilePos() returns vec3
+		return missilePos
+	
+	private function launch(vec3 mPos, vec3 tPos, real speed, real arc, string model)
+		alive = true
+		this.missilePos = mPos
+		this.targetPos = tPos + vec3(0., 0., getTerrainZ(tPos.x, tPos.y))
+		vec3 del = targetPos - missilePos
+		real dist = del.lengthXY()
+		missileVelXY = speed * TIMER_TIMEOUT
+		if dist > 0.
+			time = dist / speed
+		else
+			time = TIMER_TIMEOUT
+		missileVel.z = ((dist * arc) /(time * 0.25) + del.z / time) * TIMER_TIMEOUT
+		var ang = Atan2(del.y, del.x)
+		if ang < 0.
+			ang += 2*PI
+		fx = new Fx(missilePos, angle(ang), model)
+		updateTargetPos()
+		startPeriodic(TIMER_TIMEOUT)
+	
+	private function updateTargetPos()
+		vec3 del = targetPos - missilePos
+		real dist = del.lengthXY()
+		real a = Atan2(del.y, del.x)
+		if dist > 0.
+			time = dist / missileVelXY * TIMER_TIMEOUT
+		else
+			time = TIMER_TIMEOUT
+		missileVel.x = Cos(a) * missileVelXY
+		missileVel.y = Sin(a) * missileVelXY
+		fx.setXYAngle(angle(a))
+		missileAccZ = 2 * ((targetPos.z - missilePos.z) / time / time * TIMER_TIMEOUT * TIMER_TIMEOUT - (missileVel.z * TIMER_TIMEOUT) / time)
+	
+	override function periodic()
+		if targetUnit != null and targetUnit.getTypeId() != 0 // targetUnit valid, update targetPos
+			targetPos = targetUnit.getPos3(targetUnitZOffset) + vec3(0., 0., getTerrainZ(targetUnit.getX(), targetUnit.getY()))
+			updateTargetPos()
+		real a = missileAccZ * 0.5
+		missileVel.z += a
+		missilePos += missileVel
+		missileVel.z += a
+		fx.setXYZ(missilePos)
+		fx.setZAngle(angle(Atan2(missileVel.z, missileVelXY)))
+		time -= TIMER_TIMEOUT
+		if time < 0. // missile has reached the target
+			onHit()
+			destroy this
+		else
+			if collisionSize > 0.
+				ENUM_GROUP.clear()
+				ENUM_GROUP.enumUnitsInRange(missilePos.toVec2(), collisionSize)
+				for unit u in ENUM_GROUP
+					if unitValid(u) and collisionFilter(u)
+						let id = u.getHandleId()
+						if not seenUnits.contains(id)
+							seenUnits.add(id)
+							onCollision(u)
+			if alive // dont run loopControl if missile was destroyed in onCollision
+				loopControl()
+	
+	ondestroy
+		alive = false
+		destroy fx
+		if seenUnits != null
+			destroy seenUnits
+			seenUnits = null

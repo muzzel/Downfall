@@ -1,0 +1,64 @@
+package SpellObjectGen
+import AbilityObjEditing
+import AbilityHotkey
+
+public constant string TARGETS_ALLOWED_ALLY = "friend"
+public constant string TARGETS_ALLOWED_ALLY_SELF = "friend,self"
+public constant string TARGETS_ALLOWED_CREEP = "enemies,nonsapper"
+public constant string TARGETS_ALLOWED_CREEP_BOSS = "enemies"
+public constant string TARGETS_ALLOWED_ALLY_CREEP = "friend,enemies,nonsapper"
+public constant string TARGETS_ALLOWED_ALLY_CREEP_BOSS = "friend,enemies"
+public constant string TARGETS_ALLOWED_ALLY_SELF_CREEP_BOSS = "friend,self,enemies"
+
+public function colorizeStatValue(string s) returns string
+	return "|cffffcc00" + s + "|r"
+
+public function genSpell(int raw, int manacost, int cooldown, string order, string name, string hotkey, string description, string icon) returns AbilityDefinitionIllidanChannel
+	let obj = new AbilityDefinitionIllidanChannel(raw)
+	let ttbasic = "(" + colorizeStatValue(hotkey) + ") " + name
+	let buttonPos = hotkey2ButtonPos(hotkey)
+	obj.setName(ttbasic)
+	obj.setManaCost(1, manacost)
+	obj.setCooldown(1, cooldown*1.)
+	obj.setTooltipNormalExtended(1, description + "\n|cffB3B3B3Cooldown: " + cooldown.toString() + "s|r") // TODO cooldown
+	obj.setLevels(1)
+	obj.setOrderStringUseTurnOn(order)
+	obj.setHotkeyNormal(hotkey)
+	obj.setIconNormal(icon)
+	obj.setButtonPositionNormalX(buttonPos.x)
+	obj.setButtonPositionNormalY(buttonPos.y)
+	obj.setAnimationNames("")
+	obj.setArtEffect("")
+	obj.setArtCaster("")
+	obj.setArtTarget("")
+	obj.setHeroAbility(false)
+	obj.setCheckDependencies(false)
+	obj.setBaseOrderID(1, order)
+	obj.setTooltipNormal(1, ttbasic)
+	obj.setDisableOtherAbilities(1, false)
+	obj.setFollowThroughTime(1, 0.)
+	obj.setOptions(1, 1) // Visible
+	obj.setTargetsAllowed(1, "")
+	return obj
+
+public function AbilityDefinitionIllidanChannel.setChannelling(real channelTime, real artDuration, string animation)
+	this.setFollowThroughTime(1, channelTime)
+	this.setArtDuration(1, artDuration)
+	this.setAnimationNames(animation)
+
+public function AbilityDefinitionIllidanChannel.setTargetUnit(real range, string targetsAllowed)
+	this.setTargetType(1, 1)
+	this.setCastRange(1, range)
+	this.setTargetsAllowed(1, targetsAllowed)
+
+public function AbilityDefinitionIllidanChannel.setTargetPoint(real range, real aoe)
+	this.setTargetType(1, 2)
+	this.setCastRange(1, range)
+	if aoe > 0
+		this.setOptions(1, 3) // Visible, TargetImage
+		this.setAreaofEffect(1, aoe)
+
+public function AbilityDefinitionIllidanChannel.setTargetCombined(real range, string targetsAllowed)
+	this.setTargetType(1, 3)
+	this.setCastRange(1, range)
+	this.setTargetsAllowed(1, targetsAllowed)

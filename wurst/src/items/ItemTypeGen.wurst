@@ -1,0 +1,135 @@
+package ItemTypeGen
+import initlater ObjEditingNatives
+import initlater ItemObjEditing
+import initlater StatHandler
+import initlater EquipmentClassList
+import initlater EquipmentQualityList
+import initlater EquipmentSlotList
+import ItemTypeList
+import ItemTooltipGen
+import ItemTypeData
+
+// State machine:
+ItemTypeData currentItemTypeData
+// State machine (compiletime):
+//ObjectDefinition currentItemTypeDefinition
+ItemDefinition currentItemTypeDefinition
+
+public function itemgenNewEquipment(int raw, EquipmentQuality equipmentQuality, EquipmentSlot equipmentSlot, EquipmentClass equipmentClass, int cost, string name, string description, string icon) returns int
+	currentItemTypeData = new ItemTypeData(raw)
+	currentItemTypeData.itemClass = ItemClass.EQUIPMENT
+	currentItemTypeData.name = name
+	currentItemTypeData.equipmentSlot = equipmentSlot
+	currentItemTypeData.equipmentClass = equipmentClass
+	currentItemTypeData.stats = new StatList()
+	if compiletimeMode
+		tooltipReset()
+		tooltipAddEquipmentProperties(equipmentSlot, equipmentClass)
+		tooltipAddDescription(description)
+		let tt = tooltipGet()
+		currentItemTypeDefinition = new ItemDefinition(raw, 'ches')
+			..setName(tooltipColorizeItemName(name, equipmentQuality))
+			..setTooltipBasic(name)
+			..setInterfaceIcon(icon)
+			..setDescription(tt)
+			..setTooltipExtended(tt)
+			..setGoldCost(cost)
+			..setStockReplenishInterval(0)
+			..setClassification("Campaign")
+			..setHitPoints(999999)
+			..setCanBeSoldToMerchants(true)
+			
+	return raw
+
+/** Sets stats for the current UnitData object. */
+public function itemgenSetStats(StatList statList)
+	if compiletimeMode
+		tooltipAddStatList(statList)
+		let tt = tooltipGet()
+		currentItemTypeDefinition.setDescription(tt)
+		currentItemTypeDefinition.setTooltipExtended(tt)
+
+public function stats() returns StatList
+	return currentItemTypeData.stats
+
+public function itemgenNewMaterial(int raw, int cost, string name, string description, string icon) returns int
+	currentItemTypeData = new ItemTypeData(raw)
+	currentItemTypeData.itemClass = ItemClass.MATERIAL
+	currentItemTypeData.name = name
+	if compiletimeMode
+		tooltipReset()
+		tooltipAddMaterialProperties()
+		tooltipAddDescription(description)
+		let tt = tooltipGet()
+		currentItemTypeDefinition = new ItemDefinition(raw, 'ches')
+			..setName(name)
+			..setTooltipBasic(name)
+			..setInterfaceIcon(icon)
+			..setDescription(tt)
+			..setTooltipExtended(tt)
+			..setGoldCost(cost)
+			..setStockReplenishInterval(0)
+			..setClassification("Purchasable")
+			..setHitPoints(999999)
+			..setCanBeSoldToMerchants(true)
+	return raw
+	
+public function itemgenNewRecipe(int raw, int cost, int targetRaw, string description) returns int
+	currentItemTypeData = new ItemTypeData(raw)
+	currentItemTypeData.itemClass = ItemClass.RECIPE
+	let targetName = targetRaw.xGetItemTypeData().name
+	currentItemTypeData.name = "Recipe: " + targetName
+	currentItemTypeData.recipeTarget = targetRaw
+	if compiletimeMode
+		tooltipReset()
+		tooltipAddRecipeProperties()
+		tooltipAddDescription(description)
+		let tt = tooltipGet()
+		currentItemTypeDefinition = new ItemDefinition(raw, 'ches')
+			..setName("Recipe: " + targetName)
+			..setTooltipBasic("Recipe: " + targetName)
+			..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNSnazzyScroll.blp")
+			..setDescription(tt)
+			..setTooltipExtended(tt)
+			..setGoldCost(cost)
+			..setStockReplenishInterval(0)
+			..setClassification("Charged")
+			..setAbilities("AD01")
+			..setHitPoints(999999)
+			..setActivelyUsed(true)
+			..setCanBeSoldToMerchants(true)
+	return raw
+	
+/** Sets stats for the current UnitData object. */
+public function itemgenSetRecipeReq(int raw1, int raw2, int raw3, int raw4, int raw5, int raw6, int raw7, int raw8)
+	currentItemTypeData.recipeReq1 = raw1
+	currentItemTypeData.recipeReq2 = raw2
+	currentItemTypeData.recipeReq3 = raw3
+	currentItemTypeData.recipeReq4 = raw4
+	currentItemTypeData.recipeReq5 = raw5
+	currentItemTypeData.recipeReq6 = raw6
+	currentItemTypeData.recipeReq7 = raw7
+	currentItemTypeData.recipeReq8 = raw8
+	if compiletimeMode
+		tooltipAddRecipeReq(currentItemTypeData)
+		let tt = tooltipGet()
+		currentItemTypeDefinition.setDescription(tt)
+		currentItemTypeDefinition.setTooltipExtended(tt)
+
+@compiletime function genUsableDummyAbility()
+	let u = createObjectDefinition("w3a", 'AD01', 'AIim')
+	u.setLvlDataString("anam", 0, 0, "dummy_usableItem")
+	u.setLvlDataString("atat", 0, 0, "")
+	u.setLvlDataInt("Iint", 1, 2, 0)
+	u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNPenguin.blp")
+	
+	
+boolean compiletimeMode
+
+@compiletime function genObjects()
+	compiletimeMode = true
+	initItemTypeLists()
+			
+init
+	compiletimeMode = false
+	initItemTypeLists()

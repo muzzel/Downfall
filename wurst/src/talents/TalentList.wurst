@@ -1,0 +1,58 @@
+package TalentList
+import initlater TalentObjectGen
+import public Talent
+
+public Talent TALENT_WARRIOR_SHIELDSLAM_STUN
+public Talent TALENT_WARRIOR_SHIELDSLAM_TAUNT
+public Talent TALENT_WARRIOR_IGNORE_REFLECT
+public Talent TALENT_WARRIOR_CHARGE_THREAT
+
+public Talent TALENT_PRIEST_HEAL_OVERHEAL
+public Talent TALENT_PRIEST_HEAL_HASTE
+public Talent TALENT_PRIEST_SHIELD_HEALREC
+public Talent TALENT_PRIEST_HOLYBOLT_JUMP
+
+public Talent TALENT_RANGER_FIREARROW_DURATION
+public Talent TALENT_RANGER_SPLITSHOT_PIERCE
+public Talent TALENT_RANGER_SPLITSHOT_BURN
+public Talent TALENT_RANGER_TRAP_POISON
+
+public Talent TALENT_DRUID_REJU_TICK
+public Talent TALENT_DRUID_WRATH_ENTANGLE
+public Talent TALENT_DRUID_MOON_DELAY
+public Talent TALENT_DRUID_MOON_REJU
+
+public int BOOK_TALENT_WARRIOR = 'ATB1'
+public int BOOK_TALENT_PRIEST = 'ATB2'
+public int BOOK_TALENT_RANGER = 'ATB3'
+public int BOOK_TALENT_DRUID = 'ATB4'
+
+public function initTalentList()
+	// Warrior:
+	TALENT_WARRIOR_SHIELDSLAM_STUN = genTalent('T101', talentOrder1, "Brute Force", 1, col("Shield Slam") + " also stuns the target for 1 second.", "ReplaceableTextures\\CommandButtons\\BTNThunderClap.blp")
+	TALENT_WARRIOR_SHIELDSLAM_TAUNT = genTalent('T102', talentOrder2, "Taunt", 1, col("Shield Slam") + " forces the target to attack the Warrior for 4 seconds.", "ReplaceableTextures\\CommandButtons\\BTNBanditLord.blp")
+	TALENT_WARRIOR_IGNORE_REFLECT = genTalent('T103', talentOrder3, "Spiked Shields", 1, "While " + col("Ignore The Pain") + " is active, attackers in melee range take 1 x AP damage.", "ReplaceableTextures\\CommandButtons\\BTNAdvancedSpikedBarricades.blp")
+	TALENT_WARRIOR_CHARGE_THREAT = genTalent('T104', talentOrder4, "Valor", 1, col("Charge") + " creates additional threat on all targets", "ReplaceableTextures\\CommandButtons\\BTNAvatarOff.blp")
+	genTalentBook(BOOK_TALENT_WARRIOR, "Warrior", "T101,T102,T103,T104")
+	// Priest:
+	TALENT_PRIEST_HEAL_OVERHEAL = genTalent('T201', talentOrder1, "Ancient Wisdom", 1, "For each 25% the priest overheals with " + col("Heal") +  ", he gets back 1 mana.", "ReplaceableTextures\\CommandButtons\\BTNBlink.blp")
+	TALENT_PRIEST_HEAL_HASTE = genTalent('T202', talentOrder2, "Haste", 1, "Decreases casttime for " + col("Heal") + " on targets where " + col("Shield") + " is active by 15%.", "ReplaceableTextures\\CommandButtons\\BTNHeal.blp")
+	TALENT_PRIEST_SHIELD_HEALREC = genTalent('T203', talentOrder3, "Divine Protection", 1, col("Shield") + " also increases received heal by 10%.", "ReplaceableTextures\\CommandButtons\\BTNBarkSkin.blp")
+	TALENT_PRIEST_HOLYBOLT_JUMP = genTalent('T204', talentOrder4, "Devotion", 1, "Allows " + col("Holy Bolt") + " to jump to one additional target.", "ReplaceableTextures\\CommandButtons\\BTNHealingWave.blp")
+	genTalentBook(BOOK_TALENT_PRIEST, "Priest", "T201,T202,T203,T204")
+	// Ranger:
+	TALENT_RANGER_FIREARROW_DURATION = genTalent('T301', talentOrder1, "Tinder Coating", 1, "Increases the duration and damage of " + col("Firearrows") + " debuff by 50%.", "ReplaceableTextures\\CommandButtons\\BTNFlamingArrows.blp")
+	TALENT_RANGER_SPLITSHOT_PIERCE = genTalent('T302', talentOrder2, "Barbed Arrowheads", 1, "Allows the arrows of " + col("Splitshot") + " to pierce one additional target.", "ReplaceableTextures\\CommandButtons\\BTNTrueShot.blp")
+	TALENT_RANGER_SPLITSHOT_BURN = genTalent('T303', talentOrder3, "Igniting Arrows", 1, "Arrows of " + col("Splitshot") + " that pierce a target where " + ("Firearrow") + " is active will ignite and deal an additional 30% fire damage to their next targets.", "ReplaceableTextures\\CommandButtons\\BTNFlare.blp")
+	TALENT_RANGER_TRAP_POISON = genTalent('T304', talentOrder4, "Poison Stings", 1, "Targets hit by " + col("Trap") + " take 2 x Agi poison damage.", "ReplaceableTextures\\CommandButtons\\BTNPoisonSting.blp")
+	genTalentBook(BOOK_TALENT_RANGER, "Ranger", "T301,T302,T303,T304")
+	// Druid:
+	TALENT_DRUID_REJU_TICK = genTalent('T401', talentOrder1, "Remedy", 1, "Increases duration and healing of " + col("Rejuvenation") + " by 25%.", "ReplaceableTextures\\CommandButtons\\BTNBanish.blp")
+	TALENT_DRUID_WRATH_ENTANGLE = genTalent('T402', talentOrder2, "Entangle", 1, col("Natures Wrath") + " entangles the target for the duration. If the target cannot be entangled it takes 20% increased damage instead.", "ReplaceableTextures\\CommandButtons\\BTNThorns.blp")
+	TALENT_DRUID_MOON_DELAY = genTalent('T403', talentOrder3, "Stardust", 1, "Decreases the delay of " + col("Moonlight Shadow") + " by 66%.", "ReplaceableTextures\\CommandButtons\\BTNGenericSpellImmunity.blp")
+	TALENT_DRUID_MOON_REJU = genTalent('T404', talentOrder4, "Symbiosis", 1, "Increases the amount healed by " + col("Moonlight Shadow") + " by 20% on targets where " + col("Rejuvenation") + " is active.", "ReplaceableTextures\\CommandButtons\\BTNHeartOfSearinox.blp")
+	genTalentBook(BOOK_TALENT_DRUID, "Druid", "T401,T402,T403,T404")
+	
+
+function col(string s) returns string
+	return "|cffffcc00" + s + "|r"

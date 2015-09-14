@@ -1,0 +1,60 @@
+package CreepDrop
+import HashMap
+import LinkedList
+import ItemData
+import PQuest
+
+public function creepDrop(unit u)
+	if unitDrops.has(u.getTypeId())
+		let table = unitDrops.get(u.getTypeId())
+		int rolled = GetRandomInt(0, 99)
+		int counter = 1
+		for Drop d in table.drops
+			counter += d.chance
+			if counter >= rolled
+				xSpawnItem(d.itemRaw, u.getPos())
+				break
+		for QuestDrop d in table.questDrops
+			if isPlayerWithQuestItemInRange(u.getPos(), d.questItem)
+				rolled = GetRandomInt(1, 100)
+				if d.chance >= rolled
+					createItem(d.itemRaw, u.getPos())
+					break
+
+public function getUnitDroptable(int unitRaw) returns Droptable
+	return unitDrops.get(unitRaw)
+
+public class Droptable
+	LinkedList<Drop> drops
+	LinkedList<QuestDrop> questDrops
+	
+	construct(int unitRaw)
+		unitDrops.put(unitRaw, this)
+		drops = new LinkedList<Drop>()
+		questDrops = new LinkedList<QuestDrop>()
+		
+	function add(int chance, int itemRaw)
+		drops.add(new Drop(chance, itemRaw))
+		
+	function addQuestDrop(PQuestItem questItem, int chance, int itemRaw)
+		questDrops.add(new QuestDrop(questItem, chance, itemRaw))
+
+class Drop
+	int chance
+	int itemRaw
+	
+	construct(int chance, int itemRaw)
+		this.chance = chance
+		this.itemRaw = itemRaw
+
+class QuestDrop
+	PQuestItem questItem
+	int chance
+	int itemRaw
+	
+	construct(PQuestItem questItem, int chance, int itemRaw)
+		this.questItem = questItem
+		this.chance = chance
+		this.itemRaw = itemRaw
+		
+HashMap<int, Droptable> unitDrops = new HashMap<int, Droptable>()

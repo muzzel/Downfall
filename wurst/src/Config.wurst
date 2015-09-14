@@ -1,0 +1,7 @@
+/**
+ * - ADVANCED PENGUIN TECHNOLOGIES -
+ * Main config file.
+ */
+package Config
+
+public constant int NUM_OF_PLAYERS = 5

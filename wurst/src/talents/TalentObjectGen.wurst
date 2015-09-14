@@ -1,0 +1,71 @@
+package TalentObjectGen
+import AbilityObjEditing
+import TalentList
+import initlater Talent
+
+public constant string talentOrder1 = "creephealoff"
+public constant string talentOrder2 = "weboff"
+public constant string talentOrder3 = "restorationoff"
+public constant string talentOrder4 = "raisedeadoff"
+public constant string talentOrder5 = "curseoff"
+public constant string talentOrder6 = "renewoff"
+public constant string talentOrder7 = "faeriefireoff"
+public constant string talentOrder8 = "barkskinoff"
+public constant string talentOrder9 = "autodispeloff"
+public constant string talentOrder10 = "ensnareoff"
+public constant string talentOrder11 = "bloodlustoff"
+
+public function genTalentBook(int raw, string name, string talentRaws)
+	let u = createObjectDefinition("w3a", raw, 'Aspb')
+	u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNEngineeringUpgrade.blp")
+	u.setLvlDataInt("spb2", 1, 2, 0)
+	u.setLvlDataString("spb1", 1, 1, talentRaws)
+	u.setLvlDataInt("aite", 0, 0, 0)
+	u.setLvlDataString("anam", 0, 0, "book_talents_" + name)
+	u.setLvlDataString("atp1", 1, 0, "Talents: " + name)
+	u.setLvlDataString("aub1", 1, 0, "Learning a talent costs 10 talentpoints. Your hero gains 10 talentpoints every second level.")
+	u.setLvlDataInt("abpx", 0, 0, 2)
+	u.setLvlDataInt("abpy", 0, 0, 1)
+	u.setLvlDataInt("spb4", 1, 4, 11)
+	u.setLvlDataInt("spb3", 1, 3, 11)
+	u.setLvlDataString("spb5", 1, 5, "creephealon")
+
+public function genTalent(int raw, string order, string name, int levels, string description, string icon) returns Talent
+	let tal = new Talent(raw, levels, name)
+	if compiletimeMode
+		let obj = new AbilityDefinitionIllidanChannel(raw)
+			..setName("talent_" + name)
+			..setIconNormal(icon)
+			..setAnimationNames("")
+			..setButtonPositionNormalX(0)
+			..setButtonPositionNormalY(0)
+			..setArtCaster("")
+			..setArtEffect("")
+			..setArtTarget("")
+			..setLevels(levels+1)
+			..setHeroAbility(false)
+			..setRace(Race.Other)
+		for int lvl = 1 to levels+1
+			obj.setArtDuration(lvl, 0.)
+			obj.setFollowThroughTime(lvl, 0.)
+			obj.setOptions(lvl, 1)
+			obj.setTargetType(lvl, 0)
+			obj.setTooltipNormalExtended(lvl, description)
+			obj.setBaseOrderID(lvl, order)
+			obj.setDisableOtherAbilities(lvl, false)
+			if lvl == 1
+				obj.setTooltipNormal(lvl, "|cffB3B3B3Learn talent:|r " + name + " (0/" + (levels).toString() + ")")
+			else
+				obj.setTooltipNormal(lvl, "|cffffcc00Talent:|r " + name + " (" + (lvl-1).toString() + "/" + (levels).toString() + ")")
+	return tal
+	
+
+boolean compiletimeMode
+
+@compiletime function genObjects()
+	compiletimeMode = true
+	initTalentList()
+			
+init
+	compiletimeMode = false
+	initTalentList()

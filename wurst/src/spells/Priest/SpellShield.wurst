@@ -1,0 +1,57 @@
+package SpellShield
+import SpellHandler
+import SpellObjectGen
+import BuffHandler
+import UnitData
+import StatHandler
+import TalentList
+
+constant int SPELL_RAW = 'AS04'
+constant int BUFF_ABIL_RAW = 'AB04'
+constant int BUFF_RAW = 'BB04'
+constant string SPELL_ORDER = "innerfire"
+
+public class BuffShield extends Buff
+	StatList stats
+	unit caster
+	effect sfx1
+	override function getName() returns string
+		return "Shield"
+	
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+		
+	override function getPolicy() returns BuffPolicy
+		return BuffPolicy.LAST
+	
+	construct(unit caster)
+		this.caster = caster
+	
+	override function onApply()
+		let armorbonus = R2I(1 + caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 0.15)
+		stats = new StatList()..add(Stat.ARMOR, armorbonus)
+		if caster.xHasTalent(TALENT_PRIEST_SHIELD_HEALREC)
+			stats.add(Stat.HEALREC, 10)
+		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
+		sfx1 = getUnit().addEffect("Abilities\\Spells\\Human\\InnerFire\\InnerFireTarget.mdl", "overhead")
+		destroyAfter(20.)
+	
+	override function onRemove()
+		getUnit().xGetUnitData().unitStatBuffer.remove(stats)
+		destroy stats
+		sfx1.destr()
+	
+class SpellShield extends Spell
+	override function onCast()
+		new BuffShield(caster).apply(targetUnit)
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellShield())
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Shield|r", "ReplaceableTextures\\CommandButtons\\BTNInvulnerable.blp", "This unit has increased armor.")
+	genSpell(SPELL_RAW, 5, 20, SPELL_ORDER, "Shield", "W", "Increases the targets armor by " + colorizeStatValue("1 + 0.15 x Int") + ".", "ReplaceableTextures\\CommandButtons\\BTNInvulnerable.blp")
+		..setTargetUnit(500, TARGETS_ALLOWED_ALLY_SELF)

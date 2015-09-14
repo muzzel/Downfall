@@ -1,0 +1,60 @@
+package SpellRejuvenation
+import SpellHandler
+import SpellObjectGen
+import BuffHandler
+import UnitData
+import StatHandler
+import Heal
+import TalentList
+
+constant int SPELL_RAW = 'AS05'
+constant int BUFF_ABIL_RAW = 'AB05'
+constant int BUFF_RAW = 'BB05'
+constant string SPELL_ORDER = "rejuvination"
+
+public class BuffRejuvenation extends Buff
+	effect sfx1
+	unit caster
+	real healPerTick
+	override function getName() returns string
+		return "Rejuvenation"
+	
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+		
+	override function getPolicy() returns BuffPolicy
+		return BuffPolicy.STACKING
+	
+	construct(unit caster)
+		this.caster = caster
+	
+	override function onApply()
+		real timePerTick = 1.5
+		int ticks = 4
+		healPerTick = caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 3. / ticks
+		if caster.xHasTalent(TALENT_DRUID_REJU_TICK)
+			ticks++
+		sfx1 = getUnit().addEffect("Abilities\\Spells\\NightElf\\Rejuvenation\\RejuvenationTarget.mdl", "chest")
+		startTimed(timePerTick, ticks, true)
+	
+	override function onTimer()
+		unitHealTarget(caster, getUnit(), healPerTick)
+	
+	override function onRemove()
+		sfx1.destr()
+	
+class SpellRejuvenation extends Spell
+	
+	override function onCast()
+		new BuffRejuvenation(caster).apply(targetUnit)
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellRejuvenation())
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Rejuvenation|r", "ReplaceableTextures\\CommandButtons\\BTNRejuvenation.blp", "This unit is healed over time.")
+	genSpell(SPELL_RAW, 7, 6, SPELL_ORDER, "Rejuvenation", "Q", "Heals the target by " + colorizeStatValue("3 x Int") + " over 6 seconds.", "ReplaceableTextures\\CommandButtons\\BTNRejuvenation.blp")
+		..setTargetUnit(400, TARGETS_ALLOWED_ALLY_SELF)

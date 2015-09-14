@@ -1,0 +1,32 @@
+package SpellCharge
+import KnockbackHandler
+import SpellObjectGen
+import SpellHandler
+import StatHandler
+import UnitData
+import DamageHandler
+import ThreatHandler
+import TalentList
+
+constant int SPELL_RAW = 'AS12'
+constant string SPELL_ORDER = "thunderclap"
+constant real MAX_DISTANCE = 280.
+
+class SpellCharge extends Spell
+	override function onCast()
+		new Knockback(caster, targetPoint - caster.getPos(), .3, true, true)
+			..enableCollision(100., (unit u, unit t) -> begin
+				if t.xIsCombatUnit() and not t.xIsBoss()
+					new Knockback(t, (t.getPos() - u.getPos()).norm() * 200., 0.2, false, true)
+					let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STR)*1.
+					unitDamageTarget(u, t, damage, DamageType.PHYSICAL)
+					if caster.xHasTalent(TALENT_WARRIOR_CHARGE_THREAT)
+						modifyThreat(caster, targetUnit, 5+damage, true)
+		end)
+	
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellCharge())
+
+@compiletime function genObjects()
+	genSpell(SPELL_RAW, 8, 16, SPELL_ORDER, "Charge", "E", "Charges towards the target. Knocks back all enemies in the way and deals " + colorizeStatValue("1 x Str") + " damage.", "ReplaceableTextures\\CommandButtons\\BTNAvatar.blp")
+		..setTargetUnit(MAX_DISTANCE, TARGETS_ALLOWED_ALLY_CREEP_BOSS)

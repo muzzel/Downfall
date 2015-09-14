@@ -1,0 +1,63 @@
+/** Basic manual UnitIndexing system. */
+package UnitIndex
+import Event
+
+/** Returns the units index. Returns 0 if not indexed. */
+public function unit.getIndex() returns int
+	return this.getUserData()
+
+/** Returns the units UnitIndex object. Returns null if not indexed. */
+public function unit.getIndexObject() returns UnitIndex
+	return this.getUserData() castTo UnitIndex 
+
+/**
+ * Assigns a unique index to the unit.
+ * Fires a UnitIndexEvent if the unit did not have a index assigned yet.
+ */
+public function indexUnit(unit u)
+	if u.getUserData() == 0
+		new UnitIndex(u)
+
+/**
+ * Removes the units index and recycles it.
+ * Fires a UnitDeindexEvent if the unit had an index assigned.
+ */
+public function deindexUnit(unit u)
+	if u.getUserData() != 0
+		destroy u.getUserData() castTo UnitIndex
+
+/**
+ * Fires when a unit gets a index assigned.
+ * The field .u references the indexed unit.
+ */
+public class UnitIndexEvent
+	use EventModule
+	static unit indexedUnit
+/**
+ * Fires when a unit has its index removed.
+ * The field .u references the deindexed unit.
+ */
+public class UnitDeindexEvent
+	use EventModule
+	static unit deindexedUnit
+
+/** Extend this class to create a unit wrapper. */
+public class UnitIndex
+	unit u
+	
+	/** Assigns a unique index to the unit and fires UnitIndexEvent. */
+	construct(unit u)
+		this.u = u
+		u.setUserData(this castTo int)
+		let tmp = UnitIndexEvent.indexedUnit
+		UnitIndexEvent.indexedUnit = u
+		UnitIndexEvent.fire()
+		UnitIndexEvent.indexedUnit = tmp
+	
+	ondestroy
+		let tmp = UnitDeindexEvent.deindexedUnit
+		UnitDeindexEvent.deindexedUnit = u
+		UnitDeindexEvent.fire()
+		UnitDeindexEvent.deindexedUnit = tmp
+		u.setUserData(0)
+		

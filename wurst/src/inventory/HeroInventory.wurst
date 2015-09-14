@@ -1,0 +1,66 @@
+package HeroInventory
+import Config
+import UnitData
+import ItemData
+import ItemTypeData
+import SimError
+import InventoryIterator
+import EquipmentSlotList
+import HeroInventoryRestrictions
+
+function takeItem()
+	if not blockEvents
+		unit u = GetTriggerUnit()
+		item i = GetManipulatedItem()
+		if not GetItemType(i) == ITEM_TYPE_POWERUP // Ignore powerups, such as QuestItems etc.
+			if i.xGetItemData().getBound() != -1 and i.xGetItemData().getBound() != u.getOwner().getId() // Item is not bound to another player
+				errorDropItem(u, "Item is bound to another player")
+			else
+				if false // TODO: Item was picked up before hero was created.
+					errorDropItem(u, "You cannot take items which were dropped before your hero was created")
+				else
+					if u.xIsHero() and GetItemTypeId(i).xGetItemTypeData().itemClass == ItemClass.EQUIPMENT // Unit is a hero, Item is equipment
+						if not validateClass(u, i) // Hero is allowed to carry the item
+							errorDropItem(u, "Your hero cannot use items of this class")
+						else
+							if not validateSlot(u, i) // Hero has space
+								errorDropItem(u, "You already wear an item in that slot")
+							else // Success: add stats
+								u.xGetUnitData().unitStatBuffer.apply(GetItemTypeId(i).xGetItemTypeData().stats)
+
+function dropItem()
+	if not blockEvents
+		unit u = GetTriggerUnit()
+		item i = GetManipulatedItem()
+		if not GetItemType(i) == ITEM_TYPE_POWERUP // Ignore powerups, such as QuestItems etc.
+			if u.xIsHero() and GetItemTypeId(i).xGetItemTypeData().itemClass == ItemClass.EQUIPMENT // Unit is a hero, Item is equipment
+				u.xGetUnitData().unitStatBuffer.remove(GetItemTypeId(i).xGetItemTypeData().stats) // remove stats
+
+function validateSlot(unit u, item i) returns boolean
+	EquipmentSlot slot = GetItemTypeId(i).xGetItemTypeData().equipmentSlot
+	var iter = new InventoryIterator(u)
+	ItemTypeData slotItemTypeData 
+	for item slotItem from iter
+		slotItemTypeData = GetItemTypeId(slotItem).xGetItemTypeData()
+		if slotItemTypeData.itemClass == ItemClass.EQUIPMENT // only check equipment items
+			if slotItem != i and slotItemTypeData.equipmentSlot == slot // if picked item has same slot
+				return false
+	return true
+			 
+// Drop item from unit and print an error
+function errorDropItem(unit u, string err)
+	simError(u.getOwner(), err)
+	blockEvents = true
+	u.removeItem(GetManipulatedItem())
+	blockEvents = false
+
+boolean blockEvents = false // evtl. gegen counter tauschen damit mehrere male gleichzeitig geblockt werden kann
+
+init
+	trigger takeItemTrigger = CreateTrigger()
+		..addAction(function takeItem)
+	trigger dropItemTrigger = CreateTrigger()
+		..addAction(function dropItem)
+	for i = 0 to NUM_OF_PLAYERS-1
+		takeItemTrigger.registerPlayerUnitEvent(Player(i), EVENT_PLAYER_UNIT_PICKUP_ITEM, null)
+		dropItemTrigger.registerPlayerUnitEvent(Player(i), EVENT_PLAYER_UNIT_DROP_ITEM, null)

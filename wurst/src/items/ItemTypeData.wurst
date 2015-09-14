@@ -1,0 +1,46 @@
+package ItemTypeData
+import HashMap
+import EquipmentClassList
+import EquipmentSlotList
+import StatHandler
+
+// ItemType API:
+public function int.xGetItemTypeData() returns ItemTypeData
+	return raw2ItemTypeData.get(this)
+// ----
+
+HashMap<int, ItemTypeData> raw2ItemTypeData = new HashMap<int, ItemTypeData>()
+
+public enum ItemClass
+	EQUIPMENT
+	MATERIAL
+	RECIPE
+//	POTION
+//	QUESTITEM
+
+public class ItemTypeData
+	string name
+	int raw
+	ItemClass itemClass
+	// For ItemClass.EQUIPMENT:
+	EquipmentSlot equipmentSlot
+	EquipmentClass equipmentClass
+	StatList stats
+	// For ItemClass.RECIPE
+	int recipeTarget = 0
+	int recipeReq1 = 0
+	int recipeReq2 = 0
+	int recipeReq3 = 0
+	int recipeReq4 = 0
+	int recipeReq5 = 0
+	int recipeReq6 = 0
+	int recipeReq7 = 0
+	int recipeReq8 = 0
+	
+	construct(int raw)
+		raw2ItemTypeData.put(raw, this)
+		this.raw = raw
+		
+	ondestroy
+		printWarning("Attempt to destroy ItemTypeData object.")
+	
