@@ -50,4 +50,4 @@ public constant string ENSNARE_ICON_PATH = "ReplaceableTextures\\CommandButtons\
  * Implement this function to return the related unit to this integer.
  */
 public function int.getUnit() returns unit
-	return this castTo UnitIndex.u
+	return (this castTo UnitIndex).u

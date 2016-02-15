@@ -218,7 +218,7 @@ public class PQuestItem
 	string talkText = ""
 	TalkAction talkAction = null
 	
-	private construct(PQuest pQuest, string descr, int maxCount)
+	construct(PQuest pQuest, string descr, int maxCount) // TODO: protected
 		this.parent = pQuest
 		this.description = descr
 		this.maxCount = maxCount

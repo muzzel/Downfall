@@ -241,7 +241,7 @@ public class ThreatHandlerTU
 	protected ThreatHandlerTU campPrev
 	protected ThreatHandlerTU campNext
 	
-	private construct() // Constructs a dummy
+	construct() // Constructs a dummy // TODO: protected
 		campPrev = this
 		campNext = this
 		this.camp = null
@@ -397,7 +397,7 @@ public class ThreatListEntry
 		return tu.u
 	
 	/** Constructs a dummy for use as linkedlist warden element */
-	private construct()
+	construct() // TODO: protected
 		tuPrev = this
 		tuNext = this
 		puPrev = this
