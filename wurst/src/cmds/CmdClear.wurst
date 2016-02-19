@@ -1,8 +1,0 @@
-package CmdClear
-import TestUtils
-
-init
-	chatEvent("-clear", () -> begin
-		if GetLocalPlayer() == GetTriggerPlayer()
-			ClearTextMessages()
-	end)
