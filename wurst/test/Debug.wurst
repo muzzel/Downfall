@@ -2,18 +2,27 @@ package Debug
 
 import TestUtils
 import UnitData
-//
-//init
-//	// Unit Debug: (-debug unit)
-//	chatEvent("-debug unit", () -> begin
-//		getSelectedUnit(GetTriggerPlayer())
-//	end)
+import initlater InventoryIterator
+import initlater BuffHandler
+import initlater ThreatHandler
+import initlater PlayerData
 
-import InventoryIterator
 
 init
-	chatEvent("-iter inventory", () -> begin
-		let iter = new InventoryIterator(getSelectedUnit(GetTriggerPlayer()))
+	chatEvent("-debug inventory", () -> begin
+		print("Inventory of unit " + selectedUnit().getName() + ":")
+		let iter = new InventoryIterator(selectedUnit())
 		for item itm from iter
-			print(itm.getName() + " in slot " + iter.getCurrentSlotId().toString())
+			print("- " + itm.getName() + " in slot " + iter.getCurrentSlotId().toString())
+	end)
+	chatEvent("-debug buffs", () -> begin
+		selectedUnit().getBuffList().debugPrint()
+	end)
+	chatEvent("-debug combatstate", () -> begin
+		let p = GetTriggerPlayer()
+		let inCombat = getCombatState(xGetPlayerHero(p.getId()))
+		print("Is in combat: " + inCombat.toString())
+	end)
+	chatEvent("-debug threat", () -> begin
+		debugThreat(selectedUnit())
 	end)
