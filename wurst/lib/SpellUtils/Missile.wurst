@@ -5,7 +5,7 @@ import LinkedList
 
 constant real TIMER_TIMEOUT = 0.025
 
-function unitValid(unit u) returns boolean
+@configurable function unitValid(unit u) returns boolean
 		return not IsUnitType(u, UNIT_TYPE_DEAD) and (GetUnitTypeId(u) != DUMMY_UNIT_ID)
 
 /** Targeted projectile with parabolic trajectory and individual graphics.
