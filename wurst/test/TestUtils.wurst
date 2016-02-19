@@ -1,8 +1,11 @@
 package TestUtils
-// By muzzel - Version 1.1
+// By muzzel - Version 1.2
 
 /** Registers a chat event. */
 public function chatEvent(string s, code c)
+	if s.startsWith("-debug")
+		commands[commandsLen] = s
+		commandsLen++
 	CreateTrigger()
 		..registerPlayerChatEvent(Player(0), s, true)
 		..addAction(c)
@@ -26,7 +29,7 @@ public function periodicEvent(real time, code c)
 		..addAction(c)
 
 /** Returns a random unit selected by the specified player. */
-public function getSelectedUnit(player p) returns unit
+public function selectedUnit(player p) returns unit
 	group g = CreateGroup()
 	SyncSelections()
 	GroupEnumUnitsSelected(g, p, null)
@@ -34,10 +37,21 @@ public function getSelectedUnit(player p) returns unit
 	g.destr()
 	return u
 
-trigger smartCoordsTrigger
+/** Returns a random unit selected by the triggering player. */
+public function selectedUnit() returns unit
+	return selectedUnit(GetTriggerPlayer())
 
+string array commands
+int commandsLen = 0
+trigger smartCoordsTrigger
 init
-	// Smart Coordinates: (-testutils smartcoords)
+	// Debug help:
+	chatEvent("-debug", () -> begin
+		print("Debug commands:")
+		for i = 0 to commandsLen-1
+			print(commands[i])
+	end)
+	// Smart Coordinates:
 	smartCoordsTrigger = CreateTrigger()
 		..registerPlayerUnitEvent(Player(0), EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, null)
 		..addAction(() -> begin
@@ -46,11 +60,16 @@ init
 				TriggerSleepAction(0.01)
 				IssueImmediateOrder(GetTriggerUnit(), "stop")
 	end)..disable()
-	chatEvent("-testutils smartcoords", () -> begin
+	chatEvent("-debug smartcoords", () -> begin
 		if IsTriggerEnabled(smartCoordsTrigger)
 			smartCoordsTrigger.disable()
-			print("Testutils: Smart Coords disabled")
+			print("Testutils: Smartcoords disabled")
 		else
 			smartCoordsTrigger.enable()
-			print("Testutils: Smart Coords enabled")
+			print("Testutils: Smartcoords enabled")
+	end)
+	// Clear:
+	chatEvent("-clear", () -> begin
+		if GetTriggerPlayer() == GetLocalPlayer()
+			ClearTextMessages()
 	end)
