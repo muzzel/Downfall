@@ -1,7 +1,6 @@
 package StatHandlerConfig
 import initlater StatHandler
 import BonusHandler
-//import public UnitX // Unit indexer // Cyclic dependency problem, hardcoded getUnitIndex
 
 ///**
 // * Make this function return a unique index if you want to use the unit extension functions.
@@ -10,30 +9,55 @@ import BonusHandler
 public function getUnitIndex(unit u) returns int
 	return u.getUserData()
 
+//public enum Stat
+//	LIFE // absolute
+//	MANA // absolute
+//	LIFEREG // absolute, per second
+//	MANAREG // absolute, per second
+//	STR // absolute
+//	AGI // absolute
+//	INT // absolute
+//	STR_WHITE // absolute
+//	AGI_WHITE // absolute
+//	INT_WHITE // absolute
+//	DAMAGE // absolute
+//	DAMAGE_PERC // %
+//	ARMOR // absolute
+//	ASPD // %
+//	MS // absolute
+//	EVA // %
+//	CC // % critchance
+//	CM // % critmultiplicator 
+//	CB // absolute critbonus
+//	HEALREC // % heal received increase
+//	ATTACKTHREAT
+//	CASTSPEED
+//	// TODO: magic resists, magic powers, damage resists
+	
 /** List your stats here. */
 public enum Stat
-	LIFE // absolute
-	MANA // absolute
-	LIFEREG // absolute, per second
-	MANAREG // absolute, per second
-	STR // absolute
-	AGI // absolute
-	INT // absolute
-	STR_WHITE // absolute
-	AGI_WHITE // absolute
-	INT_WHITE // absolute
-	DAMAGE // absolute
-	DAMAGE_PERC // %
-	ARMOR // absolute
-	ASPD // %
-	MS // absolute
-	EVA // %
-	CC // % critchance
-	CM // % critmultiplicator 
-	CB // absolute critbonus
-	HEALREC // % heal received increase
-	ATTACKTHREAT
-	CASTSPEED
+	LIFE // Life, absolute
+	MANA // Mana, absolute
+	LREG // Liferegen, absolute, per second
+	MREG // Manaregen, absolute, per second
+	STRE // Strength, absolute
+	AGIL // Agility, absolute
+	INTE // Intelligence, absolute
+	DAMA // Damage, absolute
+	DAMP // Damage, percent
+	ARMO // Armor, absolute
+	ASPD // Attackspeed, percent
+	MOVE // Movespeed, absolute
+	EVAS // Evasion chance, percent
+	CCHA // Critchance, percent
+	CMUL // Critmultiplicator, percent 
+	CBON // Critbonus, absolute
+	HREC // Heal receibed, percent
+	ATHR // Attackthreat, percent
+	CSPE // Castspeed, percent
+	STRW // Strength, absolute (stats)
+	AGIW // Agility, absolute (stats)
+	INTW // Intelligence, absolute (stats)
 	// TODO: magic resists, magic powers, damage resists
 
 /**
@@ -52,22 +76,22 @@ public enum Stat
 public function statRegistry()
 	registerStatLin(Stat.LIFE, (unit u, Stat s) -> setUnitBonus(u, Bonus.LIFE, u.getStat(Stat.LIFE)-u.getBaseStat(Stat.LIFE)))
 	registerStatLin(Stat.MANA, (unit u, Stat s) -> setUnitBonus(u, Bonus.MANA, u.getStat(Stat.MANA)-u.getBaseStat(Stat.MANA)))
-	registerStatLin(Stat.LIFEREG, (unit u, Stat s) -> setUnitBonus(u, Bonus.LIFEREGEN, u.getStat(Stat.LIFEREG)-u.getBaseStat(Stat.LIFEREG)))
-	registerStatLin(Stat.MANAREG, (unit u, Stat s) -> setUnitBonus(u, Bonus.MANAREGEN, u.getStat(Stat.MANAREG)-u.getBaseStat(Stat.MANAREG)))
-	registerStatLin(Stat.STR, (unit u, Stat s) -> setUnitBonus(u, Bonus.STRENGTH, u.getStat(Stat.STR)-u.getStat(Stat.STR_WHITE)))
-	registerStatLin(Stat.AGI, (unit u, Stat s) -> setUnitBonus(u, Bonus.AGILITY, u.getStat(Stat.AGI)-u.getStat(Stat.AGI_WHITE)))
-	registerStatLin(Stat.INT, (unit u, Stat s) -> setUnitBonus(u, Bonus.INTELLIGENCE, u.getStat(Stat.INT)-u.getStat(Stat.INT_WHITE)))
-	registerStatLinExp(Stat.DAMAGE, Stat.DAMAGE_PERC, (unit u, Stat s) -> setUnitBonus(u, Bonus.DAMAGE, u.getStat(Stat.DAMAGE)-u.getBaseStat(Stat.DAMAGE)))
-	registerStatLin(Stat.ARMOR, (unit u, Stat s) -> setUnitBonus(u, Bonus.ARMOR, u.getStat(Stat.ARMOR)-u.getBaseStat(Stat.ARMOR)))
+	registerStatLin(Stat.LREG, (unit u, Stat s) -> setUnitBonus(u, Bonus.LIFEREGEN, u.getStat(Stat.LREG)-u.getBaseStat(Stat.LREG)))
+	registerStatLin(Stat.MREG, (unit u, Stat s) -> setUnitBonus(u, Bonus.MANAREGEN, u.getStat(Stat.MREG)-u.getBaseStat(Stat.MREG)))
+	registerStatLin(Stat.STRE, (unit u, Stat s) -> setUnitBonus(u, Bonus.STRENGTH, u.getStat(Stat.STRE)-u.getStat(Stat.STRW)))
+	registerStatLin(Stat.AGIL, (unit u, Stat s) -> setUnitBonus(u, Bonus.AGILITY, u.getStat(Stat.AGIL)-u.getStat(Stat.AGIW)))
+	registerStatLin(Stat.INTE, (unit u, Stat s) -> setUnitBonus(u, Bonus.INTELLIGENCE, u.getStat(Stat.INTE)-u.getStat(Stat.INTW)))
+	registerStatLinExp(Stat.DAMA, Stat.DAMP, (unit u, Stat s) -> setUnitBonus(u, Bonus.DAMAGE, u.getStat(Stat.DAMA)-u.getBaseStat(Stat.DAMA)))
+	registerStatLin(Stat.ARMO, (unit u, Stat s) -> setUnitBonus(u, Bonus.ARMOR, u.getStat(Stat.ARMO)-u.getBaseStat(Stat.ARMO)))
 	registerStatExp(Stat.ASPD, (unit u, Stat s) -> setUnitBonus(u, Bonus.ATTACKSPEED, u.getStat(Stat.ASPD))) // Ignore base attackspeed
-	registerStatLin(Stat.MS, (unit u, Stat s) -> u.setMoveSpeed(1.*u.getStat(Stat.MS)))
-	registerStatLin(Stat.STR_WHITE, (unit u, Stat s) -> SetHeroStr(u, u.getStat(Stat.STR_WHITE), true))
-	registerStatLin(Stat.AGI_WHITE, (unit u, Stat s) -> SetHeroAgi(u, u.getStat(Stat.AGI_WHITE), true))
-	registerStatLin(Stat.INT_WHITE, (unit u, Stat s) -> SetHeroInt(u, u.getStat(Stat.INT_WHITE), true))
-	registerStatLog(Stat.EVA)
-	registerStatLog(Stat.CC)
-	registerStatExp(Stat.CM)
-	registerStatLin(Stat.CB)
-	registerStatExp(Stat.HEALREC)
-	registerStatExp(Stat.ATTACKTHREAT)
-	registerStatExp(Stat.CASTSPEED)
+	registerStatLin(Stat.MOVE, (unit u, Stat s) -> u.setMoveSpeed(1.*u.getStat(Stat.MOVE)))
+	registerStatLin(Stat.STRW, (unit u, Stat s) -> SetHeroStr(u, u.getStat(Stat.STRW), true))
+	registerStatLin(Stat.AGIW, (unit u, Stat s) -> SetHeroAgi(u, u.getStat(Stat.AGIW), true))
+	registerStatLin(Stat.INTW, (unit u, Stat s) -> SetHeroInt(u, u.getStat(Stat.INTW), true))
+	registerStatLog(Stat.EVAS)
+	registerStatLog(Stat.CCHA)
+	registerStatExp(Stat.CMUL)
+	registerStatLin(Stat.CBON)
+	registerStatExp(Stat.HREC)
+	registerStatExp(Stat.ATHR)
+	registerStatExp(Stat.CSPE)

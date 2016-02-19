@@ -18,7 +18,7 @@ class MissileHolyBolt extends Missile
 	
 	override function onHit()
 		if targetUnit.xIsAlive()
-			unitHealTarget(casterUnit, targetUnit, casterUnit.xGetUnitData().unitStatBuffer.get(Stat.INT) * mult)
+			unitHealTarget(casterUnit, targetUnit, casterUnit.xGetUnitData().unitStatBuffer.get(Stat.INTE) * mult)
 			AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl", targetUnit, "overhead").destr()
 			
 	construct(unit caster, unit missileStart, unit target, real mult)
@@ -36,7 +36,7 @@ class SpellHolyBolt extends Spell
 		new MissileHolyBolt(caster, caster, currentTarget, 2.5)
 		if caster.xHasTalent(TALENT_PRIEST_HOLYBOLT_JUMP)
 			jumps++
-		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), true, jumps)
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CSPE)), true, jumps)
 	
 	override function onChannel(int n, int nmax)
 		unit minU = null

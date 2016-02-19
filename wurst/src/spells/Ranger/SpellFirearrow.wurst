@@ -35,7 +35,7 @@ public class BuffFirearrow extends Buff
 	override function onApply()
 		real timePerTick = 1.
 		int ticks = 4
-		damagePerTick = caster.xGetUnitData().unitStatBuffer.get(Stat.AGI) * 2. / ticks
+		damagePerTick = caster.xGetUnitData().unitStatBuffer.get(Stat.AGIL) * 2. / ticks
 		if caster.xHasTalent(TALENT_RANGER_FIREARROW_DURATION)
 			ticks = 6
 		startTimed(timePerTick, ticks, true)
@@ -53,7 +53,7 @@ class MissileFirearrow extends Missile
 	
 	override function onHit()
 		if targetUnit.xIsAlive()
-			unitDamageTarget(casterUnit, targetUnit, casterUnit.xGetUnitData().unitStatBuffer.get(Stat.DAMAGE) * 1., DamageType.PHYSICAL)
+			unitDamageTarget(casterUnit, targetUnit, casterUnit.xGetUnitData().unitStatBuffer.get(Stat.DAMA) * 1., DamageType.PHYSICAL)
 			new BuffFirearrow(casterUnit).apply(targetUnit)
 	
 	construct(unit caster, unit target)

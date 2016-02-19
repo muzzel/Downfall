@@ -68,12 +68,12 @@ public class PlayerData
 		hero.xGetUnitData().unitStatBuffer.remove(learnedStats)
 		destroy learnedStats
 		learnedStats = new StatList()
-		learnedStats.add(Stat.STR, learnedStr)
-		learnedStats.add(Stat.AGI, learnedAgi)
-		learnedStats.add(Stat.INT, learnedInt)
-		learnedStats.add(Stat.STR_WHITE, learnedStr)
-		learnedStats.add(Stat.AGI_WHITE, learnedAgi)
-		learnedStats.add(Stat.INT_WHITE, learnedInt)
+		learnedStats.add(Stat.STRE, learnedStr)
+		learnedStats.add(Stat.AGIL, learnedAgi)
+		learnedStats.add(Stat.INTE, learnedInt)
+		learnedStats.add(Stat.STRW, learnedStr)
+		learnedStats.add(Stat.AGIW, learnedAgi)
+		learnedStats.add(Stat.INTW, learnedInt)
 		hero.xGetUnitData().unitStatBuffer.apply(learnedStats)
 		
 	ondestroy

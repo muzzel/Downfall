@@ -31,10 +31,10 @@ public class BuffShield extends Buff
 		this.caster = caster
 	
 	override function onApply()
-		let armorbonus = R2I(1 + caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 0.15)
-		stats = new StatList()..add(Stat.ARMOR, armorbonus)
+		let armorbonus = R2I(1 + caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 0.15)
+		stats = new StatList()..add(Stat.ARMO, armorbonus)
 		if caster.xHasTalent(TALENT_PRIEST_SHIELD_HEALREC)
-			stats.add(Stat.HEALREC, 10)
+			stats.add(Stat.HREC, 10)
 		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
 		sfx1 = getUnit().addEffect("Abilities\\Spells\\Human\\InnerFire\\InnerFireTarget.mdl", "overhead")
 		destroyAfter(20.)

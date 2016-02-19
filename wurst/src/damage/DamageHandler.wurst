@@ -26,7 +26,7 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	// Proccs, buffs, etc.:
 	if target.hasBuff(BuffIgnoreThePain.typeId)
 		if isAttack and target.xHasTalent(TALENT_WARRIOR_IGNORE_REFLECT) and source.getPos().distToVecSquared(target.getPos()) <= 100*100
-			unitDamageTarget(target, source, target.getStat(Stat.DAMAGE) * 1., DamageType.PHYSICAL) // Reflected damage
+			unitDamageTarget(target, source, target.getStat(Stat.DAMA) * 1., DamageType.PHYSICAL) // Reflected damage
 		return
 	// 
 	boolean isCrit = false
@@ -34,17 +34,17 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	// if damage comes from autoattack
 	if isAttack
 		// Calc evasion
-		if GetRandomInt(0, 99) < target.getStat(Stat.EVA) // if evade ...
+		if GetRandomInt(0, 99) < target.getStat(Stat.EVAS) // if evade ...
 			combatTextEvade(source, target)
 			return
 		// Calc crit
-		if GetRandomInt(0, 99) < source.getStat(Stat.CC) // if crit ...
+		if GetRandomInt(0, 99) < source.getStat(Stat.CCHA) // if crit ...
 			isCrit = true
-			dmg = dmg * (1 + source.getStat(Stat.CM)*0.01) + source.getStat(Stat.CB) // damage = damage * critmultiplier + critbonus
+			dmg = dmg * (1 + source.getStat(Stat.CMUL)*0.01) + source.getStat(Stat.CBON) // damage = damage * critmultiplier + critbonus
 	// Calc damage modifieds from armor/resists
 	switch damageType
 		case PHYSICAL
-			dmg -= target.getStat(Stat.ARMOR)
+			dmg -= target.getStat(Stat.ARMO)
 		case MAGIC
 			// TODO: magic resist
 		case FIRE
@@ -57,7 +57,7 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 		// Apply Threat
 		if not target.xIsHero() // If target is creep/boss
 			real threat = dmg
-			threat *= (1+source.getStat(Stat.ATTACKTHREAT)*0.01)
+			threat *= (1+source.getStat(Stat.ATHR)*0.01)
 			modifyThreat(source, target, threat, true)
 		if target.getHP() < 0.405
 			currentKillingUnit = source
@@ -83,7 +83,7 @@ function unitAttacked()
 		unit source = GetEventDamageSource()
 //		print("EVENT_UNIT_DAMAGED triggered. Source: " + source.getName() + ", TriggeringUnit: " + GetTriggerUnit().getName())
 		if source.getTypeId() != DUMMY_UNIT_ID
-			real damage = 1.*source.xGetUnitData().unitStatBuffer.get(Stat.DAMAGE)
+			real damage = 1.*source.xGetUnitData().unitStatBuffer.get(Stat.DAMA)
 			unitDamageTarget(source, GetTriggerUnit(), damage, DamageType.PHYSICAL, true)
 
 init

@@ -13,6 +13,8 @@ ItemTypeData currentItemTypeData
 //ObjectDefinition currentItemTypeDefinition
 ItemDefinition currentItemTypeDefinition
 
+public function equip(int raw, EqQua quality, EqSlo slot, EqCla cls, int cost, string name, string descr, string icon)
+
 public function itemgenNewEquipment(int raw, EqQua equipmentQuality, EqSlo equipmentSlot, EqCla equipmentClass, int cost, string name, string description, string icon) returns int
 	currentItemTypeData = new ItemTypeData(raw)
 	currentItemTypeData.itemClass = ItemClass.EQUIPMENT

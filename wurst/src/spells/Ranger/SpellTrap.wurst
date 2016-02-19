@@ -57,7 +57,7 @@ public class BuffTrapTarget extends Buff
 		sfxNet = getUnit().addEffect("Abilities\\Spells\\Orc\\Ensnare\\ensnareTarget.mdl", "origin")
 		if caster.xHasTalent(TALENT_RANGER_TRAP_POISON)
 			getUnit().addEffect("Abilities\\Spells\\Other\\Cleave\\CleaveDamageTarget.mdl", "overhead").destr()
-			unitDamageTarget(caster, getUnit(), caster.xGetUnitData().unitStatBuffer.get(Stat.AGI) * 2., DamageType.POISON)
+			unitDamageTarget(caster, getUnit(), caster.xGetUnitData().unitStatBuffer.get(Stat.AGIL) * 2., DamageType.POISON)
 
 		
 	override function onRemove()
@@ -68,7 +68,7 @@ class SpellTrap extends Spell
 	override function onCast()
 		let lvl = caster.getAbilityLevel(SPELL_RAW)
 		if lvl == 1
-			channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), false)
+			channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CSPE)), false)
 		else
 			caster.setAbilityLevel(SPELL_RAW, 1)
 			let b = caster.getBuffList().getFirstBuffOfType(BuffTrapOwner.typeId) castTo BuffTrapOwner

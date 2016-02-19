@@ -24,7 +24,7 @@ class MissileSplitshot extends Missile
 		return u.getOwner().isEnemyOf(casterUnit.getOwner())
 	
 	override function onCollision(unit u)
-		let dmg = casterUnit.xGetUnitData().unitStatBuffer.get(Stat.DAMAGE) * .8
+		let dmg = casterUnit.xGetUnitData().unitStatBuffer.get(Stat.DAMA) * .8
 		unitDamageTarget(casterUnit, u, dmg, DamageType.PHYSICAL)
 		if isBurning
 			unitDamageTarget(casterUnit, u, dmg * 0.3, DamageType.FIRE)
@@ -46,7 +46,7 @@ class MissileSplitshot extends Missile
 class SpellSplitshot extends Spell
 	
 	override function onCast()
-		int numArrows = 3 + R2I(caster.xGetUnitData().unitStatBuffer.get(Stat.AGI) * 0.1)
+		int numArrows = 3 + R2I(caster.xGetUnitData().unitStatBuffer.get(Stat.AGIL) * 0.1)
 		int numTargets = 2 // targets per arrow
 		if caster.xHasTalent(TALENT_RANGER_SPLITSHOT_PIERCE)
 			numTargets++

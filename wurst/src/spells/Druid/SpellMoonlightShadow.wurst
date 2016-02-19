@@ -29,9 +29,9 @@ class SpellMoonlightShadow extends Spell
 				var healMod = 1.
 				if caster.xHasTalent(TALENT_DRUID_MOON_REJU) and targetUnit.hasBuff(BuffRejuvenation.typeId)
 					healMod = 1.2
-				unitHealTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 2.5 * healMod)
+				unitHealTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 2.5 * healMod)
 			else
-				unitDamageTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 2., DamageType.MAGIC)
+				unitDamageTarget(caster, targetUnit, caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 2., DamageType.MAGIC)
 		destroy this
 
 init

@@ -31,7 +31,7 @@ public class BuffShieldSlamTaunt extends Buff
 
 class SpellShieldSlam extends Spell
 	override function onCast()
-		let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STR)*2.
+		let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STRE)*2.
 		caster.setAnimation("stand defend")
 		let s = CreateSoundFromLabel("MetalHeavyBashFlesh", false, false, false, 0, 0)
 		AttachSoundToUnit(s, caster)

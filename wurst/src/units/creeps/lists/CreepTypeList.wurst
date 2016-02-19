@@ -6,19 +6,19 @@ public function initCreepTypeLists()
 //	unitgenNewCreep(raw, baseRaw, lvl, name, life, mana, dmg, armor, 100*attacktime, movespeed) 
 	// Boar (lvl 1):
 	unitgenNewCreep('h000', 'nspp', 1, "Boar", 110, 0, 5, 0, 220, 300)
-	unitgenSetStats()..set(Stat.EVA, 5)
+	unitgenSetStats()..set(Stat.EVAS, 5)
 	// Wolf (lvl 2):
 	unitgenNewCreep('h001', 'nwlt', 2, "Wolf", 130, 0, 7, 0, 260, 290)
-	unitgenSetStats()..set(Stat.EVA, 5)..set(Stat.CC, 15)..set(Stat.CB, 4)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 15)..set(Stat.CBON, 4)
 	// Wolf (lvl 3):
 	unitgenNewCreep('h002', 'nwwf', 3, "Wolf", 180, 0, 7, 1, 240, 290)
-	unitgenSetStats()..set(Stat.EVA, 5)..set(Stat.CC, 20)..set(Stat.CB, 4)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 4)
 	// Sea Turtle (lvl 4):
 	unitgenNewCreep('h003', 'ntrh', 4, "Sea Turtle", 240, 20, 11, 2, 300, 290)
-	unitgenSetStats()..set(Stat.EVA, 5)..set(Stat.CC, 20)..set(Stat.CB, 4)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 4)
 	// Bear (lvl 5):
 	unitgenNewCreep('h004', 'ngz1', 5, "Bear", 650, 30, 14, 3, 280, 300)
-	unitgenSetStats()..set(Stat.EVA, 5)..set(Stat.CC, 10)..set(Stat.CB, 8)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 10)..set(Stat.CBON, 8)
 	// Pack Leader (lvl 6):
 	unitgenNewCreep('h005', 'nwld', 6, "The Packleader", 1000, 40, 16, 4, 250, 300)
-	unitgenSetStats()..set(Stat.EVA, 5)..set(Stat.CC, 20)..set(Stat.CB, 3)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 3)

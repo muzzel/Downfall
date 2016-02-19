@@ -34,7 +34,7 @@ public class BuffRejuvenation extends Buff
 	override function onApply()
 		real timePerTick = 1.5
 		int ticks = 4
-		healPerTick = caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 3. / ticks
+		healPerTick = caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 3. / ticks
 		if caster.xHasTalent(TALENT_DRUID_REJU_TICK)
 			ticks++
 		sfx1 = getUnit().addEffect("Abilities\\Spells\\NightElf\\Rejuvenation\\RejuvenationTarget.mdl", "chest")

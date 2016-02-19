@@ -39,7 +39,7 @@ public class BuffNaturesWrath extends Buff
 	
 	override function onApply()
 		startTimed(0.3, 10, true)
-		stats = new StatList()..add(Stat.MS, 80)
+		stats = new StatList()..add(Stat.MOVE, 80)
 		getUnit().xGetUnitData().unitStatBuffer.remove(stats)
 		if caster.xHasTalent(TALENT_DRUID_WRATH_ENTANGLE) and not getUnit().xIsBoss()
 			entangleEnsnare = true
@@ -65,14 +65,14 @@ function randomPosOffset3(real dist) returns vec2
 	
 class SpellNaturesWrath extends Spell
 	override function onCast()
-		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)), false)
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CSPE)), false)
 		
 	override function onChannelEnd(boolean success)
 		if success
 			var dmgMod = 1.
 			if caster.xHasTalent(TALENT_DRUID_WRATH_ENTANGLE) and targetUnit.xIsBoss()
 				dmgMod = 1.2
-			unitDamageTarget(caster, targetUnit, caster.xGetStat(Stat.INT) * 3. * dmgMod, DamageType.MAGIC)
+			unitDamageTarget(caster, targetUnit, caster.xGetStat(Stat.INTE) * 3. * dmgMod, DamageType.MAGIC)
 			new BuffNaturesWrath(caster).apply(targetUnit)
 		
 init

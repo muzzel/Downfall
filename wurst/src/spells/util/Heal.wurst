@@ -5,7 +5,7 @@ import CombatText
 import ThreatHandler
 
 public function unitHealTarget(unit source, unit target, real amount) returns real
-	real healrec = (100+target.xGetUnitData().unitStatBuffer.get(Stat.HEALREC)) / 100.
+	real healrec = (100+target.xGetUnitData().unitStatBuffer.get(Stat.HREC)) / 100.
 	real healed = amount*healrec
 	healed = min(healed, target.getMaxHP() - target.getHP())
 	target.addHP(healed)

@@ -22,7 +22,7 @@ public class BuffIgnoreThePain extends Buff
 		return BUFF_RAW
 	
 	override function onApply()
-		stats = new StatList()..add(Stat.MS, -100)
+		stats = new StatList()..add(Stat.MOVE, -100)
 		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
 		AddUnitAnimationProperties(getUnit(), "defend", true)
 		destroyAfter(4.)

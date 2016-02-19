@@ -17,11 +17,11 @@ class SpellHeal extends Spell
 		var casttimeMod = 1.
 		if caster.xHasTalent(TALENT_PRIEST_HEAL_HASTE) and targetUnit.hasBuff(BuffShield.typeId)
 			casttimeMod = 0.85
-		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CASTSPEED)) * casttimeMod, false)
+		channel(CHANNEL_DURATION * (1. - caster.xGetStatReal(Stat.CSPE)) * casttimeMod, false)
 		
 	override function onChannelEnd(boolean success)
 		if success
-			let heal = caster.xGetUnitData().unitStatBuffer.get(Stat.INT) * 4.
+			let heal = caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 4.
 			let healed = unitHealTarget(caster, targetUnit, heal)
 			AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl", targetUnit, "overhead").destr()
 			if caster.xHasTalent(TALENT_PRIEST_HEAL_OVERHEAL)

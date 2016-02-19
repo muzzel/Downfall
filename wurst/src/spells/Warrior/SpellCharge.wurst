@@ -18,7 +18,7 @@ class SpellCharge extends Spell
 			..enableCollision(100., (unit u, unit t) -> begin
 				if t.xIsCombatUnit() and not t.xIsBoss()
 					new Knockback(t, (t.getPos() - u.getPos()).norm() * 200., 0.2, false, true)
-					let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STR)*1.
+					let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STRE)*1.
 					unitDamageTarget(u, t, damage, DamageType.PHYSICAL)
 					if caster.xHasTalent(TALENT_WARRIOR_CHARGE_THREAT)
 						modifyThreat(caster, targetUnit, 10+damage*2, true)

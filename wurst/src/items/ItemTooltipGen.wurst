@@ -141,50 +141,50 @@ function tooltipConvertStat(Stat stat, int value) returns string
 			name = "Life" 
 		case MANA
 			name = "Mana"
-		case LIFEREG
+		case LREG
 			name = "Lifereg"
-		case MANAREG
+		case MREG
 			name = "Manareg"
-		case STR
+		case STRE
 			name = "Str"
-		case AGI
+		case AGIL
 			name = "Agi"
-		case INT
+		case INTE
 			name = "Int"
-		case DAMAGE
+		case DAMA
 			name = "Attack Power"
-		case DAMAGE_PERC
+		case DAMP
 			name = "Attack Power"
 			suffix = "%"
-		case ARMOR
+		case ARMO
 			name = "Armor"
 		case ASPD
 			name = "Aspd"
 			suffix = "%"
-		case MS
+		case MOVE
 			name = "Movespeed"
-		case EVA
+		case EVAS
 			name = "Evasion"
 			suffix = "%"
-		case CC
+		case CCHA
 			name = "Critchance"
 			suffix = "%"
-		case CM
+		case CMUL
 			name = "Critdamage"
 			suffix = "%"
-		case CB
+		case CBON
 			name = "Critbonus"
-		case HEALREC
+		case HREC
 			name = "Heal Received"
 			suffix = "%"
-		case ATTACKTHREAT
+		case ATHR
 			name = "Attack Threat"
 			suffix = "%"
-		case CASTSPEED
+		case CSPE
 			name = "Casttime"
 			sign = "-"
 			suffix = "%"
-		case STR_WHITE
-		case AGI_WHITE
-		case INT_WHITE
+		case STRW
+		case AGIW
+		case INTW
 	return name + " " + sign + valueConverted.toString() + suffix
