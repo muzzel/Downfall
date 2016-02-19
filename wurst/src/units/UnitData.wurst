@@ -19,7 +19,6 @@ public function unit.xGetUnitData() returns UnitData
 	return this.getIndex() castTo UnitData
 	
 public function unit.xIsHero() returns boolean
-//	return IsUnitType(this, UNIT_TYPE_HERO)
 	return xGetPlayerHero(this.getOwner().getId()) == this
 
 public function unit.xIsAlive() returns boolean
@@ -41,17 +40,22 @@ public function unit.xGetStatReal(Stat s) returns real
 
 public function unitDeath(unit u)
 	let unitData = u.xGetUnitData()
-	for b in unitData.unitBuffList.buffs // remove all buffs // TODO: ist beim durchiterieren zerstören erlaubt?
-		destroy b
-	if u.xIsHero() // Unit is a player hero:
-		respawnHero(u)
-		// If hero died, destroy ThreatHandlerPU object???
-	else // Unit is a creep/boss:
+	unitData.unitBuffList.destroyAllBuffs()
+	if u.xIsHero()
+		// Heroes:
+		unitDisableOOCRegen(u)
+		destroy unitData.threatHandlerPu
+		unitData.threatHandlerPu = null
+		respawnHero(u) // enables OOCRegen, creates new ThreadHandlerPu object
+	else
+		// Creeps, Bosses
 		creepSpreadExp(u)
 		creepDrop(u)
-		if unitData.creepRespawn != null // Respawn if preplaced creep
+		if unitData.creepRespawn != null
 			unitData.creepRespawn.respawn()
-		unitData.destroyTimed(3.) // Destroy UnitData instance
+		destroy unitData.threatHandlerTu
+		unitData.threatHandlerTu = null
+		unitData.destroyTimed(3.)
 
 public class UnitData extends UnitIndex
 	UnitStatBuffer unitStatBuffer
@@ -67,13 +71,16 @@ public class UnitData extends UnitIndex
 		unitStatBuffer = new UnitStatBuffer(u, u.getTypeId().xGetUnitTypeData().unitBaseStatBuffer)
 		unitDamageHandler = new UnitDamageHandler(u)
 		unitBuffList = new BuffList(u)
-		if u.xIsHero() // Unit is a player hero
+		threatHandlerPu = null
+		threatHandlerTu = null
+		creepRespawn = null
+		if u.xIsHero()
+			// Heroes:
 			threatHandlerPu = new ThreatHandlerPU(u)
 			unitEnableOOCRegen(u)
-		else // Unit is a creep/boss
+		else
+			// Creeps, Bosses:
 			threatHandlerTu = new ThreatHandlerTU(u)
-		// CreepRespawn:
-		creepRespawn = null
 	
 	function destroyTimed(real timeout)
 		getTimer()
