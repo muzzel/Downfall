@@ -1,6 +1,6 @@
 package BuffHandler
 import LinkedList
-import DamageHandler
+//import DamageHandler
 import public BuffHandlerConfig
 import public BuffHandlerGen
 
@@ -17,47 +17,45 @@ public abstract class Buff
 	private int timerCounter
 	private int timerCounterMax
 	private boolean timerDestroyAfter
-	
 	private BuffList parent
 	
-	function getBuffTypeId() returns int
-		return this.typeId
-	
-	function getParentBufflist() returns BuffList
-		return this.parent
-	
+	/** Functions that can be overridden by Buff-classes: **/
 	function getName() returns string
 		return ""
-	
-	function getRaw() returns int
+		
+	protected function getRaw() returns int
 		return 0
-	
-	function getBuffRaw() returns int
+		
+	protected function getBuffRaw() returns int
 		return 0
-	
-	function getPolicy() returns BuffPolicy
+		
+	protected function getPolicy() returns BuffPolicy
 		return BuffPolicy.STACKING
 	
-	function checkApply() returns boolean
+	protected function checkApply() returns boolean
 		if this.getPolicy() == BuffPolicy.LAST
-			for Buff b in this.parent.getList()
-				if b.getBuffTypeId() == this.getBuffTypeId() and b != this
+			for Buff b in this.parent.buffs
+				if b.typeId == this.typeId and b != this
 					destroy b
 		return true
 	
-	function onCreate()
+	protected function onCreate()
 	
-	function onApply()
+	protected function onApply()
 		
-	function onRemove()
+	protected function onRemove()
 	
-	function preDestroy()
+	protected function onDestroy()
 		
-	function onTimer()
+	protected function onTimer()
+	
+	/** Buff API: **/
+	protected function getParentBufflist() returns BuffList
+		return this.parent
 	
 	function getUnit() returns unit
 		if this.parent != null
-			return this.parent.getUnit()
+			return this.parent.u
 		else
 			return null
 			
@@ -85,6 +83,7 @@ public abstract class Buff
 	function getTimerCounterMax() returns int
 		return timerCounterMax
 	
+	/** End of API **/
 	private static function timerCallback()
 		timer t = GetExpiredTimer()
 		thistype obj = t.getData() castTo thistype
@@ -105,90 +104,80 @@ public abstract class Buff
 		let raw = this.getRaw()
 		if raw != 0
 			if parent.countBuffsOfType(this) <= 1
-				blockDamageEvents(true) // avoid slowaura bug which causes the dmg detection to trigger
-				parent.getUnit().addAbility(raw)
-				blockDamageEvents(false) //
-				UnitMakeAbilityPermanent(parent.getUnit(), true, raw)
+				// TODO
+//				blockDamageEvents(true) // avoid slowaura bug which causes the dmg detection to trigger
+				parent.u.addAbility(raw)
+//				blockDamageEvents(false) //
+				UnitMakeAbilityPermanent(parent.u, true, raw)
 	
 	private function removeBuffIcon()
 		let raw = this.getRaw()
 		if raw != 0
 			if parent.countBuffsOfType(this) <= 1
-				UnitMakeAbilityPermanent(parent.getUnit(), false, raw)
-				parent.getUnit().removeAbility(raw)
+				UnitMakeAbilityPermanent(parent.u, false, raw)
+				parent.u.removeAbility(raw)
 				let buffRaw = this.getBuffRaw()
 				if buffRaw != 0
-					parent.getUnit().removeAbility(buffRaw)
+					parent.u.removeAbility(buffRaw)
 	
-	function applyRemove(unit target)
+	function apply(unit target)
 		if this.parent != null
 			this.onRemove()
 			this.removeBuffIcon()
-			this.parent.removeBuff(this)
+			this.parent.buffs.remove(this)
 			this.parent = null
-		
-	function applyReapply(unit target)
 		if target != null
 			this.parent = target.getBuffList()
 			if this.checkApply()
-				this.parent.addBuff(this)
+				this.parent.buffs.add(this)
 				this.addBuffIcon()
 				this.onApply()
-		
-	function apply(unit target)
-		applyRemove(target)
-		applyReapply(target)
+	
+	function debugPrint()
+		print("- Buff: " + this.getName() + " #" + I2S(this castTo int) + " on unit: " + this.getUnit().getName())
 		
 	ondestroy
-		this.applyRemove(null)
-		this.preDestroy()
+		this.apply(null)
+		this.onDestroy()
 		this.destroyCustomMembers()
 		if this.timerObject != null
 			stopTimed()
 	
 public class BuffList
-	LinkedList<Buff> buffs
-	
-	private unit u
+	protected LinkedList<Buff> buffs
+	protected unit u
 	
 	construct(unit u)
 		this.u = u
 		this.buffs = new LinkedList<Buff>()
 	
-	function getUnit() returns unit
-		return this.u
-	
-	function getList() returns LinkedList<Buff>
-		return buffs
-	
-	function addBuff(Buff b)
-		this.buffs.add(b)
-	
-	function removeBuff(Buff b)
-		this.buffs.remove(b) // currently in O(n), can be done in O(1)
+	function destroyAllBuffs()
+		while this.buffs.getSize() > 0
+			destroy this.buffs.get(0)
 	
 	ondestroy
-		// TODO: unapply?
+		this.destroyAllBuffs()
 		destroy this.buffs
 	
 	function countBuffsOfTypeId(int id) returns integer
 		var n = 0
 		for Buff b in this.buffs
-			if b.getBuffTypeId() == id
+			if b.typeId == id
 				n++
 		return n
 	
 	function countBuffsOfType(Buff b) returns integer
-		return countBuffsOfTypeId(b.getBuffTypeId())
+		return countBuffsOfTypeId(b.typeId)
 	
 	function getFirstBuffOfType(int id) returns Buff
 		Buff bf = null
 		for Buff b in this.buffs
-			if b.getBuffTypeId() == id
+			if b.typeId == id
 				bf = b
 				break
 		return bf
 	
 	function debugPrint()
+		print("Buffs on unit " + u.getName() + ", BuffList #" + this castTo int.toString())
 		for Buff b in this.buffs
-			print("Buff: " + b.getName() + " ( id " + I2S(b castTo int) + " )")
+			b.debugPrint()
