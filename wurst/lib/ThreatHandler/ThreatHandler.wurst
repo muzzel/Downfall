@@ -81,6 +81,17 @@ public function getThreatUnitIterator(unit threatUnit) returns ThreatUnitIterato
 	if tu != null
 		iter = tu.iterator()
 	return iter
+	
+/**
+ * Returns an iterator for the sepcified PlayerUnit which allows iterating over the PlayerUnits threat list entries.
+ * Returns null if the specified PlayerUnit is invalid.
+ */ 
+public function getPlayerUnitIterator(unit playerUnit) returns PlayerUnitIterator
+	PlayerUnitIterator iter = null
+	let pu = getPlayerUnit(playerUnit)
+	if pu != null
+		iter = pu.iterator()
+	return iter
 
 /** 
  * Returns the first PlayerUnit in the specified ThreatUnits threat list.
@@ -92,6 +103,27 @@ public function getThreatUnitFirstSlot(unit threatUnit) returns unit
 	if tu != null
 		u = tu.getFirstInThreatList()
 	return u
+
+/**
+ * Prints debug information for the specified ThreatUnit/PlayerUnit.
+ */
+public function debugThreat(unit u)
+	let pu = getPlayerUnit(u)
+	let tu = getThreatUnit(u)
+	if pu != null
+		print("Unit " + u.getName() + " (PlayerUnit #" + pu castTo int.toString() + "):")
+		let puIter = pu.iterator()
+		for entry from puIter
+			entry.debugPrint()
+		puIter.close()
+	if tu != null
+		print("Unit " + u.getName() + " (ThreatUnit #" + tu castTo int.toString() + "):")
+		let tuIter = tu.iterator()
+		for entry from tuIter
+			entry.debugPrint()
+		tuIter.close()
+	if tu == null and pu == null
+		print("Unit " + u.getName() + " has no PlayerUnit or ThreatUnit objects assigned!")
 	
 hashtable ht = InitHashtable()
 ThreatHandlerCamp array icList // List of Camps which are in combat
@@ -198,6 +230,9 @@ public class ThreatHandlerPU
 		this.u = u
 		dummy = new ThreatListEntry()
 	
+	function iterator() returns PlayerUnitIterator
+		return new PlayerUnitIterator(this)
+	
 	protected function add(ThreatListEntry e)
 		e.puPrev = dummy.puPrev
 		e.puNext = dummy
@@ -211,12 +246,34 @@ public class ThreatHandlerPU
 	ondestroy
 		// Clear list:
 		var e = dummy
-		while e.puNext != dummy // TODO puNext
-			e = e.puNext // TODO puNext
+		while e.puNext != dummy
+			e = e.puNext
+			// TODO: works, but not clean. store e.next before destroying e!
 			destroy e
 		destroy dummy
 		// Enable ==null checks:
 		this.u = null
+		
+public class PlayerUnitIterator
+	ThreatHandlerPU pu
+	ThreatListEntry current
+	
+	construct(ThreatHandlerPU pu)
+		this.pu = pu
+		current = pu.dummy
+	
+	function hasNext() returns boolean
+		return current.puNext != pu.dummy
+		
+	function next() returns ThreatListEntry
+		current = current.puNext
+		return current
+	
+	function reset()
+		current = pu.dummy
+	
+	function close()
+		skip
 
 function acquireTarget()
 	unit tu = GetTriggerUnit()
@@ -411,6 +468,9 @@ public class ThreatListEntry
 			pu.remove(this)
 			tu.remove(this)
 			RemoveSavedInteger(ht, pu castTo int, tu castTo int)
+	
+	function debugPrint()
+		print("- ThreatListEntry #" + this castTo int.toString() + ", Threat: " + threat.toString() + ", PU: " + pu.u.getName() + ", TU: " + tu.u.getName())
 	
 	protected function setThreat(real newThreat)
 		let increased = newThreat > threat // increased or decreased
