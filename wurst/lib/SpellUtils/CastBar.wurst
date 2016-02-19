@@ -13,7 +13,7 @@ public class CastBar
 			..removeAbility(HEIGHT_ENABLER)
 			..setFlyHeight(100., 0.)
 			..setPathing(false)
-			..setPos(pos)
+			..setPos(pos + vec2(0, -40.))
 			..setColor(color)
 			..pause()
 		if reversed
