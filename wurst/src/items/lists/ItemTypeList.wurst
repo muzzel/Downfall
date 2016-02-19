@@ -13,78 +13,80 @@ import initlater StatHandler
 // 'IM--' = Materials
 // 'i---' = Recipes
 
+constant string pdef = "ReplaceableTextures\\CommandButtons\\"
+
 public function initItemTypeLists()
 	// ##### EQUIPMENT #####
 	// Mainhand:
-	itemgenNewEquipment('I101', EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, "Old Sword", "", "ReplaceableTextures\\CommandButtons\\BTNSteelMelee.blp")
+	itemgenNewEquipment('I101', EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, "Old Sword", "", pdef+"BTNSteelMelee.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 1))
-	itemgenNewEquipment('I102', EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, "Old Staff", "", "ReplaceableTextures\\CommandButtons\\BTNWand.blp")
+	itemgenNewEquipment('I102', EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, "Old Staff", "", pdef+"BTNWand.blp")
 	itemgenSetStats(stats()..add(Stat.INT, 1))
-	itemgenNewEquipment('I103', EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, "Old Bow", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedBows.blp")
+	itemgenNewEquipment('I103', EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, "Old Bow", "", pdef+"BTNImprovedBows.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 1))
-	itemgenNewEquipment('I104', EqQua.NOR, EqSlo.MAI, EqCla.AXE, 20, "Woodcutters Axe", "", "ReplaceableTextures\\CommandButtons\\BTNOrcMeleeUpOne.blp")
+	itemgenNewEquipment('I104', EqQua.NOR, EqSlo.MAI, EqCla.AXE, 20, "Woodcutters Axe", "", pdef+"BTNOrcMeleeUpOne.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 2)..add(Stat.STR, 1)..add(Stat.ATTACKTHREAT, 20))
-	itemgenNewEquipment('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, "Horn Bow", "", "ReplaceableTextures\\CommandButtons\\BTNQuillSprayOff.blp")
+	itemgenNewEquipment('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, "Horn Bow", "", pdef+"BTNQuillSprayOff.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 3)..add(Stat.AGI, 1)..add(Stat.ASPD, 15))
-	itemgenNewEquipment('I106', EqQua.NOR, EqSlo.MAI, EqCla.STA, 20, "Enchanted Staff", "", "ReplaceableTextures\\CommandButtons\\BTNStarWand.blp")
+	itemgenNewEquipment('I106', EqQua.NOR, EqSlo.MAI, EqCla.STA, 20, "Enchanted Staff", "", pdef+"BTNStarWand.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 1)..add(Stat.INT, 2))
-	itemgenNewEquipment('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, "Sylvan Staff", "", "ReplaceableTextures\\CommandButtons\\BTNStaffOfPreservation.blp")
+	itemgenNewEquipment('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, "Sylvan Staff", "", pdef+"BTNStaffOfPreservation.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 2)..add(Stat.INT, 3)..add(Stat.MANA, 20)..add(Stat.CASTSPEED, 8))
 	
 	// Offhand:
-	itemgenNewEquipment('I201', EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, "Wooden Buckler", "", "ReplaceableTextures\\CommandButtons\\BTNSteelArmor.blp")
+	itemgenNewEquipment('I201', EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, "Wooden Buckler", "", pdef+"BTNSteelArmor.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 2)..add(Stat.LIFE, 5))
-	itemgenNewEquipment('I202', EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, "Energy Orb", "", "ReplaceableTextures\\CommandButtons\\BTNUsedSoulGem.blp")
+	itemgenNewEquipment('I202', EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, "Energy Orb", "", pdef+"BTNUsedSoulGem.blp")
 	itemgenSetStats(stats()..add(Stat.INT, 1)..add(Stat.MANA, 5))
-	itemgenNewEquipment('I203', EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, "Sharp Arows", "", "ReplaceableTextures\\CommandButtons\\BTNImpalingBolt.blp")
+	itemgenNewEquipment('I203', EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, "Sharp Arows", "", pdef+"BTNImpalingBolt.blp")
 	itemgenSetStats(stats()..add(Stat.DAMAGE, 1)..add(Stat.AGI, 1))
-	itemgenNewEquipment('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, "Mithril Plate", "", "ReplaceableTextures\\CommandButtons\\BTNHumanArmorUpThree.blp")
+	itemgenNewEquipment('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, "Mithril Plate", "", pdef+"BTNHumanArmorUpThree.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 4)..add(Stat.LIFE, 12)..add(Stat.EVA, 6))
 	
 	// Chest:
-	itemgenNewEquipment('I301', EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, "Wooden Mail", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedMoonArmor.blp")
+	itemgenNewEquipment('I301', EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, "Wooden Mail", "", pdef+"BTNImprovedMoonArmor.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I302', EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, "Fur Coat", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedReinforcedHides.blp")
+	itemgenNewEquipment('I302', EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, "Fur Coat", "", pdef+"BTNImprovedReinforcedHides.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I303', EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, "Tattered Robe", "", "ReplaceableTextures\\CommandButtons\\BTNCloak.blp")
+	itemgenNewEquipment('I303', EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, "Tattered Robe", "", pdef+"BTNCloak.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.MANA, 5))
-	itemgenNewEquipment('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, "Shining Chestguard", "", "ReplaceableTextures\\CommandButtons\\BTNArmorGolem.blp")
+	itemgenNewEquipment('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, "Shining Chestguard", "", pdef+"BTNArmorGolem.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 2)..add(Stat.LIFE, 10)..add(Stat.EVA, 3)..add(Stat.HEALREC, 5))
 	
 	// Helmet:
-	itemgenNewEquipment('I401', EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, "Light Helmet", "", "ReplaceableTextures\\CommandButtons\\BTNFootman.blp")
+	itemgenNewEquipment('I401', EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, "Light Helmet", "", pdef+"BTNFootman.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1))
-	itemgenNewEquipment('I402', EqQua.NOR, EqSlo.HEL, EqCla.LEA, 20, "Leather Mask", "", "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp")
+	itemgenNewEquipment('I402', EqQua.NOR, EqSlo.HEL, EqCla.LEA, 20, "Leather Mask", "", pdef+"BTNHuntress.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 5))
-	itemgenNewEquipment('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, "Shamans Hood", "", "ReplaceableTextures\\CommandButtons\\BTNCloak.blp")
+	itemgenNewEquipment('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, "Shamans Hood", "", pdef+"BTNCloak.blp")
 	itemgenSetStats(stats()..add(Stat.INT, 2)..add(Stat.LIFE, 10)..add(Stat.MANA, 5)..add(Stat.CASTSPEED, 4))
-	itemgenNewEquipment('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, "Pointy Hat", "", "ReplaceableTextures\\CommandButtons\\BTNHoodOfCunning.blp")
+	itemgenNewEquipment('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, "Pointy Hat", "", pdef+"BTNHoodOfCunning.blp")
 	itemgenSetStats(stats()..add(Stat.ARMOR, 1)..add(Stat.LIFE, 10)..add(Stat.AGI, 3)..add(Stat.CC, 5)..add(Stat.CB, 6))
 	
 	// Accessory:
-	itemgenNewEquipment('I501', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Fairy Ring", "", "ReplaceableTextures\\CommandButtons\\BTNRingPurple.blp")
+	itemgenNewEquipment('I501', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Fairy Ring", "", pdef+"BTNRingPurple.blp")
 	itemgenSetStats(stats()..add(Stat.MANA, 8))
-	itemgenNewEquipment('I502', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Ring of Vitality", "", "ReplaceableTextures\\CommandButtons\\BTNGoldRing.blp")
+	itemgenNewEquipment('I502', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Ring of Vitality", "", pdef+"BTNGoldRing.blp")
 	itemgenSetStats(stats()..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Astute", "", "ReplaceableTextures\\CommandButtons\\BTNSoulGem.blp")
+	itemgenNewEquipment('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Astute", "", pdef+"BTNSoulGem.blp")
 	itemgenSetStats(stats()..add(Stat.INT, 2)..add(Stat.CASTSPEED, 4)..add(Stat.MANA, 8))
-	itemgenNewEquipment('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of Vigor", "", "ReplaceableTextures\\CommandButtons\\BTNUsedSoulGem.blp")
+	itemgenNewEquipment('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
 	itemgenSetStats(stats()..add(Stat.STR, 2)..add(Stat.EVA, 3)..add(Stat.HEALREC, 12))
-	itemgenNewEquipment('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Eagle", "", "ReplaceableTextures\\CommandButtons\\BTNOrbOfDarkness.blp")
+	itemgenNewEquipment('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
 	itemgenSetStats(stats()..add(Stat.AGI, 2)..add(Stat.CC, 3)..add(Stat.CM, 10)..add(Stat.MANA, 5))
 	
 	// Misc:
 	
 	// Testitems:
-	itemgenNewEquipment('I6ZZ', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 100, "Testitem", "", "ReplaceableTextures\\CommandButtons\\BTNPenguin.blp")
+	itemgenNewEquipment('I6ZZ', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 100, "Testitem", "", pdef+"BTNPenguin.blp")
 	itemgenSetStats(stats()..add(Stat.LIFE, 100)..add(Stat.STR, 20)..add(Stat.AGI, 20)..add(Stat.INT, 20)..add(Stat.DAMAGE, 20)..add(Stat.ARMOR, 4)..add(Stat.MS, 100))
 
 	// ##### MATERIALS #####
-	itemgenNewMaterial('IM00', 8, "Boar Tusk", "", "ReplaceableTextures\\CommandButtons\\BTNRazorback.blp")
-	itemgenNewMaterial('IM01', 6, "Wood Stem", "", "ReplaceableTextures\\CommandButtons\\BTNBundleOfLumber.blp")
-	itemgenNewMaterial('IM02', 8, "Wolf Pelt", "", "ReplaceableTextures\\CommandButtons\\BTNReinforcedHides.blp")
-	itemgenNewMaterial('IM03', 12, "Scale", "", "ReplaceableTextures\\CommandButtons\\BTNImprovedCreatureCarapace.blp")
-	itemgenNewMaterial('IM04', 10, "Aquamarine", "", "ReplaceableTextures\\CommandButtons\\BTNWispSplode.blp")
+	itemgenNewMaterial('IM00', 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")
+	itemgenNewMaterial('IM01', 6, "Wood Stem", "", pdef+"BTNBundleOfLumber.blp")
+	itemgenNewMaterial('IM02', 8, "Wolf Pelt", "", pdef+"BTNReinforcedHides.blp")
+	itemgenNewMaterial('IM03', 12, "Scale", "", pdef+"BTNImprovedCreatureCarapace.blp")
+	itemgenNewMaterial('IM04', 10, "Aquamarine", "", pdef+"BTNWispSplode.blp")
 
 	// ##### RECIPES ##### (Run this after Equipment and Materials)
 	itemgenNewRecipe('i201', 15, 'I201', "") // Wooden Buckler
