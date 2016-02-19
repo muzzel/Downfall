@@ -39,7 +39,7 @@ class SpellShieldSlam extends Spell
 		KillSoundWhenDone(s)
 		caster.addEffect("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", "chest").destr()
 		unitDamageTarget(caster, targetUnit, damage, DamageType.PHYSICAL)
-		modifyThreat(caster, targetUnit, 10+damage*2, true)
+		modifyThreat(caster, targetUnit, 10+damage*3, true)
 		if caster.xHasTalent(TALENT_WARRIOR_SHIELDSLAM_STUN)
 			targetUnit.addStunTimed(1.)
 		if caster.xHasTalent(TALENT_WARRIOR_SHIELDSLAM_TAUNT)
