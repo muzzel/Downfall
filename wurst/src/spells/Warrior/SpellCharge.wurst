@@ -21,7 +21,7 @@ class SpellCharge extends Spell
 					let damage = caster.xGetUnitData().unitStatBuffer.get(Stat.STR)*1.
 					unitDamageTarget(u, t, damage, DamageType.PHYSICAL)
 					if caster.xHasTalent(TALENT_WARRIOR_CHARGE_THREAT)
-						modifyThreat(caster, targetUnit, 5+damage, true)
+						modifyThreat(caster, targetUnit, 10+damage*2, true)
 		end)
 	
 init
