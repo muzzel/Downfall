@@ -1,36 +1,36 @@
 package HeroInventoryRestrictions
 import ItemTypeData
-import EquipmentClassList
+import EquipmentClassification
 import HeroTypeGen
 
-public function validateClass(unit u, item i) returns boolean // TODO
+public function validateClass(unit u, item i) returns boolean
 	boolean allowed = false
 	let ht = u.getHeroType()
-	EquipmentClass cls = GetItemTypeId(i).xGetItemTypeData().equipmentClass
+	EqCla cls = GetItemTypeId(i).xGetItemTypeData().equipmentClass
 	switch ht
 		case WARRIOR
 			allowed = (
-				cls == EquipmentClass.SWORD or
-				cls == EquipmentClass.AXE or
-				cls == EquipmentClass.SHIELD or
-				cls == EquipmentClass.CHAIN or
-				cls == EquipmentClass.ACCESSORY)
+				cls == EqCla.SWO or
+				cls == EqCla.AXE or
+				cls == EqCla.SHI or
+				cls == EqCla.CHA or
+				cls == EqCla.ACC)
 		case PRIEST
 			allowed = (
-				cls == EquipmentClass.STAFF or
-				cls == EquipmentClass.ORB or
-				cls == EquipmentClass.CLOTH or
-				cls == EquipmentClass.ACCESSORY)
+				cls == EqCla.STA or
+				cls == EqCla.ORB or
+				cls == EqCla.CLO or
+				cls == EqCla.ACC)
 		case RANGER
 			allowed = (
-				cls == EquipmentClass.BOW or
-				cls == EquipmentClass.QUIVER or
-				cls == EquipmentClass.LEATHER or
-				cls == EquipmentClass.ACCESSORY)
+				cls == EqCla.BOW or
+				cls == EqCla.QUI or
+				cls == EqCla.LEA or
+				cls == EqCla.ACC)
 		case DRUID
 			allowed = (
-				cls == EquipmentClass.STAFF or
-				cls == EquipmentClass.ORB or
-				cls == EquipmentClass.CLOTH or
-				cls == EquipmentClass.ACCESSORY)
+				cls == EqCla.STA or
+				cls == EqCla.ORB or
+				cls == EqCla.CLO or
+				cls == EqCla.ACC)
 	return allowed

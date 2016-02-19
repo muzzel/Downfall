@@ -5,7 +5,7 @@ import ItemData
 import ItemTypeData
 import SimError
 import InventoryIterator
-import EquipmentSlotList
+import EquipmentClassification
 import HeroInventoryRestrictions
 
 function takeItem()
@@ -37,7 +37,7 @@ function dropItem()
 				u.xGetUnitData().unitStatBuffer.remove(GetItemTypeId(i).xGetItemTypeData().stats) // remove stats
 
 function validateSlot(unit u, item i) returns boolean
-	EquipmentSlot slot = GetItemTypeId(i).xGetItemTypeData().equipmentSlot
+	EqSlo slot = GetItemTypeId(i).xGetItemTypeData().equipmentSlot
 	var iter = new InventoryIterator(u)
 	ItemTypeData slotItemTypeData 
 	for item slotItem from iter

@@ -9,3 +9,12 @@ public enum EquipmentSlot
 	HELMET
 	ACCESSORY
 	MISC
+	
+// EquipmentSlot:
+public enum EqSlo
+	MAI // Mainhand
+	OFF // Offhand
+	CHE // Chest
+	HEL // Helmet
+	ACC // Accessory
+	MIS // Misc

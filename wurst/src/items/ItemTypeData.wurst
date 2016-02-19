@@ -1,7 +1,6 @@
 package ItemTypeData
 import HashMap
-import EquipmentClassList
-import EquipmentSlotList
+import EquipmentClassification
 import StatHandler
 
 // ItemType API:
@@ -23,8 +22,8 @@ public class ItemTypeData
 	int raw
 	ItemClass itemClass
 	// For ItemClass.EQUIPMENT:
-	EquipmentSlot equipmentSlot
-	EquipmentClass equipmentClass
+	EqSlo equipmentSlot
+	EqCla equipmentClass
 	StatList stats
 	// For ItemClass.RECIPE
 	int recipeTarget = 0

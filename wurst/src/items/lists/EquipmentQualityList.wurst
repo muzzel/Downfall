@@ -1,6 +1,0 @@
-package EquipmentQualityList
-
-public enum EquipmentQuality
-	NORMAL
-	RARE
-	EPIC

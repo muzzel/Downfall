@@ -2,9 +2,7 @@ package ItemTypeGen
 import initlater ObjEditingNatives
 import initlater ItemObjEditing
 import initlater StatHandler
-import initlater EquipmentClassList
-import initlater EquipmentQualityList
-import initlater EquipmentSlotList
+import initlater EquipmentClassification
 import ItemTypeList
 import ItemTooltipGen
 import ItemTypeData
@@ -15,7 +13,7 @@ ItemTypeData currentItemTypeData
 //ObjectDefinition currentItemTypeDefinition
 ItemDefinition currentItemTypeDefinition
 
-public function itemgenNewEquipment(int raw, EquipmentQuality equipmentQuality, EquipmentSlot equipmentSlot, EquipmentClass equipmentClass, int cost, string name, string description, string icon) returns int
+public function itemgenNewEquipment(int raw, EqQua equipmentQuality, EqSlo equipmentSlot, EqCla equipmentClass, int cost, string name, string description, string icon) returns int
 	currentItemTypeData = new ItemTypeData(raw)
 	currentItemTypeData.itemClass = ItemClass.EQUIPMENT
 	currentItemTypeData.name = name

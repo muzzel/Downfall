@@ -25,3 +25,23 @@ public enum EquipmentClass
 	CLOTH
 	//
 	ACCESSORY
+	
+// EquipmentClass:
+public enum EqCla
+	// Mainhand:
+	SWO // Sword (default)
+	AXE // Axe
+	DAG // Dagger
+	TWO // Twohanded (blocks offhand)
+	STA // Staff
+	BOW // Bow
+	// Offhand:
+	SHI // Shield
+	ORB // Orb
+	QUI // Quiver
+	KNI // Knife
+	// General:
+	CHA // Chain
+	LEA // Lather
+	CLO // Cloth
+	ACC // Accessory

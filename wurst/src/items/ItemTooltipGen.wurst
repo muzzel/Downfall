@@ -1,8 +1,6 @@
 package ItemTooltipGen
 import initlater StatHandler
-import initlater EquipmentQualityList
-import initlater EquipmentClassList
-import initlater EquipmentSlotList
+import initlater EquipmentClassification
 import ItemTypeData
 
 string tooltipHeader
@@ -46,50 +44,50 @@ public function tooltipAddRecipeReq(ItemTypeData itemTypeData)
 public function tooltipAddDescription(string description)
 	tooltipDescription = description
 
-public function tooltipAddEquipmentProperties(EquipmentSlot equipmentSlot, EquipmentClass equipmentClass)
+public function tooltipAddEquipmentProperties(EqSlo equipmentSlot, EqCla equipmentClass)
 	tooltipHeader = "|cffB3B3B3"
 	switch equipmentSlot
-		case MAINHAND
+		case MAI
 			tooltipHeader += "Mainhand"
-		case OFFHAND
+		case OFF
 			tooltipHeader += "Offhand"
-		case CHEST
+		case CHE
 			tooltipHeader += "Chest"
-		case HELMET
+		case HEL
 			tooltipHeader += "Helmet"
-		case MISC
+		case MIS
 			tooltipHeader += "Misc"
-		case ACCESSORY
+		case ACC
 			tooltipHeader += "Accessory"
 	tooltipHeader += " - "
 	switch equipmentClass
-		case SWORD
+		case SWO
 			tooltipHeader += "Sword"
 		case AXE
 			tooltipHeader += "Axe"
-		case DAGGER
+		case DAG
 			tooltipHeader += "Dagger"
-		case TWOHANDED
+		case TWO
 			tooltipHeader += "Twohanded"
-		case STAFF
+		case STA
 			tooltipHeader += "Staff"
 		case BOW
 			tooltipHeader += "Bow"
-		case SHIELD
+		case SHI
 			tooltipHeader += "Shield"
 		case ORB
 			tooltipHeader += "Orb"
-		case QUIVER
+		case QUI
 			tooltipHeader += "Quiver"
-		case KNIFE
+		case KNI
 			tooltipHeader += "Knife"
-		case CHAIN
+		case CHA
 			tooltipHeader += "Chain"
-		case LEATHER
+		case LEA
 			tooltipHeader += "Leather"
-		case CLOTH
+		case CLO
 			tooltipHeader += "Cloth"
-		case ACCESSORY
+		case ACC
 			tooltipHeader += "Accessory"
 	tooltipHeader += "|r"
 	
@@ -121,14 +119,14 @@ public function tooltipGet() returns string
 		tooltip += tooltipDescription
 	return tooltip
 
-public function tooltipColorizeItemName(string itemName, EquipmentQuality equipmentQuality) returns string
+public function tooltipColorizeItemName(string itemName, EqQua equipmentQuality) returns string
 	string name = ""
 	switch equipmentQuality
-		case NORMAL
+		case NOR
 			name = itemName
-		case RARE
+		case RAR
 			name = "|cff3B85ED" + itemName + "|r"
-		case EPIC
+		case EPI
 			name = "|cffA938FF" + itemName + "|r"
 	return name
 	
