@@ -1,6 +1,7 @@
 package HeroRespawn
 import UnitData
 import initlater ThreatHandler
+import initlater OOCRegen
 
 constant real HERO_RESPAWN_TIME = 20.
 constant vec2 HERO_RESPAWN_POS = vec2(-10250, 4390)
@@ -16,7 +17,6 @@ class HeroRespawn
 		this.hero = hero
 	
 	function respawn()
-		destroy hero.xGetUnitData().threatHandlerPu
 		startTimer(HERO_RESPAWN_TIME)
 		printTimedToPlayer("Your hero has died and will respawn in " + R2I(HERO_RESPAWN_TIME).toString() + " seconds.", 5, hero.getOwner())
 	
@@ -27,9 +27,11 @@ class HeroRespawn
 		hero.revive(HERO_RESPAWN_POS, true)
 		// Create new ThreatHandlerPU
 		hero.xGetUnitData().threatHandlerPu = new ThreatHandlerPU(hero)
+		unitEnableOOCRegen(hero)
 		// Remove some gold/exp:
 		let goldLost = owner.getGold() div 5
 		owner.subGold(goldLost)
 		printTimedToPlayer("You lost " + goldLost.toString() + " gold.", 5, owner)
+		destroy this
 		
 		
