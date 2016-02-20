@@ -1,0 +1,121 @@
+package SaveLoadManual
+import CodeGenerator
+import HeroType
+import PlayerData
+import ChatEvent
+import Heropick
+
+/* 
+ * Saving:
+ * herotype
+ * gold
+ * exp
+ * str
+ * agi
+ * int
+ * statpoints
+ * talentpoints
+ * 6x items (hero)
+ * 6x items (bag)
+ * Nx queststatus (discovered, started, finished)
+ * talents
+ * spells
+ */
+constant int SAVECODE_VERSION = 1
+constant int MAX_HERO_ID = 10
+constant int MAX_GOLD = 1000000
+constant int MAX_EXP = 1000000
+constant int MAX_STR = 100
+constant int MAX_AGI = 100
+constant int MAX_INT = 100
+constant int MAX_LPS = 1000
+constant int MAX_LPT = 1000
+
+function save(player p)
+	let hero = xGetPlayerHero(p.getId())
+	let playerData = xGetPlayerData(p.getId())
+	// 
+	let heroTypeId = hero.getHeroType().getId()
+	let gold = p.getGold()
+	let exp = GetHeroXP(hero)
+	let str = playerData.getLearnedAttributeStr()
+	let agi = playerData.getLearnedAttributeAgi()
+	let inte = playerData.getLearnedAttributeInt()
+	let lps = playerData.getLearnPointsStats()
+	let lpt = playerData.getLearnPointsTalents()
+	
+	print("Saving hero of player " + GetPlayerName(p) + ":")
+	print("- hero id: " + heroTypeId.toString())
+	print("- gold: " + gold.toString())
+	print("- exp: " + exp.toString())
+	print("- str: " + str.toString())
+	print("- agi: " + agi.toString())
+	print("- int: " + inte.toString())
+	print("- statpoints: " + lps.toString())
+	print("- talentpoints: " + lpt.toString())
+	
+	Savecode savecode = new Savecode()
+	
+	savecode.encode(heroTypeId, MAX_HERO_ID)
+	savecode.encode(gold, MAX_GOLD)
+	savecode.encode(exp, MAX_EXP)
+	savecode.encode(str, MAX_STR)
+	savecode.encode(agi, MAX_AGI)
+	savecode.encode(inte, MAX_INT)
+	savecode.encode(lps, MAX_LPS)
+	savecode.encode(lpt, MAX_LPT)
+	
+	string s = savecode.save(p, SAVECODE_VERSION)
+	print("Your savecode:\n" + s)
+	destroy savecode
+	
+function load(player p, string c)
+	let pid = p.getId()
+	Savecode loadcode = new Savecode()
+	boolean success = loadcode.load(p, c, SAVECODE_VERSION)
+	if not success
+		print("Error loading code: Savecode.load(..) returned false")
+		destroy loadcode
+		return
+	if not isPicking(p)
+		print("You need to -repick before you can load")
+		destroy loadcode
+		return
+	int lpt = loadcode.decode(MAX_LPT)
+	int lps = loadcode.decode(MAX_LPS)
+	int inte = loadcode.decode(MAX_INT)
+	int agi = loadcode.decode(MAX_AGI)
+	int str = loadcode.decode(MAX_STR)
+	int exp = loadcode.decode(MAX_EXP)
+	int gold = loadcode.decode(MAX_GOLD)
+	int heroTypeId = loadcode.decode(MAX_HERO_ID)
+	
+	print("Loading hero for player " + GetPlayerName(p) + ":")
+	print("- hero id: " + heroTypeId.toString())
+	print("- gold: " + gold.toString())
+	print("- exp: " + exp.toString())
+	print("- str: " + str.toString())
+	print("- agi: " + agi.toString())
+	print("- int: " + inte.toString())
+	print("- statpoints: " + lps.toString())
+	print("- talentpoints: " + lpt.toString())
+	
+	destroy loadcode
+	cancelHeropick(p)
+	new PlayerData(pid, heroTypeId2HeroType(heroTypeId), vec2(-10250, 4390))
+	let hero = xGetPlayerHero(pid)
+	let playerData = xGetPlayerData(pid)
+	hero.addXp(exp, false)
+	playerData.setLearnPointsStats(lps)
+	playerData.setLearnPointsTalents(lpt)
+	playerData.setLearnedAttributes(agi, str, inte)
+	p.setState(PLAYER_STATE_RESOURCE_GOLD, gold)
+	
+init
+	allPlayerChatEvent("-save", true, () -> begin
+		save(GetTriggerPlayer())
+	end)
+	allPlayerChatEvent("-load", false, () -> begin
+			let s = GetEventPlayerChatString()
+			load(GetTriggerPlayer(), s.substring(6, s.length()))
+	end)

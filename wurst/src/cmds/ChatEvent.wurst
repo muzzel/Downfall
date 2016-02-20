@@ -1,0 +1,8 @@
+package ChatEvent
+
+public function allPlayerChatEvent(string s, boolean exact, code action) returns trigger
+	let trig = CreateTrigger()
+	trig.addAction(action)
+	for k = 15 downto 0
+		trig.registerPlayerChatEvent(Player(k), s, exact)
+	return trig

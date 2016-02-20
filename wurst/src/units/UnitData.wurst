@@ -1,5 +1,5 @@
 package UnitData
-import PlayerData
+import initlater PlayerData
 import public UnitIndex
 import initlater CreepExp
 import UnitTypeGen // Assure UnitBaseStatBuffers are valid before UnitData objects are created.
