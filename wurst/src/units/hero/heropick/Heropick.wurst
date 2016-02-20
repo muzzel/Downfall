@@ -1,53 +1,113 @@
 package Heropick
 import HeropickObjectGen
 import Config
-import PlayerData
-import TalentList
 import QuestProvingYourWorth
+import HeroType
+import PlayerData
+import ChatEvent
 
 constant vec2 heroPickPos = vec2(-10500, -11200)
 constant vec2 heroStartPos = vec2(-10250, 4390)
 unit ship
+unit array heroPicker // Hero picker unit for all players. 
 
-function startHeropick(player p)
-	createUnit(p, RAW_DUMMY_PICK, heroPickPos, angle(0.))
-//	SetCameraPositionForPlayer(p, heroPickPos.x, heroPickPos.y)
+/** Starts hero pick. Only call this function, if the old PlayerData has been destroyed before. */
+public function startHeropick(player p)
+	if isPicking(p)
+		printWarning("startHeropick(..): hero is picking")
+		return
+	heroPicker[p.getId()] = createUnit(p, RAW_DUMMY_PICK, heroPickPos, angle(0.))
+	SetCameraPositionForPlayer(p, heroPickPos.x, heroPickPos.y)
+
+public function cancelHeropick(player p)
+	if not isPicking(p)
+		printWarning("cancelHeropick(..): hero is not picking")
+		return
+	heroPicker[p.getId()].remove()
+	heroPicker[p.getId()] = null
+
+public function isPicking(player p) returns boolean
+	return heroPicker[p.getId()] != null
+
+function repick(player p)
+	if isPicking(p)
+		print("You can only repick after you loaded or picked a hero!")
+	else
+		destroy xGetPlayerData(p.getId())
+		startHeropick(p)
 
 function heroPickedAction()
 	let p = GetBuyingUnit().getOwner()
 	let pid = p.getId()
-	unit hero = null
+	// Sanity check:
+	if heroPicker[pid] == null
+		printWarning("heroPickedAction(..): heroPicker[pid] == null")
+		return
+	if heroPicker[pid] != GetBuyingUnit()
+		printWarning("heroPickedAction(..): heroPicker[pid] != GetBuyingUnit()")
+		return
+	// end sanity check.
+	HeroType heroType = HeroType.WARRIOR // requires initialization
 	switch GetSoldUnit().getTypeId()
 		case RAW_DUMMY_WARRIOR
-			hero = createUnit(p, 'HE01', heroStartPos, angle(0.))
-				..addAbility('AS02')..addAbility('AS03')..addAbility('AS12')
-				..addAbility(BOOK_TALENT_WARRIOR)
+			heroType = HeroType.WARRIOR
 		case RAW_DUMMY_PRIEST
-			hero = createUnit(p, 'HE02', heroStartPos, angle(0.))
-				..addAbility('AS01')..addAbility('AS04')..addAbility('AS09')
-				..addAbility(BOOK_TALENT_PRIEST)
+			heroType = HeroType.PRIEST 
 		case RAW_DUMMY_RANGER
-			hero = createUnit(p, 'HE03', heroStartPos, angle(0.))
-				..addAbility('AS07')..addAbility('AS08')..addAbility('AS11')
-				..addAbility(BOOK_TALENT_RANGER)
+			heroType = HeroType.RANGER
 		case RAW_DUMMY_DRUID
-			hero = createUnit(p, 'HE04', heroStartPos, angle(0.))
-				..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
-				..addAbility(BOOK_TALENT_DRUID)
-	initPlayerData(pid, hero)
+			heroType = HeroType.DRUID
+	new PlayerData(pid, heroType, heroStartPos)
+	let hero = xGetPlayerHero(pid) 
 	printTimed(p.getName() + " picked: |cffffcc00" + hero.getName(), 4.)
-	SetCameraPositionForPlayer(p, heroStartPos.x, heroStartPos.y)
-	SelectUnitForPlayerSingle(hero, p)
 	GetSoldUnit().remove()
-	GetBuyingUnit().remove()
+	cancelHeropick(p)
 	// Set first quest discoverable
 	pqProveWorth.setDiscoverable(pid, udg_npc_bryce)
+	
+//function heroPickedAction()
+//	let p = GetBuyingUnit().getOwner()
+//	let pid = p.getId()
+//	unit hero = null
+//	switch GetSoldUnit().getTypeId()
+//		case RAW_DUMMY_WARRIOR
+//			hero = createUnit(p, 'HE01', heroStartPos, angle(0.))
+//				..addAbility('AS02')..addAbility('AS03')..addAbility('AS12')
+//				..addAbility(BOOK_TALENT_WARRIOR)
+//		case RAW_DUMMY_PRIEST
+//			hero = createUnit(p, 'HE02', heroStartPos, angle(0.))
+//				..addAbility('AS01')..addAbility('AS04')..addAbility('AS09')
+//				..addAbility(BOOK_TALENT_PRIEST)
+//		case RAW_DUMMY_RANGER
+//			hero = createUnit(p, 'HE03', heroStartPos, angle(0.))
+//				..addAbility('AS07')..addAbility('AS08')..addAbility('AS11')
+//				..addAbility(BOOK_TALENT_RANGER)
+//		case RAW_DUMMY_DRUID
+//			hero = createUnit(p, 'HE04', heroStartPos, angle(0.))
+//				..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
+//				..addAbility(BOOK_TALENT_DRUID)
+//	initPlayerData(pid, hero)
+//	printTimed(p.getName() + " picked: |cffffcc00" + hero.getName(), 4.)
+//	SetCameraPositionForPlayer(p, heroStartPos.x, heroStartPos.y)
+//	SelectUnitForPlayerSingle(hero, p)
+//	GetSoldUnit().remove()
+//	GetBuyingUnit().remove()
+//	// Set first quest discoverable
+//	pqProveWorth.setDiscoverable(pid, udg_npc_bryce)
 
 init
 	ship = createUnit(Player(PLAYER_NEUTRAL_PASSIVE), RAW_SHIP, heroPickPos, angle(0.))
 	CreateTrigger()
 		..registerUnitEvent(ship, EVENT_UNIT_SELL)
 		..addAction(function heroPickedAction)
-	for int pid = 0 to NUM_OF_PLAYERS-1
-		startHeropick(players[pid])
+	getTimer().start(2, () -> begin
+		for int pid = 0 to NUM_OF_PLAYERS-1
+			startHeropick(players[pid])
+		GetExpiredTimer().release()
+	end)
+	
+	allPlayerChatEvent("-repick", true, () -> begin
+		repick(GetTriggerPlayer())
+	end)
+	
 	

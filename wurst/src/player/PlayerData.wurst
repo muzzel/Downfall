@@ -1,54 +1,89 @@
 package PlayerData
-import public initlater HeroTypeGen
-import initlater UnitData
+import UnitData
 import StatHandler
 import initlater Bag
+import HeroType
+import TalentList
+
 
 public function xGetPlayerHero(int playerId) returns unit
 	if playerData[playerId] == null
 		return null
 	return playerData[playerId].hero
 
-public function initPlayerData(int playerId, unit hero)
-	if playerData[playerId] != null
-		destroy playerData[playerId]
-	new PlayerData(playerId, hero)
+//public function initPlayerData(int playerId, unit hero)
+//	if playerData[playerId] != null
+//		destroy playerData[playerId]
+//	new PlayerData(playerId, hero)
 
 public function xGetPlayerData(int playerId) returns PlayerData
 	return playerData[playerId]
 
 PlayerData array playerData
 
+function createHero(player p, HeroType heroType, vec2 pos) returns unit
+	unit hero = createUnit(p, heroType.getRaw(), pos, angle(0.))
+	switch heroType
+		case WARRIOR
+			hero..addAbility('AS02')..addAbility('AS03')..addAbility('AS12')
+			hero..addAbility(BOOK_TALENT_WARRIOR)
+		case PRIEST
+			hero..addAbility('AS01')..addAbility('AS04')..addAbility('AS09')
+			hero..addAbility(BOOK_TALENT_PRIEST)
+		case RANGER
+			hero..addAbility('AS07')..addAbility('AS08')..addAbility('AS11')
+			hero..addAbility(BOOK_TALENT_RANGER)
+		case DRUID
+			hero..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
+			hero..addAbility(BOOK_TALENT_DRUID)
+//	initPlayerData(p.getId(), hero)
+	SetCameraPositionForPlayer(p, pos.x, pos.y)
+	SelectUnitForPlayerSingle(hero, p)
+	return hero
+
+/** Represents the players data and his hero.
+ *  Simply create a new object of this class to create a new player/hero.
+ *  Destroy the object to remove the hero and reset the player data.
+ *  Creating a new object will automatically remove the old hero and reset the data. */
 public class PlayerData
-	int playerId
-	unit hero
+	private int playerId
+	protected unit hero
 	// learn points:
-	int learnPointsStats
-	int learnPointsTalents
+	private int learnPointsStats
+	private int learnPointsTalents
 	// learned stats:
-	StatList learnedStats
-	int learnedStr
-	int learnedAgi
-	int learnedInt
+	private StatList learnedStats
+	private int learnedStr
+	private int learnedAgi
+	private int learnedInt
 	
-	construct(int playerId, unit hero)
+	construct(int playerId, HeroType heroType, vec2 heroSpawnPos)
+		if playerData[playerId] != null
+			destroy playerData[playerId]
 		playerData[playerId] = this // must be first, for xIsHero(..) check
 		this.playerId = playerId
-		this.hero = hero
+		this.hero = createHero(Player(playerId), heroType, heroSpawnPos)
 		new UnitData(hero)
 		playerCreateBag(playerId)
 		// learn points:
 		learnPointsStats = 0
 		learnPointsTalents = 0
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_USED, learnPointsStats)
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_CAP, learnPointsTalents)
 		// learned attributes:
 		learnedStats = new StatList()
 		learnedStr = 0
 		learnedAgi = 0
 		learnedInt = 0
 		hero.xGetUnitData().unitStatBuffer.apply(learnedStats)
+		Player(playerId).setState(PLAYER_STATE_RESOURCE_GOLD, 0)
 	
 	function getLearnPointsStats() returns int
 		return learnPointsStats
+	
+	function setLearnPointsStats(int newValue)
+		learnPointsStats = newValue
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_USED, learnPointsStats)
 	
 	function incLearnPointsStats(int add)
 		learnPointsStats += add
@@ -57,9 +92,37 @@ public class PlayerData
 	function getLearnPointsTalents() returns int
 		return learnPointsTalents
 	
+	function setLearnPointsTalents(int newValue)
+		learnPointsTalents = newValue
+		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_CAP, learnPointsTalents)
+		
 	function incLearnPointsTalents(int add)
 		learnPointsTalents += add
 		players[playerId].setState(PLAYER_STATE_RESOURCE_FOOD_CAP, learnPointsTalents)
+	
+	function getLearnedAttributeStr() returns int
+		return learnedStr
+	
+	function getLearnedAttributeAgi() returns int
+		return learnedAgi
+	
+	function getLearnedAttributeInt() returns int
+		return learnedInt
+	
+	function setLearnedAttributes(int str, int agi, int inte)
+		learnedStr = str
+		learnedAgi = agi
+		learnedInt = inte
+		hero.xGetUnitData().unitStatBuffer.remove(learnedStats)
+		destroy learnedStats
+		learnedStats = new StatList()
+		learnedStats.add(Stat.STRE, learnedStr)
+		learnedStats.add(Stat.AGIL, learnedAgi)
+		learnedStats.add(Stat.INTE, learnedInt)
+		learnedStats.add(Stat.STRW, learnedStr)
+		learnedStats.add(Stat.AGIW, learnedAgi)
+		learnedStats.add(Stat.INTW, learnedInt)
+		hero.xGetUnitData().unitStatBuffer.apply(learnedStats)
 	
 	function incLearnedAttributes(int str, int agi, int inte)
 		learnedStr += str
@@ -80,4 +143,5 @@ public class PlayerData
 		destroy learnedStats
 		destroy hero.xGetUnitData()
 		hero.remove()
+		playerRemoveBag(playerId)
 		playerData[playerId] = null

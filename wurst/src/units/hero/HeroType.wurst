@@ -1,4 +1,4 @@
-package HeroTypeGen
+package HeroType
 import StatHandler
 import UnitObjEditing
 import UnitTypeData
@@ -9,19 +9,7 @@ import AbilityObjEditing
  * 2. add to Heropick
  * 3. add to HeroInventoryRestrictions
  */
- 
-public function unit.getHeroType() returns HeroType
-	HeroType ht = WARRIOR
-	switch this.getTypeId()
-		case 'HE01'
-			ht = WARRIOR
-		case 'HE02'
-			ht = PRIEST
-		case 'HE03'
-			ht = RANGER
-		case 'HE04'
-			ht = DRUID
-	return ht
+constant int HERO_RAW_BASE = 'HE01'
 
 public enum HeroType
 	WARRIOR
@@ -29,9 +17,22 @@ public enum HeroType
 	RANGER
 	DRUID
 
+public function unit.getHeroType() returns HeroType
+	let raw = this.getTypeId()
+	return (raw - HERO_RAW_BASE) castTo HeroType
+	
+public function HeroType.getRaw() returns int
+	return HERO_RAW_BASE + this castTo int
+
+public function HeroType.getId() returns int
+	return (this castTo int)
+
+public function heroTypeId2HeroType(int id) returns HeroType // inverse of HeroType.getId()
+	return (id castTo HeroType)
+
 function initHeroTypeList()
 	// Hero: Warrior
-	int raw = 'HE01'
+	HeroType htype = HeroType.WARRIOR
 	int life = 80
 	int mana = 50
 	int dmg = 6
@@ -41,7 +42,8 @@ function initHeroTypeList()
 	int str = 5
 	int agi = 3
 	int inte = 2
-	if compiletimeMode
+	int raw = htype.getRaw()
+	if compiletime
 		genHeroData(raw, 'Hpal', "Warrior", life, mana, dmg, armor, aspd, ms, str, agi, inte)
 			..setModelFile("units\\other\\BloodElfLieutenant\\BloodElfLieutenant")
 			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNTheCaptain.blp")
@@ -51,7 +53,7 @@ function initHeroTypeList()
 	else
 		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
 	// Hero: Priest
-	raw = 'HE02'
+	htype = HeroType.PRIEST
 	life = 60
 	mana = 80
 	dmg = 7
@@ -61,7 +63,8 @@ function initHeroTypeList()
 	str = 2
 	agi = 2
 	inte = 6
-	if compiletimeMode
+	raw = htype.getRaw()
+	if compiletime
 		genHeroData(raw, 'Hamg', "Priest", life, mana, dmg, armor, aspd, ms, str, agi, inte)
 			..setModelFile("units\\human\\Priest\\Priest")
 			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNPriest.blp")
@@ -73,7 +76,7 @@ function initHeroTypeList()
 	else
 		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
 	// Hero: Ranger
-	raw = 'HE03'
+	htype = HeroType.RANGER
 	life = 60
 	mana = 60
 	dmg = 6
@@ -83,7 +86,8 @@ function initHeroTypeList()
 	str = 2
 	agi = 5
 	inte = 3
-	if compiletimeMode
+	raw = htype.getRaw()
+	if compiletime
 		genHeroData(raw, 'Hamg', "Ranger", life, mana, dmg, armor, aspd, ms, str, agi, inte)
 			..setModelFile("units\\creeps\\SylvanusWindrunner\\SylvanusWindrunner")
 			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNSylvanusWindrunner.blp")
@@ -95,7 +99,7 @@ function initHeroTypeList()
 	else
 		registerHeroData(raw, life, mana, dmg, armor, aspd, ms, str, agi, inte)
 	// Hero: Druid
-	raw = 'HE04'
+	htype = HeroType.DRUID
 	life = 70
 	mana = 70
 	dmg = 7
@@ -105,7 +109,8 @@ function initHeroTypeList()
 	str = 2
 	agi = 3
 	inte = 5
-	if compiletimeMode
+	raw = htype.getRaw()
+	if compiletime
 		genHeroData(raw, 'Hamg', "Druid", life, mana, dmg, armor, aspd, ms, str, agi, inte)
 			..setModelFile("units\\nightelf\\MalFurion\\MalFurionNoStag")
 			..setIconGameInterface("ReplaceableTextures\\CommandButtons\\BTNFurion.blp")
@@ -200,9 +205,7 @@ function HeroDefinition.addGlow()
 boolean compiletimeMode
 
 @compiletime function genObjects()
-	compiletimeMode = true
 	initHeroTypeList()
 			
 init
-	compiletimeMode = false
 	initHeroTypeList()
