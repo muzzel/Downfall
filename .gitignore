@@ -1,6 +1,7 @@
 doc/
 models/
 objectEditingOutput/
+trash/
 wurst/war3map.j
 wurst.dependencies
 compiled.j.txt
