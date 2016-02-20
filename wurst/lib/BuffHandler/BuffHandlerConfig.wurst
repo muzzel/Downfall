@@ -1,9 +1,13 @@
 package BuffHandlerConfig
 import initlater BuffHandler
 import initlater UnitData
+import initlater DamageHandler
 
-public function unit.getBuffList() returns BuffList
+@configurable public function unit.getBuffList() returns BuffList
 	return this.xGetUnitData().unitBuffList
+	
+@configurable public function disableDamageEvents(boolean disable)
+	blockDamageEvents(disable)
 
 public module BuffCustomMembers
 	

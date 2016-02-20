@@ -7,6 +7,7 @@ import initlater BuffHandler
 import initlater ThreatHandler
 import initlater PlayerData
 
+import ItemData
 
 init
 	chatEvent("-debug inventory", () -> begin
@@ -25,4 +26,12 @@ init
 	end)
 	chatEvent("-debug threat", () -> begin
 		debugThreat(selectedUnit())
+	end)
+	chatEvent("-materials", () -> begin
+		let pos = vec2(-10300, 4300)
+		xSpawnItem('IM00', pos)
+		xSpawnItem('IM01', pos)
+		xSpawnItem('IM02', pos)
+		xSpawnItem('IM03', pos)
+		xSpawnItem('IM04', pos)
 	end)

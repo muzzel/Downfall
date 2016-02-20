@@ -18,84 +18,46 @@ constant string pdef = "ReplaceableTextures\\CommandButtons\\"
 public function initItemTypeLists()
 	// ##### EQUIPMENT #####
 	// Mainhand:
-	itemgenNewEquipment('I101', EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, "Old Sword", "", pdef+"BTNSteelMelee.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 1))
-	itemgenNewEquipment('I102', EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, "Old Staff", "", pdef+"BTNWand.blp")
-	itemgenSetStats(stats()..add(Stat.INTE, 1))
-	itemgenNewEquipment('I103', EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, "Old Bow", "", pdef+"BTNImprovedBows.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 1))
-	itemgenNewEquipment('I104', EqQua.NOR, EqSlo.MAI, EqCla.AXE, 20, "Woodcutters Axe", "", pdef+"BTNOrcMeleeUpOne.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 2)..add(Stat.STRE, 1)..add(Stat.ATHR, 20))
-	itemgenNewEquipment('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, "Horn Bow", "", pdef+"BTNQuillSprayOff.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 3)..add(Stat.AGIL, 1)..add(Stat.ASPD, 15))
-	itemgenNewEquipment('I106', EqQua.NOR, EqSlo.MAI, EqCla.STA, 20, "Enchanted Staff", "", pdef+"BTNStarWand.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 1)..add(Stat.INTE, 2))
-	itemgenNewEquipment('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, "Sylvan Staff", "", pdef+"BTNStaffOfPreservation.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 2)..add(Stat.INTE, 3)..add(Stat.MANA, 20)..add(Stat.CSPE, 8))
-	
+	genEq('I101', EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, Stat.DAMA, 1, "Old Sword", "", pdef+"BTNSteelMelee.blp")
+	genEq('I102', EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, Stat.INTE, 1, "Old Staff", "", pdef+"BTNWand.blp")
+	genEq('I103', EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, Stat.DAMA, 1, "Old Bow", "", pdef+"BTNImprovedBows.blp")
+	genEq('I104', EqQua.NOR, EqSlo.MAI, EqCla.AXE, 20, Stat.DAMA, 2, Stat.STRE, 1, "Woodcutters Axe", "", pdef+"BTNOrcMeleeUpOne.blp")
+	genEq('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, Stat.DAMA, 3, Stat.AGIL, 1, Stat.ASPD, 15, "Horn Bow", "", pdef+"BTNQuillSprayOff.blp")
+	genEq('I106', EqQua.NOR, EqSlo.MAI, EqCla.STA, 20, Stat.DAMA, 1, Stat.INTE, 2, "Enchanted Staff", "", pdef+"BTNStarWand.blp")
+	genEq('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, Stat.DAMA, 2, Stat.INTE, 3, Stat.MANA, 20, "Sylvan Staff", "", pdef+"BTNStaffOfPreservation.blp")
 	// Offhand:
-	itemgenNewEquipment('I201', EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, "Wooden Buckler", "", pdef+"BTNSteelArmor.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 2)..add(Stat.LIFE, 5))
-	itemgenNewEquipment('I202', EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, "Energy Orb", "", pdef+"BTNUsedSoulGem.blp")
-	itemgenSetStats(stats()..add(Stat.INTE, 1)..add(Stat.MANA, 5))
-	itemgenNewEquipment('I203', EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, "Sharp Arows", "", pdef+"BTNImpalingBolt.blp")
-	itemgenSetStats(stats()..add(Stat.DAMA, 1)..add(Stat.AGIL, 1))
-	itemgenNewEquipment('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, "Mithril Plate", "", pdef+"BTNHumanArmorUpThree.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 4)..add(Stat.LIFE, 12)..add(Stat.EVAS, 6))
-	
+	genEq('I201', EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, Stat.ARMO, 2, Stat.LIFE, 5, "Wooden Buckler", "", pdef+"BTNSteelArmor.blp")
+	genEq('I202', EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, Stat.INTE, 1, Stat.MANA, 5, "Energy Orb", "", pdef+"BTNUsedSoulGem.blp")
+	genEq('I203', EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, Stat.DAMA, 1, Stat.AGIL, 1, "Sharp Arows", "", pdef+"BTNImpalingBolt.blp")
+	genEq('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, Stat.ARMO, 4, Stat.LIFE, 12, "Mithril Plate", "", pdef+"BTNHumanArmorUpThree.blp")
 	// Chest:
-	itemgenNewEquipment('I301', EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, "Wooden Mail", "", pdef+"BTNImprovedMoonArmor.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1)..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I302', EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, "Fur Coat", "", pdef+"BTNImprovedReinforcedHides.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1)..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I303', EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, "Tattered Robe", "", pdef+"BTNCloak.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1)..add(Stat.MANA, 5))
-	itemgenNewEquipment('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, "Shining Chestguard", "", pdef+"BTNArmorGolem.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 2)..add(Stat.LIFE, 10)..add(Stat.EVAS, 3)..add(Stat.HREC, 5))
-	
+	genEq('I301', EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, Stat.ARMO, 1, Stat.LIFE, 10, "Wooden Mail", "", pdef+"BTNImprovedMoonArmor.blp")
+	genEq('I302', EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, Stat.ARMO, 1, Stat.LIFE, 10, "Fur Coat", "", pdef+"BTNImprovedReinforcedHides.blp")
+	genEq('I303', EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, Stat.ARMO, 1, Stat.MANA, 5, "Tattered Robe", "", pdef+"BTNCloak.blp")
+	genEq('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, Stat.ARMO, 2, Stat.LIFE, 10, Stat.EVAS, 3, "Shining Chestguard", "", pdef+"BTNArmorGolem.blp")
 	// Helmet:
-	itemgenNewEquipment('I401', EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, "Light Helmet", "", pdef+"BTNFootman.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1))
-	itemgenNewEquipment('I402', EqQua.NOR, EqSlo.HEL, EqCla.LEA, 20, "Leather Mask", "", pdef+"BTNHuntress.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1)..add(Stat.LIFE, 5))
-	itemgenNewEquipment('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, "Shamans Hood", "", pdef+"BTNCloak.blp")
-	itemgenSetStats(stats()..add(Stat.INTE, 2)..add(Stat.LIFE, 10)..add(Stat.MANA, 5)..add(Stat.CSPE, 4))
-	itemgenNewEquipment('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, "Pointy Hat", "", pdef+"BTNHoodOfCunning.blp")
-	itemgenSetStats(stats()..add(Stat.ARMO, 1)..add(Stat.LIFE, 10)..add(Stat.AGIL, 3)..add(Stat.CCHA, 5)..add(Stat.CBON, 6))
-	
+	genEq('I401', EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, Stat.ARMO, 1, "Light Helmet", "", pdef+"BTNFootman.blp")
+	genEq('I402', EqQua.NOR, EqSlo.HEL, EqCla.LEA, 20, Stat.ARMO, 1, Stat.LIFE, 5, "Leather Mask", "", pdef+"BTNHuntress.blp")
+	genEq('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, Stat.INTE, 2, Stat.LIFE, 10, Stat.MANA, 5, Stat.CSPE, 4, "Shamans Hood", "", pdef+"BTNCloak.blp")
+	genEq('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, Stat.ARMO, 1, Stat.LIFE, 10, Stat.AGIL, 3, Stat.CCHA, 5, Stat.CBON, 6, "Pointy Hat", "", pdef+"BTNHoodOfCunning.blp")
 	// Accessory:
-	itemgenNewEquipment('I501', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Fairy Ring", "", pdef+"BTNRingPurple.blp")
-	itemgenSetStats(stats()..add(Stat.MANA, 8))
-	itemgenNewEquipment('I502', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, "Ring of Vitality", "", pdef+"BTNGoldRing.blp")
-	itemgenSetStats(stats()..add(Stat.LIFE, 10))
-	itemgenNewEquipment('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Astute", "", pdef+"BTNSoulGem.blp")
-	itemgenSetStats(stats()..add(Stat.INTE, 2)..add(Stat.CSPE, 4)..add(Stat.MANA, 8))
-	itemgenNewEquipment('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
-	itemgenSetStats(stats()..add(Stat.STRE, 2)..add(Stat.EVAS, 3)..add(Stat.HREC, 12))
-	itemgenNewEquipment('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
-	itemgenSetStats(stats()..add(Stat.AGIL, 2)..add(Stat.CCHA, 3)..add(Stat.CMUL, 10)..add(Stat.MANA, 5))
-	
+	genEq('I501', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, Stat.MANA, 8, "Fairy Ring", "", pdef+"BTNRingPurple.blp")
+	genEq('I502', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, Stat.LIFE, 10, "Ring of Vitality", "", pdef+"BTNGoldRing.blp")
+	genEq('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.INTE, 2, Stat.CSPE, 2, Stat.MANA, 8, "Crystal Necklace of the Astute", "", pdef+"BTNSoulGem.blp")
+	genEq('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.STRE, 2, Stat.EVAS, 3, Stat.HREC, 12, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
+	genEq('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.AGIL, 2, Stat.CCHA, 3, Stat.CMUL, 10, Stat.MANA, 5, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
 	// Misc:
 	
-	// Testitems:
-	itemgenNewEquipment('I6ZZ', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 100, "Testitem", "", pdef+"BTNPenguin.blp")
-	itemgenSetStats(stats()..add(Stat.LIFE, 100)..add(Stat.STRE, 20)..add(Stat.AGIL, 20)..add(Stat.INTE, 20)..add(Stat.DAMA, 20)..add(Stat.ARMO, 4)..add(Stat.MOVE, 100))
-
 	// ##### MATERIALS #####
-	itemgenNewMaterial('IM00', 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")
-	itemgenNewMaterial('IM01', 6, "Wood Stem", "", pdef+"BTNBundleOfLumber.blp")
-	itemgenNewMaterial('IM02', 8, "Wolf Pelt", "", pdef+"BTNReinforcedHides.blp")
-	itemgenNewMaterial('IM03', 12, "Scale", "", pdef+"BTNImprovedCreatureCarapace.blp")
-	itemgenNewMaterial('IM04', 10, "Aquamarine", "", pdef+"BTNWispSplode.blp")
+	genMa('IM00', 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")
+	genMa('IM01', 6, "Wood Stem", "", pdef+"BTNBundleOfLumber.blp")
+	genMa('IM02', 8, "Wolf Pelt", "", pdef+"BTNReinforcedHides.blp")
+	genMa('IM03', 12, "Scale", "", pdef+"BTNImprovedCreatureCarapace.blp")
+	genMa('IM04', 10, "Aquamarine", "", pdef+"BTNWispSplode.blp")
 
 	// ##### RECIPES ##### (Run this after Equipment and Materials)
-	itemgenNewRecipe('i201', 15, 'I201', "") // Wooden Buckler
-	itemgenSetRecipeReq('IM01', 'IM03', 0, 0, 0, 0, 0, 0)
-	itemgenNewRecipe('i202', 15, 'I202', "") // Energy Orb
-	itemgenSetRecipeReq('IM02', 'IM04', 0, 0, 0, 0, 0, 0)
-	itemgenNewRecipe('i203', 15, 'I203', "") // Sharp Arrows
-	itemgenSetRecipeReq('IM00', 'IM01', 0, 0, 0, 0, 0, 0)
-	itemgenNewRecipe('i402', 10, 'I402', "") // Leather Mask
-	itemgenSetRecipeReq('IM02', 0, 0, 0, 0, 0, 0, 0)
-	itemgenNewRecipe('i104', 12, 'I104', "") // Woodcutters Axe
-	itemgenSetRecipeReq('IM00', 'IM01', 0, 0, 0, 0, 0, 0)
+	genRe('i201', 'I201', 15, 'IM01', 'IM03', "") // Wooden Buckler
+	genRe('i202', 'I202', 15, 'IM02', 'IM04', "") // Energy Orb
+	genRe('i203', 'I203', 15, 'IM00', 'IM01', "") // Sharp Arrows
+	genRe('i402', 'I402', 15, 'IM02', "") // Leather Mask
+	genRe('i104', 'I104', 15, 'IM00', 'IM01', "") // Woodcutters Axe
