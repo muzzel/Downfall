@@ -1,13 +1,12 @@
 package Debug
-
 import TestUtils
 import UnitData
 import initlater InventoryIterator
 import initlater BuffHandler
 import initlater ThreatHandler
 import initlater PlayerData
-
 import ItemData
+import Heropick
 
 init
 	chatEvent("-debug inventory", () -> begin
@@ -27,6 +26,10 @@ init
 	chatEvent("-debug threat", () -> begin
 		debugThreat(selectedUnit())
 	end)
+	chatEvent("-debug heropick", () -> begin
+		let p = GetTriggerPlayer()
+		print("Player " + p.getName() + " is picking: " + isPicking(p).toString())
+	end)
 	chatEvent("-materials", () -> begin
 		let pos = vec2(-10300, 4300)
 		xSpawnItem('IM00', pos)
@@ -35,3 +38,4 @@ init
 		xSpawnItem('IM03', pos)
 		xSpawnItem('IM04', pos)
 	end)
+	chatEvent("-testitem", () -> xSpawnItem('I601', vec2(-10300, 4300)))

@@ -2,6 +2,7 @@ package QuestProvingYourWorth
 import public QuestPreciousPelts
 import PQuest
 import PlayerData
+import HeroType
 import ItemData
 import CreepDrop
 

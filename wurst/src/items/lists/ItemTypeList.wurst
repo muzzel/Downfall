@@ -47,6 +47,7 @@ public function initItemTypeLists()
 	genEq('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.STRE, 2, Stat.EVAS, 3, Stat.HREC, 12, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
 	genEq('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.AGIL, 2, Stat.CCHA, 3, Stat.CMUL, 10, Stat.MANA, 5, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
 	// Misc:
+	genEq('I601', EqQua.EPI, EqSlo.MIS, EqCla.ACC, 10, Stat.STRE, 15, Stat.AGIL, 15, Stat.INTE, 15, Stat.DAMA, 20, Stat.ARMO, 10, "Penguin Magic Box", "", pdef+"BTNCrate.blp")
 	
 	// ##### MATERIALS #####
 	genMa('IM00', 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")

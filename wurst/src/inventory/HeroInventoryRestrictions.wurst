@@ -1,7 +1,7 @@
 package HeroInventoryRestrictions
 import ItemTypeData
 import EquipmentClassification
-import HeroTypeGen
+import HeroType
 
 public function validateClass(unit u, item i) returns boolean
 	boolean allowed = false

@@ -1,6 +1,6 @@
 package TalentList
 import initlater TalentObjectGen
-import public Talent
+import public initlater Talent
 
 public Talent TALENT_WARRIOR_SHIELDSLAM_STUN
 public Talent TALENT_WARRIOR_SHIELDSLAM_TAUNT
