@@ -16,8 +16,9 @@ public function playerRemoveBag(int playerId)
 	blockEvents = true
 	for int i = 0 to 5
 		let itm = UnitItemInSlot(bag, i)
-		destroy itm.xGetItemData()
-		itm.remove()
+		if itm != null
+			destroy itm.xGetItemData()
+			itm.remove()
 	bag.remove()
 	IssueImmediateOrder(bag, "stop")
 	blockEvents = false
