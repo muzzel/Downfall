@@ -23,6 +23,8 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	unitDamageTarget(source, target, damage, damageType, false)
 
 public function unitDamageTarget(unit source, unit target, real damage, DamageType damageType, boolean isAttack)
+	if not source.xIsAlive() or not target.xIsAlive()
+		return 
 	// Proccs, buffs, etc.:
 	if target.hasBuff(BuffIgnoreThePain.typeId)
 		if isAttack and target.xHasTalent(TALENT_WARRIOR_IGNORE_REFLECT) and source.getPos().distToVecSquared(target.getPos()) <= 100*100
