@@ -106,7 +106,7 @@ public abstract class Buff
 			if parent.countBuffsOfType(this) <= 1
 				disableDamageEvents(true) // avoid slowaura bug which causes the dmg detection to trigger 
 				parent.u.addAbility(raw)
-				disableDamageEvents(true)
+				disableDamageEvents(false)
 				UnitMakeAbilityPermanent(parent.u, true, raw)
 	
 	private function removeBuffIcon()
