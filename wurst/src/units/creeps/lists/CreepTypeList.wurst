@@ -17,8 +17,12 @@ public function initCreepTypeLists()
 	unitgenNewCreep('h003', 'ntrh', 4, "Sea Turtle", 240, 20, 11, 2, 300, 290)
 	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 4)
 	// Bear (lvl 5):
-	unitgenNewCreep('h004', 'ngz1', 5, "Bear", 650, 30, 14, 3, 280, 300)
+	unitgenNewCreep('h004', 'ngz1', 5, "Bear", 650, 30, 14, 4, 280, 300)
 	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 10)..set(Stat.CBON, 8)
 	// Pack Leader (lvl 6):
-	unitgenNewCreep('h005', 'nwld', 6, "The Packleader", 1000, 40, 16, 4, 250, 300)
+	unitgenNewCreep('h005', 'nwld', 6, "The Packleader", 1000, 40, 16, 5, 250, 300)
 	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 3)
+	// Dungeon 1:
+	// Insane Wolf (lvl 6):
+	unitgenNewCreep('h106', 'osw1', 7, "Insane Wolf", 400, 30, 12, 5, 230, 300)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 8)

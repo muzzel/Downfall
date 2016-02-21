@@ -1,0 +1,28 @@
+package Dungeon1
+import initlater UnitData
+
+constant rect DUNG_AREA = gg_rct_dungeon1
+constant rect ENTRY_AREA = gg_rct_dungeon1entry
+constant rect EXIT_AREA = gg_rct_dungeon1exit
+constant vec2 EXIT_TARGET = vec2(-3200, 8800)
+constant vec2 ENTRY_TARGET = vec2(-5900, -11100)
+
+function enterDungeon()
+	let u = GetEnteringUnit()
+	if u.xIsHero()
+		u.setPos(ENTRY_TARGET)
+		SetCameraPositionForPlayer(u.getOwner(), ENTRY_TARGET.x, ENTRY_TARGET.y)
+	
+function exitDungeon()
+	let u = GetEnteringUnit()
+	if u.xIsHero()
+		u.setPos(EXIT_TARGET)
+		SetCameraPositionForPlayer(u.getOwner(), EXIT_TARGET.x, EXIT_TARGET.y)
+
+init
+	let enterDung = CreateTrigger()
+		..addAction(function enterDungeon)
+	TriggerRegisterEnterRectSimple(enterDung, ENTRY_AREA)
+	let exitDung = CreateTrigger()
+		..addAction(function exitDungeon)
+	TriggerRegisterEnterRectSimple(exitDung, EXIT_AREA)
