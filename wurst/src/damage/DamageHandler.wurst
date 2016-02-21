@@ -9,12 +9,16 @@ import initlater SpellIgnoreThePain
 import initlater TalentList
 
 trigger unitAttackTrigger
+boolean blockNext = false
 boolean blockDmgEvent = false
 unit currentKillingUnit = null
 
 public function xGetKillingUnit() returns unit
 	return currentKillingUnit
 
+public function blockNextDamageEvent()
+	blockNext = true
+	
 public function blockDamageEvents(boolean flag)
 	blockDmgEvent = flag
 
@@ -47,12 +51,14 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	switch damageType
 		case PHYSICAL
 			dmg -= target.getStat(Stat.ARMO)
+			if dmg <= 0
+				dmg = 1
 		case MAGIC
-			// TODO: magic resist
+			dmg *= 0.9
 		case FIRE
-			// TODO: fire resist
+			dmg *= 0.9
 		case POISON
-			// TODO: poison resist
+			dmg *= 0.9
 	// Apply damage
 	if dmg > 0
 		target.setHP(target.getHP() - dmg)
@@ -81,9 +87,12 @@ public class UnitDamageHandler
 		// TODO: recycle event / trigger
 
 function unitAttacked()
+	if blockNext
+		blockNext = false
+		return
 	if not blockDmgEvent
 		unit source = GetEventDamageSource()
-//		print("EVENT_UNIT_DAMAGED triggered. Source: " + source.getName() + ", TriggeringUnit: " + GetTriggerUnit().getName())
+//		print("EVENT_UNIT_DAMAGED triggered. Source: " + source.getName() + ", TriggeringUnit: " + GetTriggerUnit().getName() + ", Damage: " + GetEventDamage().toString())
 		if source.getTypeId() != DUMMY_UNIT_ID
 			real damage = 1.*source.xGetUnitData().unitStatBuffer.get(Stat.DAMA)
 			unitDamageTarget(source, GetTriggerUnit(), damage, DamageType.PHYSICAL, true)
