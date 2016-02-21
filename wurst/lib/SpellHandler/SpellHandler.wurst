@@ -3,6 +3,9 @@ import TimerUtils
 import HashMap
 import CastBar
 
+@configurable public function invalidDamageEvent(unit caster, unit target)
+	skip
+
 HashMap<unit, ChannelData> channelDataMap = new HashMap<unit, ChannelData>()
 
 class ChannelData
@@ -46,10 +49,6 @@ class ChannelData
 			destroy parent
 		destroy this
 		
-//	/** Call this from "finishChannel()" if you DONT want the spell to automatically be destroyed after channeling finished. */
-//	function disableAutodestroy()
-//		parent.autoDestroy = false
-		
 	static function callback()
 		let obj = GetExpiredTimer().getData() castTo thistype
 		if obj.stepMax == 0
@@ -82,6 +81,8 @@ public class Spell
 		targetPoint = vec2(GetSpellTargetX(), GetSpellTargetY())
 		autoDestroy = true
 		onCast()
+		if targetUnit != null and caster.getOwner().isEnemyOf(targetUnit.getOwner())
+			invalidDamageEvent(caster, targetUnit)
 		if autoDestroy
 			destroy this
 	

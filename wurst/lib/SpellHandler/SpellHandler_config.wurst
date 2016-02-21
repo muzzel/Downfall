@@ -1,0 +1,5 @@
+package SpellHandler_config
+import initlater DamageHandler
+
+@config public function invalidDamageEvent(unit caster, unit target)
+	blockNextDamageEvent()

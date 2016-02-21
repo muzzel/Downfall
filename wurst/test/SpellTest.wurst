@@ -1,0 +1,24 @@
+package SpellTest
+import SpellHandler
+import SpellObjectGen
+import TestUtils
+
+constant int SPELL_RAW = 'AS99'
+constant string SPELL_ORDER = "rainoffire"
+	
+class SpellTest extends Spell
+	override function onCast()
+		print("SpellTest.onCast()")
+		caster.damageTarget(targetUnit, 10)
+		TriggerSleepAction(0.01)
+		caster.damageTarget(targetUnit, 10)
+		
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellTest())
+	chatEvent("-testspell", () -> selectedUnit().addAbility(SPELL_RAW))
+
+@compiletime
+function genObj()
+	genSpell(SPELL_RAW, 1, 1, SPELL_ORDER, "Test", "R", "Does nothing.", "ReplaceableTextures\\CommandButtons\\BTNControlMagic.blp")
+		..setTargetUnit(1000., TARGETS_ALLOWED_CREEP_BOSS)
+		..setChannelling(4, 5, "spell,channel")
