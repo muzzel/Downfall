@@ -6,7 +6,6 @@ import HeroType
 import PlayerData
 import ChatEvent
 
-constant vec2 heroPickPos = vec2(-10500, -11200)
 constant vec2 heroStartPos = vec2(-10250, 4390)
 unit ship
 unit array heroPicker // Hero picker unit for all players. 
@@ -16,8 +15,8 @@ public function startHeropick(player p)
 	if isPicking(p)
 		printWarning("startHeropick(..): hero is picking")
 		return
-	heroPicker[p.getId()] = createUnit(p, RAW_DUMMY_PICK, heroPickPos, angle(0.))
-	SetCameraPositionForPlayer(p, heroPickPos.x, heroPickPos.y)
+	heroPicker[p.getId()] = createUnit(p, RAW_DUMMY_PICK, HERO_PICK_POS, angle(0.))
+	SetCameraPositionForPlayer(p, HERO_PICK_POS.x, HERO_PICK_POS.y)
 
 public function cancelHeropick(player p)
 	if not isPicking(p)
@@ -96,7 +95,7 @@ function heroPickedAction()
 //	pqProveWorth.setDiscoverable(pid, udg_npc_bryce)
 
 init
-	ship = createUnit(Player(PLAYER_NEUTRAL_PASSIVE), RAW_SHIP, heroPickPos, angle(0.))
+	ship = createUnit(Player(PLAYER_NEUTRAL_PASSIVE), RAW_SHIP, HERO_PICK_POS, angle(0.))
 	CreateTrigger()
 		..registerUnitEvent(ship, EVENT_UNIT_SELL)
 		..addAction(function heroPickedAction)

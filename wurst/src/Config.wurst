@@ -5,3 +5,4 @@
 package Config
 
 public constant int NUM_OF_PLAYERS = 5
+public constant vec2 HERO_PICK_POS = vec2(9700, 9500)
