@@ -27,7 +27,11 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	unitDamageTarget(source, target, damage, damageType, false)
 
 public function unitDamageTarget(unit source, unit target, real damage, DamageType damageType, boolean isAttack)
+	if not source.xIsCombatUnit() or not target.xIsCombatUnit()
+		printWarning("DamageHandler.unitDamageTarget(..): damage dealt by or on non-combat units.")
+		return
 	if not source.xIsAlive() or not target.xIsAlive()
+		printWarning("DamageHandler.unitDamageTarget(..): damage dealt by or on dead units.")
 		return 
 	// Proccs, buffs, etc.:
 	if target.hasBuff(BuffIgnoreThePain.typeId)
