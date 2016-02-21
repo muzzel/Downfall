@@ -46,6 +46,7 @@ function BuffDefinition.setBasicValues()
 	new BuffDefinition(STUN_BUFF_ID, 'BPSE')
 		..setBasicValues()
 		..setTooltipNormal(1, STUN_TOOLTIP_NORMAL)
+		..setTarget(1, "Abilities\\Spells\\Human\\Thunderclap\\ThunderclapTarget.mdl")
 		..setTooltipNormalExtended(1, STUN_TOOLTIP_EXTENDED)
 		.setIconNormal(1, STUN_ICON_PATH)
 	
