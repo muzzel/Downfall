@@ -11,11 +11,6 @@ public function xGetPlayerHero(int playerId) returns unit
 		return null
 	return playerData[playerId].hero
 
-//public function initPlayerData(int playerId, unit hero)
-//	if playerData[playerId] != null
-//		destroy playerData[playerId]
-//	new PlayerData(playerId, hero)
-
 public function xGetPlayerData(int playerId) returns PlayerData
 	return playerData[playerId]
 
@@ -36,7 +31,6 @@ function createHero(player p, HeroType heroType, vec2 pos) returns unit
 		case DRUID
 			hero..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
 			hero..addAbility(BOOK_TALENT_DRUID)
-//	initPlayerData(p.getId(), hero)
 	SetCameraPositionForPlayer(p, pos.x, pos.y)
 	SelectUnitForPlayerSingle(hero, p)
 	return hero
