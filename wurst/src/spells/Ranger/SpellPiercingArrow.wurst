@@ -1,0 +1,37 @@
+package SpellPiercingArrow
+import SpellHandler
+import SpellObjectGen
+import UnitData
+import StatHandler
+import DamageHandler
+import Missile
+import TalentList
+
+constant int SPELL_RAW = 'AS14'
+constant string SPELL_ORDER = "poisonarrows"
+
+class MissilePiercingArrow extends Missile
+	unit casterUnit
+	unit targetUnit
+	
+	override function onHit()
+		if targetUnit.xIsAlive()
+			let dmg = casterUnit.xGetStat(Stat.DAMA) * 2.5
+			let dmg_bonus = min(targetUnit.xGetStat(Stat.ARMO) * 1., casterUnit.xGetStat(Stat.AGIL) * 0.5)
+			unitDamageTarget(casterUnit, targetUnit, dmg + dmg_bonus, DamageType.PHYSICAL)
+	
+	construct(unit caster, unit target)
+		super(caster.getPos3(), 1300., 0.15, "Abilities\\Weapons\\SearingArrow\\SearingArrowMissile.mdl", target, 0.)
+		casterUnit = caster
+		targetUnit = target
+		
+class SpellPiercingArrow extends Spell
+	override function onCast()
+		new MissilePiercingArrow(caster, targetUnit)
+
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellPiercingArrow())
+	
+@compiletime function genObjects()
+	genSpell(SPELL_RAW, 10, 16, SPELL_ORDER, "Piercing Arrow", "R", "Shoots a sharpened arrow at the target that can pierce even the strongest armor. Deals + " + colorizeStatValue("2.5 x Attack Power") + " physical damage and ignores up to " + colorizeStatValue("0.5 x Agi") + " armor.", "ReplaceableTextures\\CommandButtons\\BTNSearingArrows.blp")
+		..setTargetUnit(650, TARGETS_ALLOWED_CREEP_BOSS)

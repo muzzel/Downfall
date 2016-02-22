@@ -1,6 +1,5 @@
 package BuffHandler
 import LinkedList
-//import DamageHandler
 import public BuffHandlerConfig
 import public BuffHandlerGen
 
@@ -153,6 +152,9 @@ public class BuffList
 	function destroyAllBuffs()
 		while this.buffs.getSize() > 0
 			destroy this.buffs.get(0)
+	
+	function asList() returns LinkedList<Buff>
+		return buffs
 	
 	ondestroy
 		this.destroyAllBuffs()
