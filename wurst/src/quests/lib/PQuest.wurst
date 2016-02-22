@@ -64,7 +64,9 @@ function unitRemoveQuestMarks(unit npc, int playerId)
 
 function questMsg(int playerId, string msg)
 	printTimedToPlayer(msg, 10., players[playerId])
-	// TODO: play sound
+	// TODO: lokal abspielen. PlaySound erstellt intern aber ein objekt, daher manuell machen!
+	// SoundHelper: new Sound(...).playForPlayer(player p)
+//	PlaySound("Sound\\Interface\\QuestActivateWhat1.wav")
 	if GetLocalPlayer() == players[playerId]
 		FlashQuestDialogButton()
 
@@ -267,6 +269,7 @@ public class PQuestItem
 		count.put(playerId, c)
 		let newDescr = description + " (" + c.toString() + "/" + maxCount.toString() + ")"
 		QuestItemSetDescription(thisQuestItem.get(playerId), newDescr)
+		questMsg(playerId, "Quest Update:\n" + newDescr)
 		if c >= maxCount
 			setCompleted(playerId)
 		return completed
