@@ -17,19 +17,18 @@ class SpellJudgement extends Spell
 		
 	override function onChannelEnd(boolean success)
 		if success and targetUnit.xIsAlive()
-			var dmg = caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 2.
+			var dmg = caster.xGetUnitData().unitStatBuffer.get(Stat.INTE) * 3.
 			int numBuffsCaster = caster.getBuffList().asList().getSize()
 			int numBuffsTarget = targetUnit.getBuffList().asList().getSize()
 			dmg *= 1 + (numBuffsCaster+numBuffsTarget) * 0.2
-			print("Buffs caster: " + numBuffsCaster.toString() + ", buffs target: " + numBuffsTarget.toString())
-			AddSpecialEffectTarget("Abilities\\Spells\\Human\\HolyBolt\\HolyBoltSpecialArt.mdl", targetUnit, "overhead").destr()
+			AddSpecialEffectTarget("Abilities\\Weapons\\Bolt\\BoltImpact.mdl", targetUnit, "chest").destr()
 			unitDamageTarget(caster, targetUnit, dmg, DamageType.MAGIC)
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellJudgement())
 	
 @compiletime function genObjects()
-	genSpell(SPELL_RAW, 9, 8, SPELL_ORDER, "Judgement", "R", "Blasts the target with holy energy dealing + " + colorizeStatValue("2 x Int") + " magic damage. For every buff that is on the Priest or the target, the damage is increased by 20%.", "ReplaceableTextures\\CommandButtons\\BTNCharm.blp")
+	genSpell(SPELL_RAW, 9, 8, SPELL_ORDER, "Judgement", "R", "Blasts the target with holy energy dealing + " + colorizeStatValue("3 x Int") + " magic damage. For every buff that is on the Priest or the target, the damage is increased by 20%.", "ReplaceableTextures\\CommandButtons\\BTNCharm.blp")
 		..setChannelling(CHANNEL_DURATION, 4., "spell,channel")
 		..setTargetUnit(400, TARGETS_ALLOWED_CREEP_BOSS)
 
