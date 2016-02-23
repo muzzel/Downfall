@@ -42,6 +42,8 @@ public class BuffFirearrow extends Buff
 		sfx1 = getUnit().addEffect("Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeDamageTarget.mdl", "chest")
 		
 	override function onTimer()
+		if not caster.xIsAlive() or not getUnit().xIsAlive()
+			destroy this
 		unitDamageTarget(caster, getUnit(), damagePerTick, DamageType.FIRE)
 	
 	override function onRemove()

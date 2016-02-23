@@ -15,7 +15,7 @@ constant int BUFF_RAW = 'BB11'
 constant string SPELL_ORDER = "ensnare"
 constant real CHANNEL_DURATION = 2
 constant real TRAP_DURATION = 25.
-constant real ENSNARE_DURATION = 8.
+constant real ENSNARE_DURATION = 10.
 constant real AOE = 200.
 
 public class BuffTrapOwner extends Buff
@@ -99,7 +99,7 @@ init
 	
 @compiletime function genObjects()
 	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cffff0000Trap|r", "ReplaceableTextures\\CommandButtons\\BTNEnsnare.blp", "This unit is trapped and cannot move.")
-	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Trap", "E", "Places a trap at the target location. When the ability is used again, the trap is triggered and ensnares the closest enemy in range for 8 seconds. The trap lasts for 25 seconds.", "ReplaceableTextures\\CommandButtons\\BTNEnsnare.blp")
+	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Trap", "E", "Places a trap at the target location. When the ability is used again, the trap is triggered and ensnares the closest enemy in range for 10 seconds. The trap lasts for 25 seconds.", "ReplaceableTextures\\CommandButtons\\BTNEnsnare.blp")
 		..setTargetPoint(600., AOE)
 		..setChannelling(CHANNEL_DURATION, CHANNEL_DURATION, "spell")
 		..setLevels(2)
