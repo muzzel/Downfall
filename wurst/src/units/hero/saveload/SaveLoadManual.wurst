@@ -17,7 +17,7 @@ import Heropick
  * talentpoints
  * 6x items (hero)
  * 6x items (bag)
- * Nx queststatus (discovered, started, finished)
+ * Erstmal nicht: Nx queststatus (discovered, discoverable, started, finished)
  * talents
  * spells
  */
@@ -32,8 +32,9 @@ constant int MAX_LPS = 1000
 constant int MAX_LPT = 1000
 
 function save(player p)
-	let hero = xGetPlayerHero(p.getId())
-	let playerData = xGetPlayerData(p.getId())
+	let pid = p.getId()
+	let hero = xGetPlayerHero(pid)
+	let playerData = xGetPlayerData(pid)
 	// 
 	let heroTypeId = hero.getHeroType().getId()
 	let gold = p.getGold()
@@ -44,18 +45,7 @@ function save(player p)
 	let lps = playerData.getLearnPointsStats()
 	let lpt = playerData.getLearnPointsTalents()
 	
-	print("Saving hero of player " + GetPlayerName(p) + ":")
-	print("- hero id: " + heroTypeId.toString())
-	print("- gold: " + gold.toString())
-	print("- exp: " + exp.toString())
-	print("- str: " + str.toString())
-	print("- agi: " + agi.toString())
-	print("- int: " + inte.toString())
-	print("- statpoints: " + lps.toString())
-	print("- talentpoints: " + lpt.toString())
-	
 	Savecode savecode = new Savecode()
-	
 	savecode.encode(heroTypeId, MAX_HERO_ID)
 	savecode.encode(gold, MAX_GOLD)
 	savecode.encode(exp, MAX_EXP)
@@ -89,16 +79,6 @@ function load(player p, string c)
 	int exp = loadcode.decode(MAX_EXP)
 	int gold = loadcode.decode(MAX_GOLD)
 	int heroTypeId = loadcode.decode(MAX_HERO_ID)
-	
-	print("Loading hero for player " + GetPlayerName(p) + ":")
-	print("- hero id: " + heroTypeId.toString())
-	print("- gold: " + gold.toString())
-	print("- exp: " + exp.toString())
-	print("- str: " + str.toString())
-	print("- agi: " + agi.toString())
-	print("- int: " + inte.toString())
-	print("- statpoints: " + lps.toString())
-	print("- talentpoints: " + lpt.toString())
 	
 	destroy loadcode
 	cancelHeropick(p)

@@ -5,7 +5,7 @@ constant rect DUNG_AREA = gg_rct_dungeon1
 constant rect ENTRY_AREA = gg_rct_dungeon1entry
 constant rect EXIT_AREA = gg_rct_dungeon1exit
 constant vec2 EXIT_TARGET = vec2(-3200, 8800)
-constant vec2 ENTRY_TARGET = vec2(-5900, -11100)
+constant vec2 ENTRY_TARGET = vec2(4700, -10800)
 
 function enterDungeon()
 	let u = GetEnteringUnit()

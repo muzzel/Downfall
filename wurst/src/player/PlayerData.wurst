@@ -4,6 +4,8 @@ import StatHandler
 import initlater Bag
 import HeroType
 import TalentList
+import initlater PQuest
+import initlater QuestProvingYourWorth
 
 
 public function xGetPlayerHero(int playerId) returns unit
@@ -58,7 +60,10 @@ public class PlayerData
 		this.playerId = playerId
 		this.hero = createHero(Player(playerId), heroType, heroSpawnPos)
 		new UnitData(hero)
+		// Create a bag:
 		playerCreateBag(playerId)
+		// Set first quest discoverable:
+		pqProveWorth.setDiscoverable(playerId, udg_npc_bryce)
 		// learn points:
 		learnPointsStats = 0
 		learnPointsTalents = 0
@@ -138,4 +143,5 @@ public class PlayerData
 		destroy hero.xGetUnitData()
 		hero.remove()
 		playerRemoveBag(playerId)
+		PQuest.resetAllQuests(playerId)
 		playerData[playerId] = null

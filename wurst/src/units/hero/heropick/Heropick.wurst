@@ -1,7 +1,6 @@
 package Heropick
 import HeropickObjectGen
 import Config
-import QuestProvingYourWorth
 import HeroType
 import PlayerData
 import ChatEvent
@@ -61,8 +60,6 @@ function heroPickedAction()
 	printTimed(p.getName() + " picked: |cffffcc00" + hero.getName(), 4.)
 	GetSoldUnit().remove()
 	cancelHeropick(p)
-	// Set first quest discoverable
-	pqProveWorth.setDiscoverable(pid, udg_npc_bryce)
 	
 //function heroPickedAction()
 //	let p = GetBuyingUnit().getOwner()

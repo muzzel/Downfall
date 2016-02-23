@@ -8,6 +8,7 @@ import Player
 import UnitData
 import PlayerData
 import ItemData
+import SoundHelper
 
 @configurable constant real QUEST_EVENT_RANGE = 1500.
 @configurable constant real TALK_DURATION = 4.
@@ -64,12 +65,11 @@ function unitRemoveQuestMarks(unit npc, int playerId)
 
 function questMsg(int playerId, string msg)
 	printTimedToPlayer(msg, 10., players[playerId])
-	// TODO: lokal abspielen. PlaySound erstellt intern aber ein objekt, daher manuell machen!
-	// SoundHelper: new Sound(...).playForPlayer(player p)
-//	PlaySound("Sound\\Interface\\QuestActivateWhat1.wav")
+	new Sound("Sound\\Interface\\QuestActivateWhat1.wav", 1000, false).playForPlayer(players[playerId])
 	if GetLocalPlayer() == players[playerId]
 		FlashQuestDialogButton()
 
+// Dont change! Will break Saveload System.
 public enum PQuestState
 	UNDISCOVERED
 	DISCOVERED
@@ -201,6 +201,12 @@ public class PQuest
 	static function resetAllQuests(int playerId)
 		for int i = 0 to numPQuests-1
 			allPQuests[i].reset(playerId)
+	
+	static function getQuest(int id) returns PQuest
+		return allPQuests[id]
+	
+	static function countQuests() returns int
+		return numPQuests
 	
 	ondestroy
 		printWarning("Attempt to destroy PQuest object.")
