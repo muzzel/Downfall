@@ -9,6 +9,7 @@ import BuffHandler
 import DamageHandler
 import ThreatHandler
 import initlater CreepRespawn
+import initlater DungeonRespawn
 import initlater HeroRespawn
 import initlater CreepDrop
 import OOCRegen
@@ -30,6 +31,9 @@ public function unit.xIsBoss() returns boolean
 /** Returns false for all kinds of dummies, non-combat units, etc. */
 public function unit.xIsCombatUnit() returns boolean
 	return this.xGetUnitData() != null
+	
+public function unit.xIsDungeonMob() returns boolean
+	return not this.xGetUnitData().dungeonRespawn == null
 	
 public function unit.xGetStat(Stat s) returns int
 	return this.xGetUnitData().unitStatBuffer.get(s)
@@ -65,6 +69,7 @@ public class UnitData extends UnitIndex
 	ThreatHandlerTU threatHandlerTu
 	// Creep properties:
 	CreepRespawn creepRespawn
+	DungeonRespawn dungeonRespawn
 	
 	construct(unit u)
 		super(u)
@@ -74,6 +79,7 @@ public class UnitData extends UnitIndex
 		threatHandlerPu = null
 		threatHandlerTu = null
 		creepRespawn = null
+		dungeonRespawn = null
 		if u.xIsHero()
 			// Heroes:
 			threatHandlerPu = new ThreatHandlerPU(u)

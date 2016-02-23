@@ -24,8 +24,14 @@ public class CreepRespawn
 
 init
 	let g = CreateGroup()
+	print("Running creep respawn init")
 	GroupEnumUnitsInRect(g, bj_mapInitialPlayableArea, null)
 	for unit u in g
 		if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE)
-			new UnitData(u).creepRespawn = new CreepRespawn(u)
+			if u.xGetUnitData() == null // Ignore creeps that are already registered (dungeonmobs)
+				new UnitData(u).creepRespawn = new CreepRespawn(u)
+				//print("CreepRespawn: registered unit: " + u.getName())
+			else
+				print("CreepRespawn: skipped unit: " + u.getName())
+				
 	g.close()

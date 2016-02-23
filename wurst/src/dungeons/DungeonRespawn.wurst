@@ -1,0 +1,49 @@
+package DungeonRespawn
+import UnitData
+
+public class DungeonRespawn
+	int unitRaw
+	vec2 pos
+	angle facing
+	
+	construct(unit u)
+		print("constr 1")
+		this.unitRaw = u.getTypeId()
+		print("constr 2")
+		print("const posx: " + GetUnitX(u).toString())
+		print("const posy: " + GetUnitY(u).toString())
+		u.getPos()
+		print("constr 2b")
+		this.pos = u.getPos()
+		print("constr 3")
+		this.facing = u.getFacingAngle()
+		print("constr 4")
+
+init
+	let g = CreateGroup()
+	print("Running dungeon respawn init")
+	for n = 1 to 100
+		print(n.toString())
+	GroupEnumUnitsInRect(g, gg_rct_dungeon1, null)
+	for unit u in g
+		print(u.getName())
+		print("null: " + (u.xGetUnitData() == null).toString())
+		print("dungeon mob: " + u.xIsDungeonMob().toString())
+		if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE)
+			print("1")
+			if u.xGetUnitData() != null and not u.xIsDungeonMob() // creep was already registered as non-dungeon mob
+				print("2")
+				let dat = u.xGetUnitData()
+				print("3")
+				destroy dat.creepRespawn
+				print("4")
+				dat.creepRespawn = null
+				print("5")
+				dat.dungeonRespawn = new DungeonRespawn(u)
+				print("6")
+				print("DungeonRespawn: changed registered unit: " + u.getName())
+			else
+				new UnitData(u).dungeonRespawn = new DungeonRespawn(u) // creep was not registered yet
+				print("CreepRespawn: registered unit: " + u.getName())
+				
+	g.close()
