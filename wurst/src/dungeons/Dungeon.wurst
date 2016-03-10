@@ -1,0 +1,112 @@
+package Dungeon
+import CreepRespawn // initialize creeps before adding them to dungeons 
+import initlater UnitData
+import LinkedList
+import Group
+
+public class Dungeon
+	string name
+	LinkedList<DungeonMobReset> dungeonMobs
+	rect dungeonArea
+	vec2 enterTarget
+	vec2 exitTarget
+	
+	construct(string name, rect dungeonArea, rect enterArea, vec2 enterTarget, rect exitArea, vec2 exitTarget)
+		this.name = name
+		this.dungeonMobs = new LinkedList<DungeonMobReset>()
+		this.dungeonArea = dungeonArea
+		this.enterTarget = enterTarget
+		this.exitTarget = exitTarget
+		setupEnterTp(this, enterArea)
+		setupExitTp(this, exitArea)
+		initDungeonUnits()
+		
+	function reset()
+		if isHeroInDungeon()
+			print("You can not reset the dungeon when there are players inside")
+		else
+			print("Dungeon resets: " + name)
+			resetUnits()
+	
+	protected function unitEnterDungeon(unit u)
+		if u.xIsHero()
+			u.setPos(enterTarget)
+			SetCameraPositionForPlayer(u.getOwner(), enterTarget.x, enterTarget.y)
+	
+	protected function unitExitDungeon(unit u)
+		if u.xIsHero()
+			u.setPos(exitTarget)
+			SetCameraPositionForPlayer(u.getOwner(), exitTarget.x, exitTarget.y)
+	
+	// Returns true, if there is a player hero in the dungeon.
+	function isHeroInDungeon() returns boolean
+		let g = CreateGroup()
+		boolean found = false
+		GroupEnumUnitsInRect(g, this.dungeonArea, null)
+		for unit u in g
+			if u.xIsHero()
+				found = true
+				break
+		g.close()
+		return found
+	
+	protected function initDungeonUnits()
+		let g = CreateGroup()
+		GroupEnumUnitsInRect(g, this.dungeonArea, null)
+		for unit u in g
+			if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE)
+				let dat = u.xGetUnitData()
+				// sanity check (was unit initialized?):
+				if dat == null
+					printWarning("Dungeon.initDungeonUnits: unit " + u.getName() + " has no valid UnitData assigned")
+				// remove creep respawn:
+				if dat.creepRespawn != null
+					destroy dat.creepRespawn
+					dat.creepRespawn = null
+				// create dungeonrespawn object for this unit:
+				dungeonMobs.add(new DungeonMobReset(u))
+		g.close()
+	
+	private function resetUnits()
+		for dm in dungeonMobs
+			dm.reset()
+
+// Dungeon respawn:
+class DungeonMobReset
+	unit currentUnit
+	int unitRaw
+	vec2 pos
+	angle facing
+	
+	construct(unit u)
+		this.currentUnit = u
+		this.unitRaw = u.getTypeId()
+		this.pos = u.getPos()
+		this.facing = u.getFacingAngle()
+	
+	function reset()
+		if currentUnit.xIsAlive()
+			// if unit is alive, destroy its data and remove it
+			let dat = currentUnit.xGetUnitData()
+			destroy dat
+			currentUnit.remove()
+		// create a new unit, initialize it with UnitData
+		currentUnit = createUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), unitRaw, pos, facing)
+		new UnitData(currentUnit)
+
+// Teleport stuff:
+Table triggerData = new Table()
+
+function setupEnterTp(Dungeon d, rect area)
+		let trig = CreateTrigger()..addAction(() -> begin
+				(triggerData.loadInt(GetTriggeringTrigger().getHandleId()) castTo Dungeon).unitEnterDungeon(GetEnteringUnit())
+		end)
+		TriggerRegisterEnterRectSimple(trig, area)
+		triggerData.saveInt(trig.getHandleId(), d castTo int)
+		
+function setupExitTp(Dungeon d, rect area)
+		let trig = CreateTrigger()..addAction(() -> begin
+				(triggerData.loadInt(GetTriggeringTrigger().getHandleId()) castTo Dungeon).unitExitDungeon(GetEnteringUnit())
+		end)
+		TriggerRegisterEnterRectSimple(trig, area)
+		triggerData.saveInt(trig.getHandleId(), d castTo int)

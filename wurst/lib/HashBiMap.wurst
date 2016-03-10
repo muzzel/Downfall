@@ -1,0 +1,71 @@
+package HashBiMap
+import NoWurst
+import Hashtable
+import Wurstunit
+
+/**
+ * Implementation of a bidirectional hashmap based on hashtables.
+ * The mapping from A to B is considered the default direction.
+ * The mapping from B to A is considered the inverse.
+ */
+public class HashBiMap<A,B>
+	static private hashtable ht = InitHashtable() // A -> B
+	static private hashtable htInv = InitHashtable() // B -> A
+	
+	/** Returns true if an entry under the given A-key exists. */
+	function has(A a) returns boolean
+		return get(a) != null
+		
+	/** (Inverse) Returns true if an entry under the given A-key exists. */
+	function hasInv(B b) returns boolean
+		return getInv(b) != null
+	
+	/** Saves the pair of A- and B-values. Normal direction is A->B, inverse is B->A. */
+	function put(A a, B b)
+		ht.saveInt(this castTo int, a castTo int, b castTo int)
+		htInv.saveInt(this castTo int, b castTo int, a castTo int)
+		
+	/** Retrieves the B-value saved under the given A-key */
+	function get(A a) returns B
+		return ht.loadInt(this castTo int, a castTo int) castTo B
+		
+	/** (Inverse) Retrieves the  A-value saved under the given B-key */
+	function getInv(B b) returns A
+		return htInv.loadInt(this castTo int, b castTo int) castTo A
+	
+	/** Removes the entries specified by the given A-key */
+	function remove(A a)
+		B b = this.get(a)
+		if b != null
+			ht.removeInt(this castTo int, a castTo int)
+			htInv.removeInt(this castTo int, b castTo int)
+			
+	/** (Inverse) Removes the entries specified by the given B-key */
+	function removeInv(B b)
+		A a = this.getInv(b)
+		if a != null
+			ht.removeInt(this castTo int, a castTo int)
+			htInv.removeInt(this castTo int, b castTo int)
+
+	/** Clears the HashMap of all entries */
+	function flush()
+		FlushChildHashtable(ht, this castTo int)
+		FlushChildHashtable(htInv, this castTo int)
+
+	ondestroy
+		this.flush()
+
+@test
+function test()
+	let map = new HashBiMap<int, int>()
+	map.put(25, 101)
+	assertTrue(map.has(25))
+	assertTrue(map.hasInv(101))
+	101 .assertEquals(map.get(25))
+	25 .assertEquals(map.getInv(101))
+//	map.removeInv(101)
+//	assertTrue(not map.has(25))
+//	assertTrue(not map.hasInv(101))
+//	map.put(42, StringHash("Penguin"))
+//	map.flush()
+//	assertTrue(not map.hasInv(StringHash("Penguin")))

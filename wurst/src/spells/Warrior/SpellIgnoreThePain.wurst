@@ -4,6 +4,7 @@ import SpellHandler
 import StatHandler
 import UnitData
 import BuffHandler
+import SpellList
 
 constant int SPELL_RAW = 'AS03'
 constant int BUFF_ABIL_RAW = 'AB03'
@@ -38,7 +39,8 @@ class SpellIgnoreThePain extends Spell
 		
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellIgnoreThePain())
+	registerSpellId(2, HeroType.WARRIOR, SPELL_RAW)
 	
 @compiletime function genObjects()
-	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Ignore the Pain|r", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp", "This unit ignores all incoming damage")
-	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Ignore the Pain", "W", "Ignores damage from all sources for the next 4 seconds. Movespeed is reduced during this time.", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp")
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Ignore the Pain|r", "ReplaceableTextures\\CommandButtons\\BTNDeathPact.blp", "This unit ignores 50% of all incoming damage.")
+	genSpell(SPELL_RAW, 10, 30, SPELL_ORDER, "Ignore the Pain", "W", "Ignores 80% of damage from all sources for the next 4 seconds (applied before armor and resistances). Movespeed is reduced during this time.", "ReplaceableTextures\\CommandButtons\\BTNDeathPact.blp")

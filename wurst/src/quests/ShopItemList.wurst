@@ -1,0 +1,42 @@
+package ShopItemList
+import ObjectIds
+import ItemTypeGen
+
+public function shopItemList(string item1) returns string
+	return shopItemList(item1, "", "", "", "", "", "", "", "", "")
+public function shopItemList(string item1, string item2) returns string
+	return shopItemList(item1, item2, "", "", "", "", "", "", "", "")
+public function shopItemList(string item1, string item2, string item3) returns string
+	return shopItemList(item1, item2, item3, "", "", "", "", "", "", "")
+public function shopItemList(string item1, string item2, string item3, string item4) returns string
+	return shopItemList(item1, item2, item3, item4, "", "", "", "", "", "")
+public function shopItemList(string item1, string item2, string item3, string item4, string item5) returns string
+	return shopItemList(item1, item2, item3, item4, item5, "", "", "", "", "")
+public function shopItemList(string item1, string item2, string item3, string item4, string item5, string item6) returns string
+	return shopItemList(item1, item2, item3, item4, item5, item6, "", "", "", "")
+public function shopItemList(string item1, string item2, string item3, string item4, string item5, string item6, string item7) returns string
+	return shopItemList(item1, item2, item3, item4, item5, item6, item7, "", "", "")
+public function shopItemList(string item1, string item2, string item3, string item4, string item5, string item6, string item7, string item8) returns string
+	return shopItemList(item1, item2, item3, item4, item5, item6, item7, item8, "", "")
+public function shopItemList(string item1, string item2, string item3, string item4, string item5, string item6, string item7, string item8, string item9) returns string
+	return shopItemList(item1, item2, item3, item4, item5, item6, item7, item8, item9, "")
+	
+public function shopItemList(string item1, string item2, string item3, string item4, string item5, string item6, string item7, string item8, string item9, string item10) returns string
+	string shoplist = ""
+	shoplist += convertNameToRawString(item1)
+	shoplist += convertNameToRawString(item2)
+	shoplist += convertNameToRawString(item3)
+	shoplist += convertNameToRawString(item4)
+	shoplist += convertNameToRawString(item5)
+	shoplist += convertNameToRawString(item6)
+	shoplist += convertNameToRawString(item7)
+	shoplist += convertNameToRawString(item8)
+	shoplist += convertNameToRawString(item9)
+	shoplist += convertNameToRawString(item10)
+	return shoplist
+
+function convertNameToRawString(string itemName) returns string
+	if itemName == ""
+		return ""
+	else
+		return idInteger2IdString(itemName2Raw(itemName)) + ","

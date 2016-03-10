@@ -6,6 +6,7 @@ import StatHandler
 import DamageHandler
 import Missile
 import TalentList
+import SpellList
 
 constant int SPELL_RAW = 'AS14'
 constant string SPELL_ORDER = "poisonarrows"
@@ -31,6 +32,7 @@ class SpellPiercingArrow extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellPiercingArrow())
+	registerSpellId(4, HeroType.RANGER, SPELL_RAW)
 	
 @compiletime function genObjects()
 	genSpell(SPELL_RAW, 10, 16, SPELL_ORDER, "Piercing Arrow", "R", "Shoots a sharpened arrow at the target that can pierce even the strongest armor. Deals + " + colorizeStatValue("2.5 x Attack Power") + " physical damage and ignores up to " + colorizeStatValue("0.5 x Agi") + " armor.", "ReplaceableTextures\\CommandButtons\\BTNTrueShot.blp")

@@ -8,6 +8,7 @@ import DamageHandler
 import Fx
 import TalentList
 import StatusHandler
+import SpellList
 
 constant int SPELL_RAW = 'AS06'
 constant int BUFF_ABIL_RAW = 'AB06'
@@ -77,6 +78,7 @@ class SpellNaturesWrath extends Spell
 		
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellNaturesWrath())
+	registerSpellId(2, HeroType.DRUID, SPELL_RAW)
 	
 @compiletime function genObjects()
 	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Natures Wrath|r", "ReplaceableTextures\\CommandButtons\\BTNEntanglingRoots.blp", "This unit has reduced movespeed.")

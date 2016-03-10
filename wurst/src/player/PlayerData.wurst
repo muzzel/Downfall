@@ -5,8 +5,7 @@ import initlater Bag
 import HeroType
 import TalentList
 import initlater PQuest
-import initlater QuestProvingYourWorth
-
+import QuestProvingYourWorth
 
 public function xGetPlayerHero(int playerId) returns unit
 	if playerData[playerId] == null
@@ -22,16 +21,12 @@ function createHero(player p, HeroType heroType, vec2 pos) returns unit
 	unit hero = createUnit(p, heroType.getRaw(), pos, angle(0.))
 	switch heroType
 		case WARRIOR
-			hero..addAbility('AS02')..addAbility('AS03')..addAbility('AS12')
 			hero..addAbility(BOOK_TALENT_WARRIOR)
 		case PRIEST
-			hero..addAbility('AS01')..addAbility('AS04')..addAbility('AS09')..addAbility('AS13')
 			hero..addAbility(BOOK_TALENT_PRIEST)
 		case RANGER
-			hero..addAbility('AS07')..addAbility('AS08')..addAbility('AS11')..addAbility('AS14')
 			hero..addAbility(BOOK_TALENT_RANGER)
 		case DRUID
-			hero..addAbility('AS05')..addAbility('AS06')..addAbility('AS10')
 			hero..addAbility(BOOK_TALENT_DRUID)
 	SetCameraPositionForPlayer(p, pos.x, pos.y)
 	SelectUnitForPlayerSingle(hero, p)

@@ -6,14 +6,14 @@ import public PQuestGen
 import Config
 import Player
 import UnitData
-import PlayerData
+import initlater PlayerData
 import ItemData
 import SoundHelper
 
 @configurable constant real QUEST_EVENT_RANGE = 1500.
 @configurable constant real TALK_DURATION = 4.
 	
-public function giveQuestRewards(int playerId, int gold, int exp, int itemRaw)
+public function giveQuestRewards(int playerId, int gold, int exp, string itemName)
 	var rewardMsg = "Reward:\n"
 	if gold > 0
 		players[playerId].addGold(gold)
@@ -21,8 +21,8 @@ public function giveQuestRewards(int playerId, int gold, int exp, int itemRaw)
 	if exp > 0
 		xGetPlayerHero(playerId).addXp(exp, true)
 		rewardMsg += exp.toString() + " Exp\n"
-	if itemRaw != 0
-		let itm = xCreateItemForPlayerHero(playerId, itemRaw)
+	if itemName != ""
+		let itm = xCreateItemForPlayerHero(playerId, itemName)
 		rewardMsg += "Item: " + itm.getName()
 	printTimedToPlayer(rewardMsg, 10., players[playerId])
 

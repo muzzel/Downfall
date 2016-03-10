@@ -6,6 +6,7 @@ import UnitData
 import StatHandler
 import DamageHandler
 import TalentList
+import SpellList
 
 constant int SPELL_RAW = 'AS13'
 constant string SPELL_ORDER = "holybolt"
@@ -26,6 +27,7 @@ class SpellJudgement extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellJudgement())
+	registerSpellId(4, HeroType.PRIEST, SPELL_RAW)
 	
 @compiletime function genObjects()
 	genSpell(SPELL_RAW, 9, 8, SPELL_ORDER, "Judgement", "R", "Blasts the target with holy energy dealing + " + colorizeStatValue("3 x Int") + " magic damage. For every buff that is on the Priest or the target, the damage is increased by 20%.", "ReplaceableTextures\\CommandButtons\\BTNCharm.blp")

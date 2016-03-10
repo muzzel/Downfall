@@ -1,5 +1,6 @@
 package ThreatHandler
 import public ThreatHandlerConfig
+import Event
 // By muzzel - Version 1.1
 
 // Based on ZTS by Zwiebelchen (http://www.hiveworkshop.com/forums/spells-569/zwiebelchens-threat-system-2-6-a-156179/)
@@ -54,7 +55,37 @@ public function modifyThreat(unit playerUnit, unit threatUnit, real value, boole
 			campUnit.state = ThreatUnitState.COMBAT
 			if campUnit != tu
 				e = new ThreatListEntry(pu, campUnit, 0)
+			ThreatUnitEnterCombatEvent.fireFor(campUnit.getUnit())
+			// Unit enters combat
 	
+
+/**
+ * Fires when a threatunit enters combat.
+ * Use .u and .unitRaw to refer to the triggering unit and its type.
+ */
+public class ThreatUnitEnterCombatEvent
+	static unit u
+	static int unitRaw
+	use EventModule
+	static function fireFor(unit tu)
+		u = tu
+		unitRaw = tu.getTypeId()
+		fire()
+
+/**
+ * Fires when a threatunit leaves combat (starts returning).
+ * Does NOT fire when the threatunit dies.
+ * Use .u and .unitRaw to refer to the triggering unit and its type.
+ */
+public class ThreatUnitLeaveCombatEvent
+	static unit u
+	static int unitRaw
+	use EventModule
+	static function fireFor(unit tu)
+		u = tu
+		unitRaw = tu.getTypeId()
+		fire()
+
 /** 
  * Returns the combat state of a PlayerUnit or ThreatUnit.
  * Returns true if the specified unit is in combat.
@@ -180,6 +211,8 @@ class ThreatHandlerCamp
 			campUnit.u.issuePointOrder("move", campUnit.campPos)
 			SetUnitInvulnerable(campUnit.u, true)
 			onThreatUnitReturn(campUnit.u)
+			ThreatUnitLeaveCombatEvent.fireFor(campUnit.u)
+			// Unit leave combat (starts returning)
 		
 	function checkReturned()
 		var ret = true
@@ -198,6 +231,7 @@ class ThreatHandlerCamp
 				campUnit.state = ThreatUnitState.OOC
 				SetUnitInvulnerable(campUnit.u, false)
 				campUnit.u.unpause()
+				// Unit leaves combat (after returning)
 	
 	/** 
 	 * Removes the specified ThreatHandlerTU from this camp.
@@ -405,6 +439,7 @@ public class ThreatHandlerTU
 					u.unpause()
 			// Enable ==null checks:
 			this.u = null
+			// Unit leaves combat (killed)
 
 public class ThreatUnitIterator
 	ThreatHandlerTU tu
@@ -526,6 +561,7 @@ function update()
 					tu.state = ThreatUnitState.OOC
 					SetUnitInvulnerable(u, false)
 					u.unpause()
+					// Unit leaves combat (after teleporting)
 	
 init
 	CreateTimer().startPeriodic(0.5, function update)

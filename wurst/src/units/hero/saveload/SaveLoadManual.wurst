@@ -4,7 +4,13 @@ import HeroType
 import PlayerData
 import ChatEvent
 import Heropick
-
+import SpellList
+import ItemTypeGen
+import Bag
+import ItemData
+import FileIO
+import Sync
+import Thread
 /* 
  * Saving:
  * herotype
@@ -21,6 +27,7 @@ import Heropick
  * talents
  * spells
  */
+constant string FOLDER_NAME = "DownfallRPG"
 constant int SAVECODE_VERSION = 1
 constant int MAX_HERO_ID = 10
 constant int MAX_GOLD = 1000000
@@ -30,12 +37,28 @@ constant int MAX_AGI = 100
 constant int MAX_INT = 100
 constant int MAX_LPS = 1000
 constant int MAX_LPT = 1000
+constant int MAX_ITEM_SLS_ID = 500
+
+function slsB2i(boolean b) returns int
+	if b
+		return 1
+	else
+		return 0
+
+function slsI2b(int i) returns boolean
+	return i > 0
+
+function createItemFor(unit u, int slsId)
+	if slsId != 0
+		let itemRaw = slsIdGetItem(slsId)
+		xCreateItemForHero(u, itemRaw)
 
 function save(player p)
 	let pid = p.getId()
 	let hero = xGetPlayerHero(pid)
+	let bag = xGetPlayerBag(pid)
 	let playerData = xGetPlayerData(pid)
-	// 
+	// General Hero stats:
 	let heroTypeId = hero.getHeroType().getId()
 	let gold = p.getGold()
 	let exp = GetHeroXP(hero)
@@ -44,6 +67,29 @@ function save(player p)
 	let inte = playerData.getLearnedAttributeInt()
 	let lps = playerData.getLearnPointsStats()
 	let lpt = playerData.getLearnPointsTalents()
+	// Spells:
+	let spell1 = slsB2i(playerHeroHasSpell(pid, 1))
+	let spell2 = slsB2i(playerHeroHasSpell(pid, 2))
+	let spell3 = slsB2i(playerHeroHasSpell(pid, 3))
+	let spell4 = slsB2i(playerHeroHasSpell(pid, 4))
+	let spell5 = slsB2i(playerHeroHasSpell(pid, 5))
+	let spell6 = slsB2i(playerHeroHasSpell(pid, 6))
+	let spell7 = slsB2i(playerHeroHasSpell(pid, 7))
+	let spell8 = slsB2i(playerHeroHasSpell(pid, 8))
+	// Items (hero):
+	let item1 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(0)))
+	let item2 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(1)))
+	let item3 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(2)))
+	let item4 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(3)))
+	let item5 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(4)))
+	let item6 = itemGetSlsId(GetItemTypeId(hero.itemInSlot(5)))
+	// Items (bag):
+	let itemBag1 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(0)))
+	let itemBag2 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(1)))
+	let itemBag3 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(2)))
+	let itemBag4 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(3)))
+	let itemBag5 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(4)))
+	let itemBag6 = itemGetSlsId(GetItemTypeId(bag.itemInSlot(5)))
 	
 	Savecode savecode = new Savecode()
 	savecode.encode(heroTypeId, MAX_HERO_ID)
@@ -55,8 +101,41 @@ function save(player p)
 	savecode.encode(lps, MAX_LPS)
 	savecode.encode(lpt, MAX_LPT)
 	
+	savecode.encode(spell1, 1)
+	savecode.encode(spell2, 1)
+	savecode.encode(spell3, 1)
+	savecode.encode(spell4, 1)
+	savecode.encode(spell5, 1)
+	savecode.encode(spell6, 1)
+	savecode.encode(spell7, 1)
+	savecode.encode(spell8, 1)
+	
+	savecode.encode(item1, MAX_ITEM_SLS_ID)
+	savecode.encode(item2, MAX_ITEM_SLS_ID)
+	savecode.encode(item3, MAX_ITEM_SLS_ID)
+	savecode.encode(item4, MAX_ITEM_SLS_ID)
+	savecode.encode(item5, MAX_ITEM_SLS_ID)
+	savecode.encode(item6, MAX_ITEM_SLS_ID)
+	
+	savecode.encode(itemBag1, MAX_ITEM_SLS_ID)
+	savecode.encode(itemBag2, MAX_ITEM_SLS_ID)
+	savecode.encode(itemBag3, MAX_ITEM_SLS_ID)
+	savecode.encode(itemBag4, MAX_ITEM_SLS_ID)
+	savecode.encode(itemBag5, MAX_ITEM_SLS_ID)
+	savecode.encode(itemBag6, MAX_ITEM_SLS_ID)
+		
 	string s = savecode.save(p, SAVECODE_VERSION)
 	print("Your savecode:\n" + s)
+	
+//	// File save:
+//	let filename = hero.getName() + "-" + GetHeroLevel(hero).toString()
+//	synchronizeThread()
+//	if GetLocalPlayer() == p
+//		if File.isEnabled()
+//			var f = File.open(FOLDER_NAME, filename, Flag.WRITE)
+//			f.write(s)
+//			f.close()
+//	synchronizeThread()
 	destroy savecode
 	
 function load(player p, string c)
@@ -71,6 +150,31 @@ function load(player p, string c)
 		print("You need to -repick before you can load")
 		destroy loadcode
 		return
+		
+	// Items (Bag):
+	int itemBag6 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int itemBag5 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int itemBag4 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int itemBag3 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int itemBag2 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int itemBag1 = loadcode.decode(MAX_ITEM_SLS_ID)
+	// Items (Hero):
+	int item6 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int item5 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int item4 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int item3 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int item2 = loadcode.decode(MAX_ITEM_SLS_ID)
+	int item1 = loadcode.decode(MAX_ITEM_SLS_ID)
+	// Spells:
+	int spell8 = loadcode.decode(1)
+	int spell7 = loadcode.decode(1)
+	int spell6 = loadcode.decode(1)
+	int spell5 = loadcode.decode(1)
+	int spell4 = loadcode.decode(1)
+	int spell3 = loadcode.decode(1)
+	int spell2 = loadcode.decode(1)
+	int spell1 = loadcode.decode(1)
+	
 	int lpt = loadcode.decode(MAX_LPT)
 	int lps = loadcode.decode(MAX_LPS)
 	int inte = loadcode.decode(MAX_INT)
@@ -88,8 +192,45 @@ function load(player p, string c)
 	hero.addXp(exp, false)
 	playerData.setLearnPointsStats(lps)
 	playerData.setLearnPointsTalents(lpt)
-	playerData.setLearnedAttributes(agi, str, inte)
+	playerData.setLearnedAttributes(str, agi, inte)
 	p.setState(PLAYER_STATE_RESOURCE_GOLD, gold)
+	let bag = xGetPlayerBag(pid)
+	
+	if slsI2b(spell1)
+		playerHeroLearnSpell(p.getId(), 1)
+	if slsI2b(spell2)
+		playerHeroLearnSpell(p.getId(), 2)
+	if slsI2b(spell3)
+		playerHeroLearnSpell(p.getId(), 3)
+	if slsI2b(spell4)
+		playerHeroLearnSpell(p.getId(), 4)
+	if slsI2b(spell5)
+		playerHeroLearnSpell(p.getId(), 5)
+	if slsI2b(spell6)
+		playerHeroLearnSpell(p.getId(), 6)
+	if slsI2b(spell7)
+		playerHeroLearnSpell(p.getId(), 7)
+	if slsI2b(spell8)
+		playerHeroLearnSpell(p.getId(), 8)
+	
+	createItemFor(hero, item1)
+	createItemFor(hero, item2)
+	createItemFor(hero, item3)
+	createItemFor(hero, item4)
+	createItemFor(hero, item5)
+	createItemFor(hero, item6)
+	createItemFor(bag, itemBag1)
+	createItemFor(bag, itemBag2)
+	createItemFor(bag, itemBag3)
+	createItemFor(bag, itemBag4)
+	createItemFor(bag, itemBag5)
+	createItemFor(bag, itemBag6)
+	
+	// TODO: save/load talents!
+	// Until then, just reset talent points on every load:
+	playerData.setLearnPointsTalents(GetHeroLevel(hero) div 2)
+	print("Note: Your talents have been reset.")
+	
 	
 init
 	allPlayerChatEvent("-save", true, () -> begin

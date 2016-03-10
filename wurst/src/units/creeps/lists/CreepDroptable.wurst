@@ -2,19 +2,32 @@ package CreepDroptable
 import CreepDrop
 
 init
-	new Droptable('h000') // boar lvl 1
-		..add(5, 'I501')..add(5, 'I502')
-		..add(10, 'IM00')
-	new Droptable('h001') // wolf lvl 2
-		..add(5, 'I301')..add(5, 'I302')..add(5, 'I303')
-		..add(10, 'IM02')
-	new Droptable('h002') // wolf lvl 3
-		..add(6, 'I301')..add(6, 'I302')..add(6, 'I303')
-		..add(10, 'IM02')
-	new Droptable('h003') // turtle lvl 4
-		..add(5, 'I106')
-		..add(10, 'IM03')
-	new Droptable('h004') // Bear lvl 5
-		..add(30, 'I105')..add(30, 'I304')..add(30, 'I403')
-	new Droptable('h005') // The Packleader lvl 6
-		..add(17, 'I404')..add(17, 'I204')..add(17, 'I107')..add(17, 'I503')..add(16, 'I504')..add(16, 'I505')
+	// Boar
+	new Droptable('h000')
+		..add(5, "eq_shortsword")..add(5, "eq_heavywand")..add(5, "eq_huntingbow")
+		..add(3, "eq_fairyring")..add(3, "eq_copperbracers")
+		..add(6, "ma_boartusk")..add(6, "ma_lumpoftin")
+	// Wolf (lvl 2)
+	new Droptable('h001')
+		..add(5, "eq_shortsword")..add(5, "eq_heavywand")..add(5, "eq_huntingbow")
+		..add(5, "eq_woodenmail")..add(5, "eq_furcoat")..add(5, "eq_tatteredrobe")
+		..add(3, "eq_fairyring")..add(3, "eq_copperbracers")
+		..add(6, "ma_wolfpelt")..add(3, "ma_fang")
+	// Wolf (lvl 4)
+	new Droptable('h002') 
+		..add(5, "re_woodcuttersaxe")..add(5, "eq_leathermask")..add(5, "eq_spikedwand")
+		..add(6, "ma_wolfpelt")..add(6, "ma_fang")
+	// Turtle
+	new Droptable('h003')
+		..add(3, "ma_armoredscale")
+	// BOSS: Bear
+	new Droptable('h004')
+	// BOSS: The Packleader
+	new Droptable('h005')
+	// BOSS: Giant Crab
+	new Droptable('h006')
+	// Crab
+	new Droptable('h007')
+		..add(5, "eq_woodenmail")..add(5, "eq_furcoat")..add(5, "eq_tatteredrobe")
+		..add(5, "eq_shamanshood")..add(3, "eq_engravedring")
+		..add(6, "ma_lumpoftin")..add(3, "ma_finescale")..add(3, "ma_aquamarine")

@@ -1,0 +1,57 @@
+package SpellList
+import public initlater HeroType
+import initlater PlayerData
+//
+int array idAndHero2RawArr // (id x hero) -> raw: hero*100+id
+
+function getSpellIdRaw(int id, HeroType heroType) returns int
+	return idAndHero2RawArr[heroType castTo int * 100 + id]
+
+public function registerSpellId(int id, HeroType heroType, int raw)
+	idAndHero2RawArr[heroType castTo int * 100 + id] = raw
+	
+
+public function playerHeroLearnSpell(int playerId, int spellId)
+	let hero = xGetPlayerHero(playerId)
+	if hero != null
+		let heroType = hero.getHeroType()
+		let spellRaw = getSpellIdRaw(spellId, heroType)
+		if spellRaw != 0
+			hero.addAbility(spellRaw)
+			
+public function playerHeroUnlearnSpell(int playerId, int spellId)
+	let hero = xGetPlayerHero(playerId)
+	if hero != null
+		let heroType = hero.getHeroType()
+		let spellRaw = getSpellIdRaw(spellId, heroType)
+		if spellRaw != 0
+			hero.removeAbility(spellRaw)
+
+public function playerHeroHasSpell(int playerId, int spellId) returns boolean
+	var hasSpell = false
+	let hero = xGetPlayerHero(playerId)
+	if hero != null
+		let heroType = hero.getHeroType()
+		let spellRaw = getSpellIdRaw(spellId, heroType)
+		if spellRaw != 0
+			if hero.hasAbility(spellRaw)
+				hasSpell = true
+	return hasSpell
+//
+///*
+// * Api: 
+// * ids pro hero
+// * name -> (id x hero) mapping muss fix sein
+// * (id x hero) -> raw mapping
+// * - registerSpell(id, name, HeroType, SpellRaw)
+// * - unit.hasSpell(name)
+// * - unit.learnSpell(name)
+// * - unit.unlearnSpell(name)
+// * - playerSaveSpellList(...)
+// * - playerLoadSpellList(...)
+// * 
+// * Scrolls: über genSpell generieren
+// */
+// 
+//function registerHeroSpell(int id, string name, HeroType heroType, int spellRaw)
+//	

@@ -1,5 +1,6 @@
 package ItemData
 import initlater PlayerData
+import ItemTypeGen
 
 
 integer currItemTimestamp
@@ -10,13 +11,23 @@ public function xSpawnItem(int raw, vec2 pos) returns item
 	new ItemData(itm)
 	return itm
 
-public function xCreateItemForPlayerHero(int playerId, int itemRaw) returns item
-	return xCreateItemForHero(xGetPlayerHero(playerId), itemRaw)
+public function xSpawnItem(string name, vec2 pos) returns item
+	return xSpawnItem(itemName2Raw(name), pos)
+
+public function xCreateItemForPlayerHero(int playerId, string itemName) returns item
+	return xCreateItemForHero(xGetPlayerHero(playerId), itemName)
 	
 public function xCreateItemForHero(unit hero, int itemRaw) returns item
 	item itm = null
 	if hero != null
 		itm = xSpawnItem(itemRaw, hero.getPos())
+		UnitAddItem(hero, itm)
+	return itm
+	
+public function xCreateItemForHero(unit hero, string itemName) returns item
+	item itm = null
+	if hero != null
+		itm = xSpawnItem(itemName, hero.getPos())
 		UnitAddItem(hero, itm)
 	return itm
 	

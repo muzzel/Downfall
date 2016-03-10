@@ -27,6 +27,7 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 	unitDamageTarget(source, target, damage, damageType, false)
 
 public function unitDamageTarget(unit source, unit target, real damage, DamageType damageType, boolean isAttack)
+	var dmg = damage
 	if not source.xIsCombatUnit() or not target.xIsCombatUnit()
 		printWarning("DamageHandler.unitDamageTarget(..): damage dealt by or on non-combat units.")
 		return
@@ -34,13 +35,8 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 		printWarning("DamageHandler.unitDamageTarget(..): damage dealt by or on dead units.")
 		return 
 	// Proccs, buffs, etc.:
-	if target.hasBuff(BuffIgnoreThePain.typeId)
-		if isAttack and target.xHasTalent(TALENT_WARRIOR_IGNORE_REFLECT) and source.getPos().distToVecSquared(target.getPos()) <= 100*100
-			unitDamageTarget(target, source, target.getStat(Stat.DAMA) * 1., DamageType.PHYSICAL) // Reflected damage
-		return
 	// 
 	boolean isCrit = false
-	var dmg = damage
 	// if damage comes from autoattack
 	if isAttack
 		// Calc evasion
@@ -51,6 +47,12 @@ public function unitDamageTarget(unit source, unit target, real damage, DamageTy
 		if GetRandomInt(0, 99) < source.getStat(Stat.CCHA) // if crit ...
 			isCrit = true
 			dmg = dmg * (1 + source.getStat(Stat.CMUL)*0.01) + source.getStat(Stat.CBON) // damage = damage * critmultiplier + critbonus
+	// Proccs, buffs, etc.:
+	if target.hasBuff(BuffIgnoreThePain.typeId)
+		if isAttack and target.xHasTalent(TALENT_WARRIOR_IGNORE_REFLECT) and source.getPos().distToVecSquared(target.getPos()) <= 100*100
+			unitDamageTarget(target, source, target.getStat(Stat.DAMA) * 1., DamageType.PHYSICAL) // Reflected damage
+		dmg *= 0.2
+	// 
 	// Calc damage modifieds from armor/resists
 	switch damageType
 		case PHYSICAL

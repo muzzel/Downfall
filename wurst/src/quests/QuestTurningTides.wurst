@@ -1,0 +1,23 @@
+package QuestTurningTides
+import PQuest
+import ItemData
+
+public PQuest pqTurningTides = new PQuest("Turning Tides", "ReplaceableTextures\\CommandButtons\\BTNNightElfTransport.blp", "Find out why the fishermen stopped delivering.")
+PQuestItem pqTurningTides_talkFarim = pqTurningTides.addItemTalk("Find the fisher Farim.", udg_npc_farim, "You are here for the fish?\nI will bring my catch to town, but I need to find my friend William first! He headed south with his boat to catch crabs, but I fear something happened to him. Please find him.", null)
+PQuestItem pqTurningTides_talkWilliam = pqTurningTides.addItemTalk("Find the fisher William.", udg_npc_william, "Thank god someone came, I have been standing here for hours. My boat was destroyed and the path through the shallow water is crawling with beasts. Tell Farim to get me with his boat.", null)
+PQuestItem pqTurningTides_talkFarim2 = pqTurningTides.addItemTalk("Talk to Farim again.", udg_npc_farim, "He crashed his boat? Again? Anyway, thank you for finding him.\nHere, take this, I found it on the beach a few day ago.", (int playerId, unit npc) -> giveItem(playerId))
+PQuestItem pqTurningTides_return = pqTurningTides.addItemTalk("Return to Brom", udg_npc_bryce, "Good job, here is some gold for your troubles.", null)
+
+function giveItem(int playerId)
+	xCreateItemForPlayerHero(playerId, "ma_lumpoftin")
+	
+init
+	pqTurningTides.setDiscoverTalkData("We have not heard from our fishermen for days. I'm starting to worry and our supplies are running low, the village is dependent on their fish. Farim is usually on the small beach in the south, find out whats wrong there.", null)
+	pqTurningTides_talkFarim.setInitDiscovered()
+	pqTurningTides_talkFarim.setNext(pqTurningTides_talkWilliam)
+	pqTurningTides_talkWilliam.setNext(pqTurningTides_talkFarim2)
+	pqTurningTides_talkFarim2.setNext(pqTurningTides_return)
+	pqTurningTides_return.setCompletesQuest()
+	pqTurningTides.setCompleteAction((int playerId) -> begin
+		giveQuestRewards(playerId, 15, 80, "")
+	end)

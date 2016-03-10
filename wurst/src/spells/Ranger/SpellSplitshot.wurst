@@ -9,6 +9,7 @@ import Missile
 import TalentList
 import SpellFirearrow
 import Fx
+import SpellList
 
 constant int SPELL_RAW = 'AS08'
 constant string SPELL_ORDER = "coldarrows"
@@ -63,6 +64,7 @@ class SpellSplitshot extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellSplitshot())
+	registerSpellId(2, HeroType.RANGER, SPELL_RAW)
 	
 @compiletime function genObjects()
 	genSpell(SPELL_RAW, 12, 18, SPELL_ORDER, "Splitshot", "W", "Shoots " + colorizeStatValue("3 + 0.1 x Agi") + " arrows at the target point. Each arrow can pierce up to 2 targets dealing " + colorizeStatValue("0.8 x Attackpower") + " physical damage.", "ReplaceableTextures\\CommandButtons\\BTNFanOfKnives.blp")

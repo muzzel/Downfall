@@ -2,27 +2,36 @@ package CreepTypeList
 import initlater StatHandler
 import initlater UnitTypeGen
 
+function UnitBaseStatBuffer.allR(int allr)
+	// TODO
+
 public function initCreepTypeLists()
 //	unitgenNewCreep(raw, baseRaw, lvl, name, life, mana, dmg, armor, 100*attacktime, movespeed) 
 	// Boar (lvl 1):
-	unitgenNewCreep('h000', 'nspp', 1, "Boar", 110, 0, 5, 0, 220, 300)
+	unitgenNewCreep('h000', 'nspp', 1, "Boar", 90, 0, 5, 0, 220, 300)
 	unitgenSetStats()..set(Stat.EVAS, 5)
 	// Wolf (lvl 2):
-	unitgenNewCreep('h001', 'nwlt', 2, "Wolf", 130, 0, 7, 0, 260, 290)
-	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 15)..set(Stat.CBON, 4)
-	// Wolf (lvl 3):
-	unitgenNewCreep('h002', 'nwwf', 3, "Wolf", 180, 0, 7, 1, 240, 290)
-	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 4)
-	// Sea Turtle (lvl 4):
-	unitgenNewCreep('h003', 'ntrh', 4, "Sea Turtle", 240, 20, 11, 2, 300, 290)
-	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 4)
-	// Bear (lvl 5):
+	unitgenNewCreep('h001', 'nwlt', 2, "Wolf", 130, 0, 7, 2, 250, 290)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 10)..set(Stat.CBON, 4)
+	// Wolf (lvl 4):
+	unitgenNewCreep('h002', 'nwwf', 4, "Wolf", 180, 0, 7, 3, 240, 290)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 15)..set(Stat.CBON, 8)
+	// Sea Turtle (lvl 5):
+	unitgenNewCreep('h003', 'ntrh', 5, "Sea Turtle", 300, 20, 10, 5, 300, 290)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 5)..set(Stat.CBON, 12)
+	// Boss: Bear:
 	unitgenNewCreep('h004', 'ngz1', 5, "Bear", 650, 30, 14, 4, 280, 300)
-	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 10)..set(Stat.CBON, 8)
-	// Pack Leader (lvl 6):
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 10)..set(Stat.CBON, 8)..allR(15)
+	// Boss: Pack Leader:
 	unitgenNewCreep('h005', 'nwld', 6, "The Packleader", 1000, 40, 16, 5, 250, 300)
-	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 3)
+	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 3)..allR(15)
+	// Boss: Giant Crab:
+	unitgenNewCreep('h006', 'nsc3', 7, "Giant Crab", 1200, 22, 10, 8, 300, 300)
+	unitgenSetStats()..set(Stat.EVAS, 8)..set(Stat.CCHA, 10)..set(Stat.CBON, 8)..allR(15)
+	// Crab (lvl 3)
+	unitgenNewCreep('h007', 'nscb', 3, "Crab", 180, 0, 8, 3, 280, 300)
+	unitgenSetStats()..set(Stat.EVAS, 8)
 	// Dungeon 1:
 	// Insane Wolf (lvl 6):
-	unitgenNewCreep('h106', 'osw1', 7, "Insane Wolf", 400, 30, 12, 5, 230, 300)
+	unitgenNewCreep('h106', 'osw1', 7, "Insane Wolf", 600, 30, 12, 5, 230, 300)
 	unitgenSetStats()..set(Stat.EVAS, 5)..set(Stat.CCHA, 20)..set(Stat.CBON, 8)

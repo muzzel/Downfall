@@ -3,10 +3,11 @@ import TestUtils
 import UnitData
 import initlater InventoryIterator
 import initlater BuffHandler
-import initlater ThreatHandler
+import ThreatHandler
 import initlater PlayerData
 import ItemData
 import Heropick
+import SpellList
 
 init
 	chatEvent("-debug inventory", () -> begin
@@ -30,12 +31,53 @@ init
 		let p = GetTriggerPlayer()
 		print("Player " + p.getName() + " is picking: " + isPicking(p).toString())
 	end)
-	chatEvent("-materials", () -> begin
-		let pos = vec2(-10300, 4300)
-		xSpawnItem('IM00', pos)
-		xSpawnItem('IM01', pos)
-		xSpawnItem('IM02', pos)
-		xSpawnItem('IM03', pos)
-		xSpawnItem('IM04', pos)
+//	chatEvent("-testitem", () -> xSpawnItem('I601', vec2(-10300, 4300)))
+	chatEvent("-teleport crab", () -> selectedUnit().setPos(vec2(-3360, -3240)))
+	chatEvent("-debug spells", () -> begin
+		let pid = GetTriggerPlayer().getId()
+		for sid = 1 to 10
+			print("Spell " + sid.toString() + ": " + playerHeroHasSpell(pid, sid).toString())
 	end)
-	chatEvent("-testitem", () -> xSpawnItem('I601', vec2(-10300, 4300)))
+	chatEvent("-learnspell 1", () -> playerHeroLearnSpell(GetTriggerPlayer().getId(), 1))
+	chatEvent("-learnspell 2", () -> playerHeroLearnSpell(GetTriggerPlayer().getId(), 2))
+	chatEvent("-learnspell 3", () -> playerHeroLearnSpell(GetTriggerPlayer().getId(), 3))
+	chatEvent("-learnspell 4", () -> playerHeroLearnSpell(GetTriggerPlayer().getId(), 4))
+	chatEvent("-unlearnspell 1", () -> playerHeroUnlearnSpell(GetTriggerPlayer().getId(), 1))
+	chatEvent("-unlearnspell 2", () -> playerHeroUnlearnSpell(GetTriggerPlayer().getId(), 2))
+	chatEvent("-unlearnspell 3", () -> playerHeroUnlearnSpell(GetTriggerPlayer().getId(), 3))
+	chatEvent("-unlearnspell 4", () -> playerHeroUnlearnSpell(GetTriggerPlayer().getId(), 4))
+	chatEvent("-exp", () -> AddHeroXP(xGetPlayerHero(GetTriggerPlayer().getId()), 100, false))
+	chatEvent("-items", () -> begin
+		let p = vec2(-10300, 4300)
+		xSpawnItem("eq_oldstaff", p)
+		xSpawnItem("eq_oldbow", p)
+		xSpawnItem("eq_oldsword", p)
+		xSpawnItem("eq_lighthelmet", p)
+		xSpawnItem("eq_shortsword", p)
+		xSpawnItem("eq_heavywand", p)
+		xSpawnItem("eq_huntingbow", p)
+		xSpawnItem("eq_woodenmail", p)
+		xSpawnItem("eq_furcoat", p)
+		xSpawnItem("eq_tatteredrobe", p)
+		xSpawnItem("eq_fairyring", p)
+		xSpawnItem("eq_copperbracers", p)
+		xSpawnItem("eq_lightbuckler", p)
+	end)
+	chatEvent("-materials", () -> begin
+		let p = vec2(-10300, 4300)
+		xSpawnItem("ma_boartusk", p)
+		xSpawnItem("ma_lumpoftin", p)
+		xSpawnItem("ma_woodstem", p)
+		xSpawnItem("ma_finescale", p)
+		xSpawnItem("ma_aquamarine", p)
+		xSpawnItem("ma_wolfpelt", p)
+		xSpawnItem("ma_fang", p)
+		xSpawnItem("ma_armoredscale", p)
+	end)
+	chatEvent("-recipes", () -> begin
+		let p = vec2(-10300, 4300)
+		xSpawnItem("re_lightbuckler", p)
+		xSpawnItem("re_energyorb", p)
+		xSpawnItem("re_sharparrows", p)
+		xSpawnItem("re_woodcuttersaxe", p)
+	end)

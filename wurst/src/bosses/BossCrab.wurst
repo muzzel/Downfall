@@ -1,0 +1,38 @@
+package BossCrab
+import ThreatHandler
+import UnitData
+
+int BOSS_CRAB_RAW = 'h006'
+unit currentBossUnit = null
+timer spawnMinisTimer = CreateTimer()
+
+function startFight()
+	spawnMinis()
+	spawnMinisTimer.startPeriodic(20., function spawnMinis)
+	print("Start fight: Crab")
+	
+function resetFight()
+	spawnMinisTimer.pause()
+	print("End fight: Crab")
+
+// TODO: crab dies event -> resetFight
+// TODO: add minis to boss threat camp so pulling a mini resets the boss
+
+function spawnMinis()
+	let tank = getThreatUnitFirstSlot(currentBossUnit)
+	let mini1 = xSpawnCreep('h007', vec2(-1933, -2676), 0.)
+	modifyThreat(tank, mini1, 0., true)
+	let mini2 = xSpawnCreep('h007', vec2(-1905, -3618), 0.)
+	modifyThreat(tank, mini2, 0., true)
+
+init
+	ThreatUnitEnterCombatEvent.addAction(() -> begin
+		if ThreatUnitEnterCombatEvent.unitRaw == BOSS_CRAB_RAW
+			currentBossUnit = ThreatUnitEnterCombatEvent.u
+			startFight()
+	end)
+	ThreatUnitLeaveCombatEvent.addAction(() -> begin
+		if ThreatUnitEnterCombatEvent.unitRaw == BOSS_CRAB_RAW
+			resetFight()
+			currentBossUnit = null
+	end)

@@ -8,6 +8,7 @@ import DamageHandler
 import TalentList
 import SpellRejuvenation
 import BuffHandler
+import SpellList
 
 constant int SPELL_RAW = 'AS10'
 constant string SPELL_ORDER = "starfall"
@@ -36,6 +37,7 @@ class SpellMoonlightShadow extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellMoonlightShadow())
+	registerSpellId(3, HeroType.DRUID, SPELL_RAW)
 
 @compiletime
 function genObj()

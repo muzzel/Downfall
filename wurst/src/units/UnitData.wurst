@@ -36,6 +36,11 @@ public function unit.xGetStat(Stat s) returns int
 
 public function unit.xGetStatReal(Stat s) returns real
 	return this.xGetStat(s) / 100.
+
+public function xSpawnCreep(int raw, vec2 pos, real angle) returns unit
+	let u = createUnit(Player(PLAYER_NEUTRAL_AGGRESSIVE), raw, pos, angle(angle))
+	new UnitData(u)
+	return u
 // ----
 
 public function unitDeath(unit u)

@@ -1,7 +1,11 @@
 package QuestNPCs
 import PQuest
+import ShopItemList
 
 constant string MODEL_VILLAGER_MALE = "units\\critters\\VillagerMan\\VillagerMan"
+constant string MODEL_VILLAGER_MALE2 = "units\\critters\\VillagerMan1\\VillagerMan1"
+constant string MODEL_VILLAGER_KID = "units\\critters\\VillagerKid\\VillagerKid"
+constant string MODEL_VILLAGER_KID2 = "units\\critters\\VillagerKid1\\VillagerKid1"
 constant string MODEL_VILLAGER_FEMALE = "units\\critters\\VillagerWoman\\VillagerWoman"
 constant string MODEL_FOOTMAN = "units\\human\\Footman\\Footman"
 
@@ -9,5 +13,7 @@ constant string MODEL_FOOTMAN = "units\\human\\Footman\\Footman"
 @compiletime function genQuestNPCs()
 	genQuestNPC('npc1', "Captain Bryce", "units\\human\\HeroPaladin\\HeroPaladin", "")
 	genQuestNPC('npc2', "Brom", MODEL_FOOTMAN, "")
-	genQuestNPC('npc3', "Marta", MODEL_VILLAGER_FEMALE, "IM04,i201,i202,i203,i402,I401")
-	genQuestNPC('npc4', "Menag", MODEL_VILLAGER_MALE, "IM01,i104")
+	genQuestNPC('npc3', "Marta", MODEL_VILLAGER_FEMALE, shopItemList("re_lightbuckler", "re_energyorb", "re_sharparrows", "eq_lighthelmet"))
+	genQuestNPC('npc4', "Menag", MODEL_VILLAGER_MALE, shopItemList("ma_woodstem"))
+	genQuestNPC('npc5', "William", MODEL_VILLAGER_MALE2, "")
+	genQuestNPC('npc6', "Farim", MODEL_VILLAGER_MALE, "")

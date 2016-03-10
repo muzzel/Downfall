@@ -3,6 +3,7 @@ import HashMap
 import LinkedList
 import ItemData
 import PQuest
+import ItemTypeGen
 
 public function creepDrop(unit u)
 	if unitDrops.has(u.getTypeId())
@@ -33,7 +34,8 @@ public class Droptable
 		drops = new LinkedList<Drop>()
 		questDrops = new LinkedList<QuestDrop>()
 		
-	function add(int chance, int itemRaw)
+	function add(int chance, string itemName)
+		let itemRaw = itemName2Raw(itemName)
 		drops.add(new Drop(chance, itemRaw))
 		
 	function addQuestDrop(PQuestItem questItem, int chance, int itemRaw)

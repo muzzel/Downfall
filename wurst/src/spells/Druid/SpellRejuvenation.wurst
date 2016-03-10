@@ -6,6 +6,7 @@ import UnitData
 import StatHandler
 import Heal
 import TalentList
+import SpellList
 
 constant int SPELL_RAW = 'AS05'
 constant int BUFF_ABIL_RAW = 'AB05'
@@ -53,6 +54,7 @@ class SpellRejuvenation extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellRejuvenation())
+	registerSpellId(1, HeroType.DRUID, SPELL_RAW)
 	
 @compiletime function genObjects()
 	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cff00ff00Rejuvenation|r", "ReplaceableTextures\\CommandButtons\\BTNRejuvenation.blp", "This unit is healed over time.")

@@ -1,14 +1,15 @@
 package TestUtils
-// By muzzel - Version 1.2
+// By muzzel - Version 1.4
 
 /** Registers a chat event. */
 public function chatEvent(string s, code c)
 	if s.startsWith("-debug")
 		commands[commandsLen] = s
 		commandsLen++
-	CreateTrigger()
-		..registerPlayerChatEvent(Player(0), s, true)
+	let trig = CreateTrigger()
 		..addAction(c)
+	for k = 15 downto 0
+		trig.registerPlayerChatEvent(Player(k), s, true)
 
 /** Registers a esc-key event. */
 public function escEvent(code c)

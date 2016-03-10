@@ -1,0 +1,49 @@
+package SpellIntimidatingShout
+import SpellObjectGen
+import SpellHandler
+import StatHandler
+import UnitData
+import BuffHandler
+import SpellList
+
+constant int SPELL_RAW = 'AS15'
+constant int BUFF_ABIL_RAW = 'AB15'
+constant int BUFF_RAW = 'BB15'
+constant string SPELL_ORDER = "curse"
+
+public class BuffIntimidatingShout extends Buff
+	StatList stats
+	override function getName() returns string
+		return "Intimidating Shout"
+	
+	override function getRaw() returns int
+		return BUFF_ABIL_RAW
+	
+	override function getBuffRaw() returns int
+		return BUFF_RAW
+	
+	override function onApply()
+		stats = new StatList()..add(Stat.DAMP, -25)
+		getUnit().xGetUnitData().unitStatBuffer.apply(stats)
+		destroyAfter(15.)
+	
+	override function onRemove()
+		getUnit().xGetUnitData().unitStatBuffer.remove(stats)
+		destroy stats
+
+class SpellIntimidatingShout extends Spell
+	override function onCast()
+		AddSpecialEffectTarget("Abilities\\Spells\\NightElf\\Taunt\\TauntCaster.mdl", caster, "chest").destr()
+		ENUM_GROUP.clear()
+		ENUM_GROUP.enumUnitsInRange(caster.getPos(), 600.)
+		for unit u in ENUM_GROUP
+			if u.getOwner() == Player(PLAYER_NEUTRAL_AGGRESSIVE) and u.xIsCombatUnit()
+				new BuffIntimidatingShout().apply(u)
+		
+init
+	registerSpellcast(SPELL_RAW, () -> new SpellIntimidatingShout())
+	registerSpellId(4, HeroType.WARRIOR, SPELL_RAW)
+	
+@compiletime function genObjects()
+	genBuffObjectData(BUFF_ABIL_RAW, BUFF_RAW, "|cffff0000Intimidating Shout|r", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp", "This unit has reduced attack power.")
+	genSpell(SPELL_RAW, 6, 25, SPELL_ORDER, "Intimidating Shout", "R", "Reduces the attackpower of all enemies in range by 25% for 15 seconds.", "ReplaceableTextures\\CommandButtons\\BTNReincarnation.blp")

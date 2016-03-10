@@ -1,28 +1,15 @@
 package Dungeon1
-import initlater UnitData
+import Dungeon
+import ChatEvent
 
 constant rect DUNG_AREA = gg_rct_dungeon1
 constant rect ENTRY_AREA = gg_rct_dungeon1entry
 constant rect EXIT_AREA = gg_rct_dungeon1exit
-constant vec2 EXIT_TARGET = vec2(-3200, 8800)
 constant vec2 ENTRY_TARGET = vec2(4700, -10800)
+constant vec2 EXIT_TARGET = vec2(-3200, 8800)
 
-function enterDungeon()
-	let u = GetEnteringUnit()
-	if u.xIsHero()
-		u.setPos(ENTRY_TARGET)
-		SetCameraPositionForPlayer(u.getOwner(), ENTRY_TARGET.x, ENTRY_TARGET.y)
-	
-function exitDungeon()
-	let u = GetEnteringUnit()
-	if u.xIsHero()
-		u.setPos(EXIT_TARGET)
-		SetCameraPositionForPlayer(u.getOwner(), EXIT_TARGET.x, EXIT_TARGET.y)
+Dungeon dungeon1
 
 init
-	let enterDung = CreateTrigger()
-		..addAction(function enterDungeon)
-	TriggerRegisterEnterRectSimple(enterDung, ENTRY_AREA)
-	let exitDung = CreateTrigger()
-		..addAction(function exitDungeon)
-	TriggerRegisterEnterRectSimple(exitDung, EXIT_AREA)
+	dungeon1 = new Dungeon("Wolf Cave", DUNG_AREA, ENTRY_AREA, ENTRY_TARGET, EXIT_AREA, EXIT_TARGET)
+	allPlayerChatEvent("-reset dungeon1", true, () -> dungeon1.reset())

@@ -6,25 +6,68 @@ import initlater EquipmentClassification
 import ItemTypeList
 import ItemTooltipGen
 import ItemTypeData
+import ObjectIdGenerator
+import HashMap
+import HashBiMap
 
 let XX = Stat.LIFE // placeholder for unused statarguments
+HashMap<int, int> itemNameHash2Raw = new HashMap<int, int>() // StringHash(itemName)->itemRaw
+HashBiMap<int, int> itemRaw2slsId = new HashBiMap<int, int>() // default: itemRaw -> slsId
 
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, XX, 0, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, s6, v6, XX, 0, XX, 0, name, descr, icon)
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, Stat s7, int v7, string name, string descr, string icon)
-	genEq(raw, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, s6, v6, s7, v7, XX, 0, name, descr, icon)
+// only getter, throws warning if entry for itemName doesnt exist
+public function itemName2Raw(string itemName) returns int
+	if itemName == ""
+		return 0
+	int nameHash = StringHash(itemName)
+	if itemNameHash2Raw.has(nameHash)
+		return itemNameHash2Raw.get(nameHash)
+	else
+		printWarning("ItemTypeGen: itemName2Raw() could not find item name: " + itemName)
+		return 0
+
+// creates a new entry for itemName, throws error if alredy existent
+function newItemRaw(string itemName) returns int
+	int nameHash = StringHash(itemName)
+//	// Sanity check: doesnt work on compiletime. (But attempting to create the same raw twice throws an error anyway, so its ok)
+//	if itemNameHash2Raw.has(nameHash)
+//		printError("ItemTypeGen: newItemRaw() called for name that already exists: " + itemName)
+//		return 0
+//	else
+	let raw = UNIT_ID_GEN.next()
+	itemNameHash2Raw.put(nameHash, raw)
+	return raw
+
+function registerSlsId(int itemRaw, int slsId)
+	if not compiletime
+		if itemRaw2slsId.has(itemRaw)
+			printWarning("ItemTypeGen: registerSlsId() slsId already exists")
+		if slsId != 0 // slsId==0 -> item cant be saved/loaded
+			itemRaw2slsId.put(itemRaw, slsId)
+
+public function itemGetSlsId(int itemRaw) returns int
+	return itemRaw2slsId.get(itemRaw)
+
+public function slsIdGetItem(int slsId) returns int
+	return itemRaw2slsId.getInv(slsId)
+
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, XX, 0, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, XX, 0, XX, 0, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, XX, 0, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, s6, v6, XX, 0, XX, 0, name, descr, icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, Stat s7, int v7, string name, string descr, string icon)
+	genEq(itemName, slsId, qual, slot, cls, cost, s1, v1, s2, v2, s3, v3, s4, v4, s5, v5, s6, v6, s7, v7, XX, 0, name, descr, icon)
 	
-public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, Stat s7, int v7, Stat s8, int v8, string name, string descr, string icon)
+public function genEq(string itemName, int slsId, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat s1, int v1, Stat s2, int v2, Stat s3, int v3, Stat s4, int v4, Stat s5, int v5, Stat s6, int v6, Stat s7, int v7, Stat s8, int v8, string name, string descr, string icon)
+	let raw = newItemRaw(itemName)
+	registerSlsId(raw, slsId)
 	let itd = new ItemTypeData(raw)
 	itd.itemClass = ItemClass.EQUIPMENT
 	itd.name = name
@@ -67,7 +110,9 @@ public function genEq(int raw, EqQua qual, EqSlo slot, EqCla cls, int cost, Stat
 			..setCanBeSoldToMerchants(true)
 
 
-public function genMa(int raw, int cost, string name, string description, string icon)
+public function genMa(string itemName, int slsId, int cost, string name, string description, string icon)
+	let raw = newItemRaw(itemName)
+	registerSlsId(raw, slsId)
 	let itd = new ItemTypeData(raw)
 	itd.itemClass = ItemClass.MATERIAL
 	itd.name = name
@@ -88,35 +133,38 @@ public function genMa(int raw, int cost, string name, string description, string
 			..setHitPoints(999999)
 			..setCanBeSoldToMerchants(true)
 	
-public function genRe(int raw, int targetRaw, int cost, int raw1, string description)	
-	genRe(raw, targetRaw, cost, raw1, 0, 0, 0, 0, 0, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, 0, 0, 0, 0, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, raw3, 0, 0, 0, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, int raw4, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, raw3, raw4, 0, 0, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, int raw4, int raw5, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, raw3, raw4, raw5, 0, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, int raw4, int raw5, int raw6, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, raw3, raw4, raw5, raw6, 0, 0, description)
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, int raw4, int raw5, int raw6, int raw7, string description)	
-	genRe(raw, targetRaw, cost, raw1, raw2, raw3, raw4, raw5, raw6, raw7, 0, description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string description)
+	genRe(itemName, slsId, targetName, cost, name1, "", "", "", "", "", "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string description)
+	genRe(itemName, slsId, targetName, cost, name1, name2, "", "", "", "", "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string description)
+	genRe(itemName, slsId, targetName, cost, name1, name2, name3, "", "", "", "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string name4, string description)
+	genRe(itemName, slsId, targetName, cost, name1, name2, name3, name4, "", "", "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string name4, string name5, string description)	
+	genRe(itemName, slsId, targetName, cost, name1, name2, name3, name4, name5, "", "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string name4, string name5, string name6, string description)
+	genRe(itemName, slsId, targetName, cost, name1, name2, name3, name4, name5, name6, "", "", description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string name4, string name5, string name6, string name7, string description)
+	genRe(itemName, slsId, targetName, cost, name1, name2, name3, name4, name5, name6, name7, "", description)
 
-public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int raw3, int raw4, int raw5, int raw6, int raw7, int raw8, string description)
+public function genRe(string itemName, int slsId, string targetName, int cost, string name1, string name2, string name3, string name4, string name5, string name6, string name7, string name8, string description)
+	let raw = newItemRaw(itemName)
+	registerSlsId(raw, slsId)
+	let targetRaw = itemName2Raw(targetName)
 	let itd = new ItemTypeData(raw)
 	itd.itemClass = ItemClass.RECIPE
-	let targetName = targetRaw.xGetItemTypeData().name
-	itd.name = "Recipe: " + targetName
+	let targetItemName = targetRaw.xGetItemTypeData().name
+	itd.name = "Recipe: " + targetItemName
 	itd.recipeTarget = targetRaw
-	itd.recipeReq1 = raw1
-	itd.recipeReq2 = raw2
-	itd.recipeReq3 = raw3
-	itd.recipeReq4 = raw4
-	itd.recipeReq5 = raw5
-	itd.recipeReq6 = raw6
-	itd.recipeReq7 = raw7
-	itd.recipeReq8 = raw8
+	itd.recipeReq1 = itemName2Raw(name1)
+	itd.recipeReq2 = itemName2Raw(name2)
+	itd.recipeReq3 = itemName2Raw(name3)
+	itd.recipeReq4 = itemName2Raw(name4)
+	itd.recipeReq5 = itemName2Raw(name5)
+	itd.recipeReq6 = itemName2Raw(name6)
+	itd.recipeReq7 = itemName2Raw(name7)
+	itd.recipeReq8 = itemName2Raw(name8)
 	if compiletime
 		tooltipReset()
 		tooltipAddRecipeProperties()
@@ -124,8 +172,8 @@ public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int 
 		tooltipAddRecipeReq(itd)
 		let tt = tooltipGet()
 		new ItemDefinition(raw, 'ches')
-			..setName("Recipe: " + targetName)
-			..setTooltipBasic("Recipe: " + targetName)
+			..setName("Recipe: " + targetItemName)
+			..setTooltipBasic("Recipe: " + targetItemName)
 			..setInterfaceIcon("ReplaceableTextures\\CommandButtons\\BTNSnazzyScroll.blp")
 			..setDescription(tt)
 			..setTooltipExtended(tt)
@@ -144,8 +192,8 @@ public function genRe(int raw, int targetRaw, int cost, int raw1, int raw2, int 
 	u.setLvlDataInt("Iint", 1, 2, 0)
 	u.setLvlDataString("aart", 0, 0, "ReplaceableTextures\\CommandButtons\\BTNPenguin.blp")
 	
-
 @compiletime function genObjects()
+//	itemNameHash2Raw = new HashMap<int, int>()
 	initItemTypeLists()
 			
 init

@@ -1,7 +1,8 @@
 package QuestProvingYourWorth
 import public QuestPreciousPelts
+import QuestTurningTides
 import PQuest
-import PlayerData
+import initlater PlayerData
 import HeroType
 import ItemData
 import CreepDrop
@@ -19,18 +20,19 @@ init
 	pqProveWorth_kill.setNext(pqProveWorth_return)
 	pqProveWorth_return.setCompletesQuest()
 	pqProveWorth.setCompleteAction((int playerId) -> begin
-		giveQuestRewards(playerId, 15, 80, 0)
+		giveQuestRewards(playerId, 15, 80, "")
 		pqPreciousPelts.setDiscoverable(playerId, udg_npc_marta)
+		pqTurningTides.setDiscoverable(playerId, udg_npc_bryce)
 	end)
 
 function giveItem(int playerId)
 	let ht = xGetPlayerHero(playerId).getHeroType()
 	switch ht
 		case HeroType.WARRIOR
-			xCreateItemForPlayerHero(playerId, 'I101')
+			xCreateItemForPlayerHero(playerId, "eq_oldsword")
 		case HeroType.PRIEST
-			xCreateItemForPlayerHero(playerId, 'I102')
+			xCreateItemForPlayerHero(playerId, "eq_oldstaff")
 		case HeroType.RANGER
-			xCreateItemForPlayerHero(playerId, 'I103')
+			xCreateItemForPlayerHero(playerId, "eq_oldbow")
 		case HeroType.DRUID
-			xCreateItemForPlayerHero(playerId, 'I102')
+			xCreateItemForPlayerHero(playerId, "eq_oldstaff")

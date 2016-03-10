@@ -6,6 +6,7 @@ import Heal
 import UnitData
 import StatHandler
 import TalentList
+import SpellList
 
 constant int SPELL_RAW = 'AS09'
 constant string SPELL_ORDER = "holylight"
@@ -60,6 +61,7 @@ class SpellHolyBolt extends Spell
 
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellHolyBolt())
+	registerSpellId(3, HeroType.PRIEST, SPELL_RAW)
 
 @compiletime
 function genObj()

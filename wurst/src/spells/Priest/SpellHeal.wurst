@@ -7,6 +7,7 @@ import StatHandler
 import TalentList
 import BuffHandler
 import initlater SpellShield
+import SpellList
 
 constant int SPELL_RAW = 'AS01'
 constant string SPELL_ORDER = "heal"
@@ -30,6 +31,7 @@ class SpellHeal extends Spell
 				caster.addMana(manaRestored.toReal())
 init
 	registerSpellcast(SPELL_RAW, () -> new SpellHeal())
+	registerSpellId(1, HeroType.PRIEST, SPELL_RAW)
 
 @compiletime
 function genObj()

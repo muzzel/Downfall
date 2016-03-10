@@ -17,48 +17,54 @@ constant string pdef = "ReplaceableTextures\\CommandButtons\\"
 
 public function initItemTypeLists()
 	// ##### EQUIPMENT #####
-	// Mainhand:
-	genEq('I101', EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, Stat.DAMA, 1, "Old Sword", "", pdef+"BTNSteelMelee.blp")
-	genEq('I102', EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, Stat.INTE, 1, "Old Staff", "", pdef+"BTNWand.blp")
-	genEq('I103', EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, Stat.DAMA, 1, "Old Bow", "", pdef+"BTNImprovedBows.blp")
-	genEq('I104', EqQua.NOR, EqSlo.MAI, EqCla.AXE, 20, Stat.DAMA, 2, Stat.STRE, 1, "Woodcutters Axe", "", pdef+"BTNOrcMeleeUpOne.blp")
-	genEq('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, Stat.DAMA, 3, Stat.AGIL, 1, Stat.ASPD, 15, "Horn Bow", "", pdef+"BTNQuillSprayOff.blp")
-	genEq('I106', EqQua.NOR, EqSlo.MAI, EqCla.STA, 20, Stat.DAMA, 1, Stat.INTE, 2, "Enchanted Staff", "", pdef+"BTNStarWand.blp")
-	genEq('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, Stat.DAMA, 2, Stat.INTE, 3, Stat.MANA, 20, "Sylvan Staff", "", pdef+"BTNStaffOfPreservation.blp")
-	// Offhand:
-	genEq('I201', EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, Stat.ARMO, 2, Stat.LIFE, 5, "Wooden Buckler", "", pdef+"BTNSteelArmor.blp")
-	genEq('I202', EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, Stat.INTE, 1, Stat.MANA, 5, "Energy Orb", "", pdef+"BTNUsedSoulGem.blp")
-	genEq('I203', EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, Stat.DAMA, 1, Stat.AGIL, 1, "Sharp Arows", "", pdef+"BTNImpalingBolt.blp")
-	genEq('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, Stat.ARMO, 4, Stat.LIFE, 12, "Mithril Plate", "", pdef+"BTNHumanArmorUpThree.blp")
-	// Chest:
-	genEq('I301', EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, Stat.ARMO, 1, Stat.LIFE, 10, "Wooden Mail", "", pdef+"BTNImprovedMoonArmor.blp")
-	genEq('I302', EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, Stat.ARMO, 1, Stat.LIFE, 10, "Fur Coat", "", pdef+"BTNImprovedReinforcedHides.blp")
-	genEq('I303', EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, Stat.ARMO, 1, Stat.MANA, 5, "Tattered Robe", "", pdef+"BTNCloak.blp")
-	genEq('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, Stat.ARMO, 2, Stat.LIFE, 10, Stat.EVAS, 3, "Shining Chestguard", "", pdef+"BTNArmorGolem.blp")
-	// Helmet:
-	genEq('I401', EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, Stat.ARMO, 1, "Light Helmet", "", pdef+"BTNFootman.blp")
-	genEq('I402', EqQua.NOR, EqSlo.HEL, EqCla.LEA, 20, Stat.ARMO, 1, Stat.LIFE, 5, "Leather Mask", "", pdef+"BTNHuntress.blp")
-	genEq('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, Stat.INTE, 2, Stat.LIFE, 10, Stat.MANA, 5, Stat.CSPE, 4, "Shamans Hood", "", pdef+"BTNCloak.blp")
-	genEq('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, Stat.ARMO, 1, Stat.LIFE, 10, Stat.AGIL, 3, Stat.CCHA, 5, Stat.CBON, 6, "Pointy Hat", "", pdef+"BTNHoodOfCunning.blp")
-	// Accessory:
-	genEq('I501', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, Stat.MANA, 8, "Fairy Ring", "", pdef+"BTNRingPurple.blp")
-	genEq('I502', EqQua.NOR, EqSlo.ACC, EqCla.ACC, 10, Stat.LIFE, 10, "Ring of Vitality", "", pdef+"BTNGoldRing.blp")
-	genEq('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.INTE, 2, Stat.CSPE, 2, Stat.MANA, 8, "Crystal Necklace of the Astute", "", pdef+"BTNSoulGem.blp")
-	genEq('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.STRE, 2, Stat.EVAS, 3, Stat.HREC, 12, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
-	genEq('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.AGIL, 2, Stat.CCHA, 3, Stat.CMUL, 10, Stat.MANA, 5, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
-	// Misc:
-	genEq('I601', EqQua.EPI, EqSlo.MIS, EqCla.ACC, 10, Stat.STRE, 15, Stat.AGIL, 15, Stat.INTE, 15, Stat.DAMA, 20, Stat.ARMO, 10, "Penguin Magic Box", "", pdef+"BTNCrate.blp")
+	// Startitems
+	genEq("eq_oldsword", 		201, EqQua.NOR, EqSlo.MAI, EqCla.SWO, 10, Stat.DAMA, 1, "Old Sword", "", pdef+"BTNSteelMelee.blp")
+	genEq("eq_oldstaff", 		202, EqQua.NOR, EqSlo.MAI, EqCla.STA, 10, Stat.INTE, 1, "Old Staff", "", pdef+"BTNWand.blp")
+	genEq("eq_oldbow",   		203, EqQua.NOR, EqSlo.MAI, EqCla.BOW, 10, Stat.DAMA, 1, "Old Bow", "", pdef+"BTNImprovedBows.blp")
+	// kaufbar
+	genEq("eq_lighthelmet", 	204, EqQua.NOR, EqSlo.HEL, EqCla.CHA, 16, Stat.ARMO, 1, "Light Helmet", "", pdef+"BTNFootman.blp")
+	genEq("eq_shortsword",		205, EqQua.NOR, EqSlo.MAI, EqCla.SWO, 18, Stat.DAMA, 3, "Short Sword", "", pdef+"BTNDaggerOfEscape.blp")
+	genEq("eq_heavywand",		206, EqQua.NOR, EqSlo.MAI, EqCla.STA, 18, Stat.DAMA, 1, Stat.INTE, 2, "Heavy Wand", "", pdef+"BTNStaffOfSanctuary.blp")
+	genEq("eq_huntingbow",		207, EqQua.NOR, EqSlo.MAI, EqCla.BOW, 18, Stat.DAMA, 3, "Hunting Bow", "", pdef+"BTNVorpalBlades.blp")
+	genEq("eq_woodenmail",		208, EqQua.NOR, EqSlo.CHE, EqCla.CHA, 20, Stat.ARMO, 2, "Wooden Mail", "", pdef+"BTNImprovedMoonArmor.blp")
+	genEq("eq_furcoat",			209, EqQua.NOR, EqSlo.CHE, EqCla.LEA, 20, Stat.ARMO, 1, Stat.AGIL, 1, "Fur Coat", "", pdef+"BTNImprovedReinforcedHides.blp")
+	genEq("eq_tatteredrobe",	210, EqQua.NOR, EqSlo.CHE, EqCla.CLO, 20, Stat.ARMO, 1, Stat.INTE, 1, "Tattered Robe", "", pdef+"BTNCloak.blp")
+	genEq("eq_fairyring",		201, EqQua.NOR, EqSlo.ACC, EqCla.ACC, 18, Stat.MANA, 12, "Fairy Ring", "", pdef+"BTNRingPurple.blp")
+	genEq("eq_copperbracers",	212, EqQua.NOR, EqSlo.ACC, EqCla.CHA, 18, Stat.LIFE, 20, "Copper Bracers", "", pdef+"BTNGlove.blp")
+	genEq("eq_lightbuckler",	213, EqQua.NOR, EqSlo.OFF, EqCla.SHI, 30, Stat.ARMO, 2, "Light Buckler", "", pdef+"BTNSteelArmor.blp")
+	genEq("eq_energyorb",		214, EqQua.NOR, EqSlo.OFF, EqCla.ORB, 30, Stat.INTE, 2, Stat.MANA, 8, "Energy Orb", "", pdef+"BTNUsedSoulGem.blp")
+	genEq("eq_sharparrows",		215, EqQua.NOR, EqSlo.OFF, EqCla.QUI, 30, Stat.DAMA, 1, Stat.AGIL, 1, "Sharp Arows", "", pdef+"BTNImpalingBolt.blp")
+	genEq("eq_shamanshood",		216, EqQua.NOR, EqSlo.HEL, EqCla.CLO, 22, Stat.INTE, 1, Stat.LIFE, 10, Stat.MANA, 10, "Shamans Hood", "", pdef+"BTNCloak.blp")
+	genEq("eq_engravedring",	217, EqQua.NOR, EqSlo.ACC, EqCla.ACC, 22, Stat.STRE, 1, Stat.AGIL, 1, Stat.INTE, 1, Stat.LIFE, 10, "Engraved Ring", "", pdef+"BTNRingGreen.blp")
+	genEq("eq_woodcuttersaxe",	218, EqQua.NOR, EqSlo.MAI, EqCla.AXE, 25, Stat.DAMA, 4, Stat.STRE, 1, "Woodcutters Axe", "", pdef+"BTNOrcMeleeUpOne.blp")
+	genEq("eq_leathermask",		219, EqQua.NOR, EqSlo.HEL, EqCla.LEA, 25, Stat.ARMO, 1, Stat.LIFE, 10, "Leather Mask", "", pdef+"BTNHuntress.blp")
+	genEq("eq_spikedwand",		220, EqQua.NOR, EqSlo.MAI, EqCla.STA, 25, Stat.DAMA, 5, Stat.INTE, 1, "Spiked Wand", "", pdef+"BTNWandOfNeutralization.blp")
+	
+//	// Sonstige drops..
+//	genEq('I105', EqQua.RAR, EqSlo.MAI, EqCla.BOW, 50, Stat.DAMA, 3, Stat.AGIL, 1, Stat.ASPD, 15, "Horn Bow", "", pdef+"BTNQuillSprayOff.blp")
+//	genEq('I107', EqQua.RAR, EqSlo.MAI, EqCla.STA, 50, Stat.DAMA, 2, Stat.INTE, 3, Stat.MANA, 20, "Sylvan Staff", "", pdef+"BTNStaffOfPreservation.blp")
+//	genEq('I204', EqQua.RAR, EqSlo.OFF, EqCla.SHI, 50, Stat.ARMO, 4, Stat.LIFE, 12, "Mithril Plate", "", pdef+"BTNHumanArmorUpThree.blp")
+//	genEq('I304', EqQua.RAR, EqSlo.CHE, EqCla.CHA, 50, Stat.ARMO, 2, Stat.LIFE, 10, Stat.EVAS, 3, "Shining Chestguard", "", pdef+"BTNArmorGolem.blp")
+//	genEq('I403', EqQua.RAR, EqSlo.HEL, EqCla.CLO, 50, Stat.INTE, 2, Stat.LIFE, 10, Stat.MANA, 5, Stat.CSPE, 4, "Shamans Hood", "", pdef+"BTNCloak.blp")
+//	genEq('I404', EqQua.RAR, EqSlo.HEL, EqCla.LEA, 50, Stat.ARMO, 1, Stat.LIFE, 10, Stat.AGIL, 3, Stat.CCHA, 5, Stat.CBON, 6, "Pointy Hat", "", pdef+"BTNHoodOfCunning.blp")
+//	genEq('I503', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.INTE, 2, Stat.CSPE, 2, Stat.MANA, 8, "Crystal Necklace of the Astute", "", pdef+"BTNSoulGem.blp")
+//	genEq('I504', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.STRE, 2, Stat.EVAS, 3, Stat.HREC, 12, "Crystal Necklace of Vigor", "", pdef+"BTNUsedSoulGem.blp")
+//	genEq('I505', EqQua.RAR, EqSlo.ACC, EqCla.ACC, 60, Stat.AGIL, 2, Stat.CCHA, 3, Stat.CMUL, 10, Stat.MANA, 5, "Crystal Necklace of the Eagle", "", pdef+"BTNOrbOfDarkness.blp")
+//	// Misc:
+//	genEq('I601', EqQua.EPI, EqSlo.MIS, EqCla.ACC, 100, Stat.STRE, 20, Stat.AGIL, 20, Stat.INTE, 20, Stat.DAMA, 30, Stat.ARMO, 15, Stat.LIFE, 100, "Penguin Magic Box", "", pdef+"BTNCrate.blp")
 	
 	// ##### MATERIALS #####
-	genMa('IM00', 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")
-	genMa('IM01', 6, "Wood Stem", "", pdef+"BTNBundleOfLumber.blp")
-	genMa('IM02', 8, "Wolf Pelt", "", pdef+"BTNReinforcedHides.blp")
-	genMa('IM03', 12, "Scale", "", pdef+"BTNImprovedCreatureCarapace.blp")
-	genMa('IM04', 10, "Aquamarine", "", pdef+"BTNWispSplode.blp")
+	genMa("ma_boartusk",		1, 8, "Boar Tusk", "", pdef+"BTNRazorback.blp")
+	genMa("ma_lumpoftin",		2, 10, "Lump of Tin", "", pdef+"BTNWellSpring.blp")
+	genMa("ma_woodstem",		3, 12, "Wood Stem", "", pdef+"BTNBundleOfLumber.blp")
+	genMa("ma_finescale",		4, 10, "Fine Scale", "", pdef+"BTNArachnathid.blp.blp")
+	genMa("ma_aquamarine",		5, 20, "Aquamarine", "", pdef+"BTNWispSplode.blp")
+	genMa("ma_wolfpelt",		6, 12, "Wolf Pelt", "", pdef+"BTNReinforcedHides.blp")
+	genMa("ma_fang",			7, 10, "Fang", "", pdef+"BTNDireWolf.blp")
+	genMa("ma_armoredscale", 	8, 12, "Armored Scale", "", pdef+"BTNImprovedCreatureCarapace.blp") // UNUSED!
 
 	// ##### RECIPES ##### (Run this after Equipment and Materials)
-	genRe('i201', 'I201', 15, 'IM01', 'IM03', "") // Wooden Buckler
-	genRe('i202', 'I202', 15, 'IM02', 'IM04', "") // Energy Orb
-	genRe('i203', 'I203', 15, 'IM00', 'IM01', "") // Sharp Arrows
-	genRe('i402', 'I402', 15, 'IM02', "") // Leather Mask
-	genRe('i104', 'I104', 15, 'IM00', 'IM01', "") // Woodcutters Axe
+	genRe("re_lightbuckler",	101, "eq_lightbuckler", 25, "ma_finescale", "ma_lumpoftin", "")
+	genRe("re_energyorb",		102, "eq_energyorb", 25, "ma_aquamarine", "ma_lumpoftin", "")
+	genRe("re_sharparrows",		103, "eq_sharparrows", 25, "ma_boartusk", "ma_woodstem", "")
+	genRe("re_woodcuttersaxe",	104, "eq_woodcuttersaxe", 30, "ma_lumpoftin", "ma_fang", "ma_boartusk", "ma_woodstem", "")
